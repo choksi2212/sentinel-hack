@@ -168,6 +168,32 @@ class ByteTracker(BaseTracker):
         self.gate_vetoes = 0
         self.detections_dropped_low = 0
 
+    # -------------------------------------------------------------- provenance
+
+    @property
+    def model_name(self) -> str:
+        """What this stage is, for the report's stage table.
+
+        A tracker has no weights file, so the alternative to naming it here is the empty
+        string -- and a provenance record that identifies three of four stages is not a
+        provenance record. Included in the answer because they change the output: the two
+        thresholds decide which detections may start a track at all, so two runs with the
+        same footage, the same detector and different thresholds are not comparable, and
+        a report that recorded them identically would invite exactly that comparison.
+        """
+        parts = [f"bytetrack@{self.high_threshold:g}/{self.low_threshold:g}"]
+        # Only the ablation switches that are off, so the common case stays short and any
+        # deviation is loud. A run with the second association stage disabled is a
+        # different algorithm and its numbers must not be filed as ByteTrack's.
+        for flag, label in (
+            (self.use_low_stage, "no-low-stage"),
+            (self.use_gating, "no-gating"),
+            (self.fuse_score, "no-score-fusion"),
+        ):
+            if not flag:
+                parts.append(label)
+        return " ".join(parts)
+
     # ------------------------------------------------------------------- update
 
     def _update(
