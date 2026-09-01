@@ -1,0 +1,139 @@
+# Offline development. Recorded footage or a frame directory, no network, no credentials.
+#
+#   python -m ai.worker --config config/offline.yaml --camera cam04
+#
+# This is the config that has to work on a fresh clone with nothing installed but the
+# dependencies -- no live grid, no backend, no model weights. So the four model stages are
+# all oracles or classical CV, and events go to a file. What it proves is that the pipeline
+# is correct; what it does not prove is that the models are good. config/benchmark.yaml is
+# for that.
+#
+# **This file is also the offline half of the source-independence acceptance test.** Running
+# this and then config/live.yaml must exercise the identical pipeline, with the only
+# difference being the source block. If a stage below has to change to make live work, the
+# invariant is broken and the fix belongs in ai/media, not here.
+
+extends: base.yaml
+
+run:
+  name: offline
+  notes: "Synthetic corpus, oracle stages, file sink. Correctness, not accuracy."
+
+source:
+  mode: synthetic
+  camera_id: cam04
+
+  # Fixed seed. An unreproducible fixture is not a fixture -- a test that fails once and
+  # passes on re-run tells you nothing, and a benchmark against random footage cannot be
+  # compared against yesterday's.
+  seed: 1337
+  width: 1280
+  height: 720
+  total_frames: 300
+
+  # 100 ms, matching target_interval_ms. The synthetic source generates frames at its own
+  # cadence and the sampler then drops to the target; setting them equal means no frames are
+  # generated to be thrown away.
+  step_ms: 100
+  vehicles_per_100_frames: 6
+  target_interval_ms: 100
+
+  # On even offline. The synthetic source can inject a reconnect, and the whole point of
+  # stream_session_id is that a reconnect starts a new session -- ByteTrack restarts track
+  # numbering at 1, so without the session boundary two unrelated vehicles merge into one
+  # track. That has to be exercised where it is cheap to debug, not first discovered live.
+  detect_discontinuity: true
+  discontinuity_threshold: 2000
+
+# --- oracle stages -----------------------------------------------------------
+# Every stage below reads ground truth from the synthetic frame and degrades it by a
+# configured amount. That makes each stage's contribution measurable in isolation: an
+# oracle detector with a real tracker tells you what the tracker costs you, and nothing
+# else does. ai/detect/factory.py refuses to let an oracle be labelled as shippable, so
+# these cannot be mistaken for a benchmark result.
+
+detect:
+  name: oracle
+
+  # 10% of vehicles missed per frame, 3 px of box jitter. Not zero: a perfect detector
+  # produces a tracker input no real detector ever produces, and a tracker tuned against it
+  # falls apart on the first missed frame.
+  miss_rate: 0.10
+  jitter_px: 3.0
+  false_positives_per_frame: 0.05
+
+  # Confidence falls with plate width, the way a real detector's does, so the quality gate
+  # and the tracker's two-stage association are both exercised across their range instead of
+  # seeing one constant value.
+  confidence_full_width_px: 200
+  min_confidence: 0.20
+  low_confidence_rate: 0.15
+  low_confidence_value: 0.15
+  seed: 1337
+
+  # Must stay at or below track.low_threshold. The oracle emits deliberately low-confidence
+  # boxes to exercise ByteTrack's second stage, and a threshold here would filter out the
+  # exact boxes that test was constructed to produce.
+  confidence_threshold: 0.05
+
+track:
+  # The real tracker, against oracle detections. This pairing is what the offline run is
+  # for: it isolates the tracker so a fragmented track is unambiguously the tracker's fault.
+  name: bytetrack
+  high_threshold: 0.5
+
+  # 0.1, and detect.confidence_threshold above is 0.05 -- deliberately below it. The oracle
+  # detector emits low-confidence boxes on purpose so ByteTrack's second association stage
+  # actually runs; inverting these two would filter out the exact boxes that test exists to
+  # produce, and the tracker would look perfect because it was never given a hard case.
+  low_threshold: 0.1
+  use_low_stage: true
+  use_gating: true
+  fuse_score: true
+
+plate:
+  name: oracle
+  miss_rate: 0.15
+  confidence: 0.9
+
+  # Refuse to locate a plate ground truth marks illegible. Without this the oracle hands
+  # OCR a plate the renderer never drew characters into, and any string that comes back is
+  # fabricated by construction -- which measures nothing except the OCR stage's willingness
+  # to guess.
+  require_legible: true
+
+ocr:
+  name: oracle
+
+  # 8% of characters wrong, rising as plates get narrower. This is what makes the offline
+  # run a real test of fusion rather than a formality: with a perfect OCR every read agrees,
+  # consensus is trivially unanimous, and the voting code is never executed. At 8% the reads
+  # disagree and fusion has to actually resolve them.
+  char_error_rate: 0.08
+  error_full_width_px: 60
+  confidence: 0.85
+  min_confidence: 0.35
+  require_legible: true
+
+  # 30, not the 24 in base.yaml. On this corpus 30 px is the renderer's own legibility floor
+  # -- below it no characters were drawn -- so reading there is measuring fabrication.
+  min_plate_width_px: 30
+
+# --- output ------------------------------------------------------------------
+emit:
+  sink: file
+  path: runs/offline/events.jsonl
+
+snapshot:
+  # Off. The synthetic renderer's stills are of no evidential value and writing them costs
+  # 10 ms a frame plus 61 KB an event for pictures of drawn rectangles.
+  enabled: false
+
+logging:
+  level: DEBUG
+
+metrics:
+  # No warm-up to discard: the oracle stages run no kernels, so the first frame costs the
+  # same as the thousandth and dropping two would just be two fewer frames of data.
+  warmup_frames: 0
+  log_vram: false

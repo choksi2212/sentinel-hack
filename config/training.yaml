@@ -1,0 +1,173 @@
+# Fine-tuning on the rented A100. Not a pipeline config -- note `kind: training` -- and not
+# runnable today. This file exists so the decision to spend money is written down before it
+# is made, in the same repository as the evidence for it.
+#
+#   MANUAL STEP: nothing here runs until the dataset exists and the go/no-go passes.
+#
+# **The A100 is the only paid resource in this project: RunPod A100 SXM 80GB at $1.64/hour.**
+# Everything else -- models, footage, the grid -- is free or provided. So the gate is
+# explicit rather than a judgement call made at 2am on D6:
+#
+#   * Every one of the 11 benchmark rows is green on the local 12 GB card first. If the
+#     pipeline is not correct at fp16 on an RTX 5070 Ti Laptop, a bigger card makes it wrong
+#     faster. **The 12 GB is the real constraint -- the design target is that card, not this
+#     one.**
+#   * A labelled dataset exists. Datasets are not this lane's to produce; see
+#     docs/ for whose they are. Without labelled Indian plates a fine-tune has nothing to
+#     learn from, and "we fine-tuned it" with no held-out set is not a claim that can be
+#     checked.
+#   * A held-out split that was never trained on, and a before/after number on the same
+#     split. A fine-tune with no baseline is indistinguishable from a fine-tune that made
+#     things worse.
+#   * A wall-clock estimate and a spend ceiling, below. An hourly instance with no ceiling is
+#     how a $6 experiment becomes a $90 one overnight.
+#
+# **What this would actually be for.** The stack ships pretrained: RF-DETR on COCO for
+# vehicles, RT-DETRv2 for plate boxes, PaddleOCR for characters. The weakest link on Indian
+# footage is character recognition, not detection -- a COCO car is a car in Ahmedabad, but
+# PaddleOCR's Latin models never saw an IND plate's font, spacing or two-row layout. So the
+# OCR recogniser is the only stage worth the money, and the detectors are listed below only
+# to record that the decision to leave them alone was deliberate.
+#
+# **The two-row layout is the specific reason.** Indian plates: cars single-row 500x120 mm
+# (aspect 4.17), cars two-row 340x200 (1.70), motorcycles two-row 285x200 (1.43),
+# motorcycles single-row 200x100 (2.00). A recogniser trained on single-row Latin text reads
+# a two-row plate as one line of nonsense -- and two-row is most motorcycles, which is most
+# of the traffic. (The same arithmetic is why ai/plate uses an aspect window of 0.70 to 6.00:
+# the 4:1 filter that looks obviously right rejects every two-row plate.)
+
+kind: training
+
+run:
+  name: training
+  notes: "MANUAL STEP: dataset path, split manifest, and the 11 green rows."
+
+# --- the gate ----------------------------------------------------------------
+# Checked by hand and recorded here, because a gate that lives in someone's head is not a
+# gate. Flip these to true only with the evidence to hand; scripts/ will refuse to launch
+# while any is false.
+gate:
+  local_benchmark_all_green: false
+  labelled_dataset_exists: false
+  held_out_split_exists: false
+  baseline_measured_on_held_out: false
+
+budget:
+  provider: runpod
+  instance: "A100 SXM 80GB"
+  usd_per_hour: 1.64
+
+  # Four hours. Chosen as a ceiling, not an estimate: enough for a recogniser fine-tune plus
+  # one repeat if the first diverges, and small enough that overrunning it is a decision
+  # somebody has to make rather than something that happens while everyone sleeps.
+  max_hours: 4
+  ceiling_usd: 6.56
+
+# --- what gets trained -------------------------------------------------------
+target:
+  # ocr_recognizer is the only value that currently means anything. The two detector entries
+  # are recorded as explicitly-not-training so that "did we consider it" has an answer.
+  stage: ocr_recognizer
+
+  vehicle_detector:
+    train: false
+    why: >
+      RF-DETR's COCO vehicle classes transfer to Indian traffic without help. Measured
+      recall on the local corpus is limited by plate width and occlusion, not by class
+      confusion, so a fine-tune would spend the budget on the stage that is not the
+      bottleneck.
+
+  plate_detector:
+    train: false
+    why: >
+      RT-DETRv2 plate boxes are already tight enough that the 8% crop padding covers the
+      error. Worth revisiting only if per-bucket accuracy shows losses concentrated in
+      localisation rather than in reading.
+
+  ocr_recognizer:
+    train: true
+    why: >
+      PaddleOCR's recogniser has not seen an IND plate font, its character spacing, or a
+      two-row layout. This is the stage where the domain gap is real.
+
+dataset:
+  # ---------------------------------------------------------------------------
+  # MANUAL STEP REQUIRED -- these paths do not exist and are not this lane's to create.
+  #
+  # Needs: plate crops with a transcription each, a row-layout label (single or two-row),
+  # and a plate-width figure so the result can be reported per width bucket like every
+  # other number in this project. Crops from the live grid are real registration plates
+  # belonging to real people; data/ is gitignored and must stay that way.
+  # ---------------------------------------------------------------------------
+  root: data/plates/
+  train_manifest: data/plates/train.jsonl
+  val_manifest: data/plates/val.jsonl
+
+  # Split by *vehicle track*, never by crop. Eleven crops of one plate landing on both sides
+  # of the split is the classic leak: the model memorises that plate, the val number looks
+  # excellent, and nothing generalises. Splitting by track keeps every crop of a plate on one
+  # side.
+  split_by: track
+
+  # Stratify so both sides carry the same width and layout mix. A val set that happens to be
+  # mostly wide single-row plates reports a number about the easy case.
+  stratify_by: [width_bucket, row_layout]
+  val_fraction: 0.2
+  seed: 1337
+
+train:
+  # MANUAL STEP: PaddleOCR fine-tuning takes its own YAML, and these values are the inputs
+  # to it rather than a substitute for it. Recorded here so the run is reproducible from the
+  # repository instead of from a shell history on a machine that has been destroyed.
+  base_model: en_PP-OCRv4_rec
+  epochs: 30
+  batch_size: 128
+  learning_rate: 0.001
+  warmup_epochs: 2
+
+  # Freeze the backbone for the first few epochs. The head is randomly initialised for a new
+  # character set and its early gradients are large; letting them through to a pretrained
+  # backbone destroys the features the fine-tune is supposed to build on.
+  freeze_backbone_epochs: 3
+
+  # Augmentation that matches what the camera does, and nothing that does not. Rotation and
+  # blur are what a plate on a moving vehicle looks like. Horizontal flip is absent
+  # deliberately: a mirrored plate is not a plate, and training on one teaches the recogniser
+  # that character order does not matter.
+  augment:
+    rotate_degrees: 7
+    blur_sigma_max: 1.2
+    brightness: 0.25
+    contrast: 0.25
+    horizontal_flip: false
+    perspective: 0.05
+
+  # Select on the held-out split, not on training loss. And on exact plate-string match
+  # rather than character accuracy: a plate with one wrong character is a wrong plate --
+  # it identifies a different vehicle, or none -- so a checkpoint chosen by CER can be worse
+  # at the only thing that matters.
+  select_on: val_exact_match
+
+  early_stop_patience: 5
+
+output:
+  # Gitignored, like every checkpoint. What gets committed is the command that produced it
+  # and the before/after table, which is what somebody would need to reproduce or dispute
+  # the result.
+  checkpoint_dir: weights/ocr_finetune/
+
+  # Both numbers on the same held-out split, per width bucket. A single average would hide
+  # the case this fine-tune is for: if two-row motorcycle plates went from 0.2 to 0.6 while
+  # wide car plates went from 0.9 to 0.88, that is a clear win that an average reports as
+  # roughly no change.
+  report:
+    metric: exact_match_rate
+    per_bucket: true
+    buckets: [">100", "80-100", "60-80", "40-60", "30-40", "<30"]
+    compare_against: baseline
+
+  # If the fine-tuned recogniser does not beat the pretrained one on the held-out split, the
+  # pretrained one ships and the attempt is reported as an attempt. A fine-tune that ships on
+  # the strength of its training curve is how a system gets worse between the benchmark and
+  # the demo.
+  ship_only_if_better: true

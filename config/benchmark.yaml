@@ -1,0 +1,153 @@
+# The configuration whose numbers get reported. Recorded footage, shipping models, no sink.
+#
+#   python -m ai.worker --config config/benchmark.yaml --camera cam04
+#
+# Different from config/live.yaml in exactly three ways, each for a reason:
+#
+#   1. **The source is a file, not the grid.** A benchmark against a live stream cannot be
+#      re-run: the footage is gone, and a number nobody can reproduce is not a measurement.
+#      The clip is recorded once, its ground truth is labelled once, and every subsequent
+#      run is comparable against every previous one.
+#   2. **Nothing is emitted.** The sink is null. A benchmark run that POSTs to the backend
+#      pollutes the demo database with events from footage nobody watched, and then the
+#      dashboard shows sightings at times the camera was not recording.
+#   3. **Every stage is shippable.** No oracles anywhere. ai/metrics.py refuses to publish a
+#      run where any stage reports is_oracle, and the refusal is the point: an oracle stage
+#      is ground truth wearing a model's clothes, and a headline accuracy figure that
+#      included one would be a claim about the fixture rather than about the system.
+#
+# **What this file measures, and what it does not.** The primary metric is the E2E
+# correct-plate event rate: correct final plate events over eligible vehicle events. mAP,
+# CER, FPS, latency and VRAM are diagnostics -- they explain a result, they are not the
+# result. And eligibility is a property of ground truth, not of what the pipeline emitted:
+# a vehicle whose plate was legible in the footage is in the denominator whether or not the
+# pipeline ever located it. Defining it the other way lets a pipeline improve its score by
+# detecting less.
+#
+# No number from this run is ever reported as a single average. Accuracy is reported per
+# plate-width bucket (>100 / 80-100 / 60-80 / 40-60 / 30-40 / <30 px) because the average
+# over a clip is a statement about that clip's distance distribution, not about the system,
+# and it moves when you re-shoot the same junction from a different pole.
+
+extends: base.yaml
+
+run:
+  name: benchmark
+  notes: "MANUAL STEP: set source.path and record the clip's ground-truth label file."
+
+source:
+  mode: file
+
+  # ---------------------------------------------------------------------------
+  # MANUAL STEP REQUIRED -- this path is not in the repository.
+  #
+  # Benchmark clips are gitignored: they are large, they contain real registration plates
+  # from the live grid, and a committed clip makes the repo unclonable on demo-day wifi.
+  # Record one with scripts/probe_rtsp.py, drop it at the path below, and label its ground
+  # truth alongside.
+  #
+  # The clip must be from a camera whose ground truth exists, or there is no denominator
+  # and the run produces a plate count rather than an accuracy.
+  # ---------------------------------------------------------------------------
+  path: data/benchmark/cam04_paldi_5min.mp4
+  camera_id: cam04
+
+  # No looping. A loop would count the same vehicles twice and inflate every count in the
+  # report while leaving the accuracy ratio unchanged -- which is the worst combination,
+  # because the ratio looks trustworthy and the volume looks impressive.
+  loop: false
+
+  # Real time, not as-fast-as-possible. Latency is one of the reported diagnostics, and
+  # decoding at 10x measures how fast the disk is.
+  speed: 1.0
+
+  target_interval_ms: 100
+
+  # Off for a file. A recorded clip has continuous PTS by construction, so a discontinuity
+  # here would be a decode fault, and treating it as a reconnect would split one vehicle's
+  # track across two sessions and record it as two sightings.
+  detect_discontinuity: false
+
+# --- shipping stages only ----------------------------------------------------
+# Stated in full rather than inherited. For this file specifically that is a feature: a
+# reported number has to be attributable, and "what configuration produced this" should not
+# require chasing an inheritance chain through two other files.
+
+detect:
+  name: rfdetr
+
+  # MANUAL STEP: this is the variant under test. Nano through Large are the Apache-2.0
+  # sizes; run each and report the table, because "RF-DETR gets X" is not a result -- the
+  # variant, the precision and the tiling setting are all part of the number.
+  variant: small
+  device: cuda
+  precision: fp16
+  confidence_threshold: 0.05
+  tile: true
+  tile_grid: [2, 2]
+  tile_overlap: 0.2
+  include_full_frame: true
+  merge_iou: 0.55
+  max_detections: 100
+  coco_classes_are_advisory: true
+
+track:
+  name: bytetrack
+  high_threshold: 0.5
+
+  # At or above detect.confidence_threshold, and in the same file as it. A benchmark run with
+  # this pairing inverted reports a recall figure that is an artifact of the config rather
+  # than a property of the detector.
+  low_threshold: 0.1
+  use_low_stage: true
+  use_gating: true
+  fuse_score: true
+
+plate:
+  name: rtdetr
+  repo_id: justjuu/rtdetr-v2-license-plate-detection
+  device: cuda
+  precision: fp16
+  hf_token: ${HF_TOKEN:-}
+  batch_crops: true
+  max_batch: 16
+
+ocr:
+  name: paddle
+  lang: en
+  use_gpu: true
+  drop_score: 0.3
+  use_angle_cls: false
+
+  # 30, not base.yaml's 24. A benchmark should not include reads from a band where the
+  # answer is a coin flip: those plates are in the denominator via the <30 px bucket
+  # regardless, so admitting them to OCR adds fabricated strings to the numerator without
+  # adding anything to what is being measured.
+  min_plate_width_px: 30
+
+fusion:
+  top_k: 4
+
+# --- output ------------------------------------------------------------------
+emit:
+  # Nothing leaves this run. See point 2 above.
+  sink: null
+
+snapshot:
+  # Off. 61 KB an event across a five-minute clip is real disk for images nobody will look
+  # at, and the 10 ms per staged frame would land inside the latency figure being reported.
+  enabled: false
+
+logging:
+  level: INFO
+
+metrics:
+  # Discard the first two inferences. They include CUDA context creation and cuDNN
+  # autotuning, so counting them makes the pipeline look slower AND makes the figure depend
+  # on clip length -- a 300-frame run would report a worse FPS than a 3000-frame run of the
+  # same pipeline, which is the kind of artifact that gets chased for an afternoon.
+  warmup_frames: 2
+
+  # Peak VRAM is a go/no-go input, not a curiosity: it decides whether this runs on the
+  # 12 GB card at all, and therefore whether the A100 is needed.
+  log_vram: true

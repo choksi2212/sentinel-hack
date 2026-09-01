@@ -1,0 +1,167 @@
+# The live Sentinel grid. Same pipeline as offline; only this file's source block differs.
+#
+#   python -m ai.worker --config config/live.yaml --camera cam04
+#
+# **This file is the acceptance test for source independence.** Diff it against
+# config/offline.yaml: everything outside `source:` differs only in model choice and output
+# destination, and no stage below knows the frames arrive over a socket. If making live work
+# ever requires a change to detect/track/plate/ocr/fusion, the invariant has broken and the
+# fix belongs in ai/media.
+#
+# Things about this grid that are not negotiable, learned by probing it:
+#
+#   * RTSP-over-TCP. UDP drops packets under load and the decoder emits torn frames, which
+#     look like motion blur and quietly poison the plate crops.
+#   * Live-only. No seeking, monotonic PTS, and the stream loops with hard scene cuts -- a
+#     cut is why detect_discontinuity is on: it looks exactly like a reconnect and must
+#     start a new stream_session_id or two unrelated vehicles merge into one track.
+#   * cam01 through cam30. cam04 is Paldi Junction, Ahmedabad: 1920x1080, H.264 Main, 25 fps.
+#
+# The RTSP endpoint needed no credential when probed. The HLS one does, and its adapter
+# reads SENTINEL_HLS_USERNAME / SENTINEL_HLS_PASSWORD from the environment itself -- which is
+# why neither appears below. One fewer place a password travels through.
+
+extends: base.yaml
+
+run:
+  name: live
+  notes: "Sentinel grid over RTSP/TCP. Real footage, real models, HTTP ingest."
+
+source:
+  mode: live_rtsp
+  camera_id: cam04
+
+  # No `url:` on purpose. Omitting it lets the adapter build
+  # rtsp://103.250.160.189:8554/stream/<camera_id> from whichever camera it was given, so
+  # `--camera cam17` reaches cam17. Pinning a url here would silently point all thirty
+  # workers at one stream, and thirty workers all reporting the same vehicles is a failure
+  # that reads as a grid problem rather than a config one.
+
+  # TCP, and this is the one setting most likely to be "simplified" away by someone who
+  # notices UDP is lower latency. It is, and it also tears frames under load.
+  transport_options:
+    rtsp_transport: tcp
+
+    # 3 s. Long enough to survive a hiccup, short enough that a dead camera is noticed
+    # inside one demo answer rather than after it.
+    stimeout: 3000000
+
+  # A camera that has sent nothing for 10 s is treated as disconnected and the reconnect
+  # backoff starts. Below about 5 s a busy junction's quiet moment reads as an outage.
+  read_timeout_seconds: 10
+
+  target_interval_ms: 100
+
+  # Mandatory here. The stream loops with a hard scene cut, and a cut without a session
+  # boundary hands ByteTrack a frame where every vehicle teleported -- it recovers by
+  # reassigning ids, which merges the vehicles from before the cut with the ones after.
+  detect_discontinuity: true
+  discontinuity_threshold: 2000
+
+# --- real models -------------------------------------------------------------
+# Every stage is the shipping one, and every stage names its backend and its own keys. Note
+# what is NOT here: no thresholds tuned for live, no per-camera overrides. If live footage
+# needs a different threshold from recorded footage of the same junction, that is a finding
+# to measure, not a knob to turn quietly.
+
+detect:
+  name: rfdetr
+  variant: small
+  device: cuda
+
+  # fp16. The 12 GB card is the real constraint -- fp32 at 1920x1080 with tiling on does not
+  # leave room for the plate detector and PaddleOCR in the same process.
+  precision: fp16
+  confidence_threshold: 0.05
+
+  # On for live. 1920x1080 means distant vehicles are small, and a 2x2 grid with the full
+  # frame is 5 forward passes -- affordable at a 100 ms interval on this card, and the only
+  # way the far half of the junction contributes anything.
+  tile: true
+  tile_grid: [2, 2]
+  tile_overlap: 0.2
+  include_full_frame: true
+  merge_iou: 0.55
+  max_detections: 100
+
+  # COCO's class names are advisory: a mislabelled truck is still a vehicle worth tracking,
+  # and rejecting a box because the class head disagreed with the box head loses a real
+  # vehicle over a label the operator never sees.
+  coco_classes_are_advisory: true
+
+track:
+  name: bytetrack
+  high_threshold: 0.5
+
+  # Must stay at or above detect.confidence_threshold. Repeated in every config that pairs
+  # these two rather than inherited, because the pairing is the bug ai/config.py warns about
+  # and it is only visible when both numbers are in the same file.
+  low_threshold: 0.1
+  use_low_stage: true
+  use_gating: true
+  fuse_score: true
+
+plate:
+  name: rtdetr
+  repo_id: justjuu/rtdetr-v2-license-plate-detection
+  device: cuda
+  precision: fp16
+
+  # Read from the environment. The weights are on a public hub and an anonymous pull works,
+  # so this is optional -- but rate limits are per-token, and thirty cameras starting at once
+  # against an anonymous quota is a first-run failure that reads as a bad repo id.
+  hf_token: ${HF_TOKEN:-}
+  batch_crops: true
+  max_batch: 16
+
+ocr:
+  name: paddle
+  lang: en
+  use_gpu: true
+
+  # PaddleOCR's own confidence floor. Left low on purpose: the refusal decision belongs to
+  # fusion, which can see eleven reads of the same plate, not to a single-crop recogniser
+  # that can only see one.
+  drop_score: 0.3
+  use_angle_cls: false
+
+fusion:
+  # 4 as in base. Raising it on live footage is tempting because there are more frames per
+  # vehicle, but the extra reads come from the tail of the quality ranking -- the crops that
+  # were rejected for being blurry -- and adding blurry votes to a consensus is how a
+  # correct plate loses to a consistent misread.
+  top_k: 4
+
+# --- output ------------------------------------------------------------------
+emit:
+  # HTTP to the backend. The URL is environment-resolved because it differs per machine, and
+  # a stale localhost here produces a run that emits nothing and blames the network.
+  sink: http
+  url: ${TRINETRA_INGEST_URL:-http://localhost:8000}
+  timeout_s: 5.0
+  max_attempts: 4
+  spool_dir: spool/live/
+
+snapshot:
+  # On, and this is the half of live that matters to an operator: a plate string with no
+  # photograph is not evidence. 61 KB an event, so one pair of stills per sighting and never
+  # per frame.
+  enabled: true
+  root: artifacts/snapshots
+
+  # Served back by the dashboard. Left as a relative path so the backend decides how to
+  # expose the directory; an absolute file:// URI here would work locally and break the
+  # moment the API is not on the same machine as the worker.
+  uri_prefix: /snapshots
+
+logging:
+  level: INFO
+
+  # Never false on this config. The RTSP url and the HLS password both pass through the log
+  # path, and an unredacted startup line is a credential in whatever file someone pastes
+  # into a chat window when a camera stops responding.
+  redact_secrets: true
+
+metrics:
+  warmup_frames: 2
+  log_vram: true

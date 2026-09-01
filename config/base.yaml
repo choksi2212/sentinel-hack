@@ -1,0 +1,150 @@
+# The layer every other config extends. It sets defaults, not a runnable configuration.
+#
+# There is deliberately no `source:` block here. A base that named a source would make one
+# mode the implicit default, and the first time somebody ran a benchmark against the wrong
+# footage they would have no way of knowing -- the config they read said nothing about it.
+# Every runnable config states its own source, in full.
+#
+# **No stage below names a backend, and none carries a backend-specific key.** That rule was
+# not obvious and scripts/validate_config.py is what found it. The stage factories reject any
+# key their chosen backend does not accept -- which is right, it is how a typo fails loudly
+# instead of being ignored for a week -- and an overlay that switches `detect.name` from
+# rfdetr to oracle still inherits whatever rfdetr keys this file set. So the config that was
+# correct became unloadable because of a default it never asked for. A base layer can only
+# honestly default what is common to *every* backend of a stage; the moment it sets
+# `variant: nano` it has chosen rfdetr for everyone.
+#
+# The same reasoning rules out defaulting `name` itself: a run's model provenance travels in
+# every event it emits, so a stage whose model was chosen by inheritance is a run labelled
+# with a decision nobody made. ai/config.py requires all four stage sections and each
+# runnable config names its own backends.
+#
+# Two more rules to know before editing:
+#
+#   * Secrets are `${VAR}` references, resolved from the environment. Never write a literal
+#     password here. A password in this file is in the git history forever, and rotating it
+#     after submission does not remove it from a clone somebody already made.
+#
+#   * A list in an overlay REPLACES the list here, it does not append. So an overlay that
+#     sets `ocr.variants: [gray]` gets exactly one variant, not two.
+
+run:
+  # Free text, copied into the run log and the benchmark row. The point is that a result
+  # you cannot attribute to a configuration is not a result.
+  name: base
+  notes: ""
+
+# --- stage 3: vehicle detection ----------------------------------------------
+detect:
+  # 0.05, not the 0.35 that reads as a sensible default -- and this is the single most
+  # consequential number in the file. The tracker's low_threshold is 0.1, and ByteTrack's
+  # second association stage is *built* to recover low-confidence boxes: that is the whole
+  # idea of the algorithm. A detector threshold above the tracker's floor throws those
+  # boxes away before the tracker can use them, which silently disables the half of
+  # ByteTrack you chose it for.
+  #
+  # Measured on the synthetic corpus: at 0.35, recall 0.342 with 8 track ids and 2
+  # fragments; at 0.05, recall 0.588 with 6 track ids and 0 fragments. Six ids is the
+  # correct answer. The two extra ids at 0.35 are one vehicle each, cut in half where the
+  # detector briefly dropped below threshold mid-track -- which then emits two sightings
+  # for one vehicle, at two different times, and no downstream stage can tell.
+  #
+  # ai/config.py warns whenever this rises above track.low_threshold.
+  confidence_threshold: 0.05
+
+  allowed_classes: [car, motorcycle, bus, truck]
+
+# --- stage 4: tracking -------------------------------------------------------
+track:
+  # 30 frames at the 100 ms sampling interval is 3 seconds of tolerance for an occlusion.
+  # Long enough to survive a vehicle passing behind a bus; short enough that an id is not
+  # still alive when a different vehicle arrives in the same lane.
+  track_buffer: 30
+  min_hits: 3
+
+# --- stage 6: plate detection ------------------------------------------------
+plate:
+  confidence_threshold: 0.25
+
+  # 8% of the box on every side. The detector's box clips the plate's border, and OCR needs
+  # the quiet margin around the characters to segment them.
+  pad_fraction: 0.08
+
+  # Search the lower part of the vehicle box. Plates are on bumpers; the roof is not a
+  # plausible location and searching it invites a false positive on a rear window sticker.
+  apply_region_prior: true
+
+  # Below this the plate cannot be resolved regardless of what the detector claims.
+  min_vehicle_width_px: 40
+
+# --- stage 8: OCR ------------------------------------------------------------
+ocr:
+  # 24 px is the point below which cropping is pointless for any backend. Note the
+  # synthetic corpus marks plates illegible below 30 px, so a synthetic run with this floor
+  # hands the engine plates truth has already given up on -- ai/config.py warns about that
+  # pairing, and the warning is the whole reason the two numbers are allowed to differ.
+  min_plate_width_px: 24
+  pad_px: 2
+
+  # `variants` is not set here on purpose. Each variant is another forward pass per crop, so
+  # it is the number that sets the stage's cost, and each engine's default is the one that
+  # was measured for it. An overlay that wants more says so.
+
+# --- stage 9: temporal fusion ------------------------------------------------
+fusion:
+  # Keep the best four plate crops per track. Four because the marginal read after that
+  # almost never changes the consensus and every one costs an OCR pass; ranking by quality
+  # means the four kept are the four worth reading.
+  top_k: 4
+
+  # A track with no new detection for 800 ms is finished and its event is emitted. Shorter
+  # and a vehicle briefly occluded emits twice; longer and every event's latency rises by
+  # the difference, which is the number the demo is judged on.
+  track_idle_ms: 800
+
+  # Hard ceiling. A stationary vehicle at a red light would otherwise hold a track open
+  # indefinitely and never emit, so a parked car becomes a vehicle that was never seen.
+  max_track_duration_ms: 15000
+
+# --- stage 13: emission ------------------------------------------------------
+emit:
+  # file | http | null. The offline default writes JSONL, so a fresh clone with no backend
+  # running produces events rather than connection errors.
+  sink: file
+  path: runs/events.jsonl
+
+  # Used when sink is http. The URL comes from the environment because it differs per
+  # machine, and a wrong one here is a run that produces nothing and blames the network.
+  url: ${TRINETRA_INGEST_URL:-http://localhost:8000}
+  timeout_s: 5.0
+  max_attempts: 4
+
+  # Undelivered events land here rather than being dropped. A backend restart during a
+  # demo should cost latency, not sightings.
+  spool_dir: spool/
+
+snapshot:
+  enabled: true
+  root: artifacts/snapshots
+  quality: 85
+
+  # 1280 wide. Measured at 61 KB per event including the plate crop, which is 152 GB a day
+  # from thirty cameras -- so this number is a storage decision, not a display preference.
+  max_width: 1280
+  write_snapshot: true
+  write_plate_crop: true
+
+logging:
+  level: INFO
+
+  # Configs are logged at startup so a run is reproducible from its own log. Redaction is
+  # on, and turning it off writes the live stream password into a file that gets pasted
+  # into a chat window when something breaks.
+  redact_secrets: true
+
+metrics:
+  # The first two inferences include CUDA context creation and kernel autotuning. Counting
+  # them makes a fast pipeline look slow and, worse, makes the number depend on how many
+  # frames the run processed.
+  warmup_frames: 2
+  log_vram: true
