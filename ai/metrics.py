@@ -2,7 +2,7 @@
 
     counters = RunCounters(warmup_frames=2)
     counters.observe_frame(latency_ms=41.2)          # discarded while warming up
-    counters.plate_located_no_read += 1              # crops offered, nothing read
+    counters.plate_located_no_read += 1              # a vehicle whose plate never read
 
     card = ScoreCard.score(ground_truth, events, link=link_by_track)
     print(card.format_table())                       # all six buckets, always
@@ -598,12 +598,22 @@ class RunCounters:
     crops_rejected_quality: int = 0
     ocr_attempts: int = 0
 
+    # Tracks that produced at least one plate crop. The denominator for the counter below,
+    # and it has to be its own field rather than reusing crops_offered: a track offers many
+    # crops and only the top K are ever read, so crops_offered counts a population that
+    # never reached OCR. Dividing a per-track count by it would report an OCR failure rate
+    # of a few percent for a stage that failed on every single vehicle it was given.
+    tracks_with_plate_crops: int = 0
+
     # The counter ai/emit/builder.py's _plate_block defers to this module. A plate was
     # located, a crop was cut and offered to OCR, and nothing readable came back -- so the
     # event has no plate block and there is nowhere in the event to record that a plate was
     # nonetheless found. It matters because "located but unread" and "never located" are
     # different failures with different fixes: the first is an OCR problem, the second a plate
     # detector problem, and without this counter they are the same null in the output.
+    #
+    # Counted per track, not per crop, because that is the granularity the thing it explains
+    # has: one event, one plate block, present or absent.
     plate_located_no_read: int = 0
 
     events_built: int = 0
@@ -750,15 +760,21 @@ class RunCounters:
 
     @property
     def located_but_unread_rate(self) -> Optional[float]:
-        """plate_located_no_read as a share of crops offered.
+        """plate_located_no_read as a share of tracks that produced a plate crop.
 
         The ratio rather than the raw count, because the count alone cannot distinguish an OCR
         stage that fails on a tenth of what it is given from one that is being handed ten
-        times as many crops.
+        times as many vehicles.
+
+        Against tracks_with_plate_crops, not crops_offered. Both counters describe plates
+        that were located, but at different granularities: a vehicle in frame for three
+        seconds offers thirty crops and has four of them read. Dividing the per-track
+        numerator by the per-crop denominator would divide by roughly eight times too much,
+        and a stage that failed to read every vehicle it saw would report a 12% shortfall.
         """
-        if not self.crops_offered:
+        if not self.tracks_with_plate_crops:
             return None
-        return self.plate_located_no_read / self.crops_offered
+        return self.plate_located_no_read / self.tracks_with_plate_crops
 
     def stage_table(self) -> str:
         """Per-stage p50/p95. Empty stages are listed, not hidden."""
@@ -789,6 +805,7 @@ class RunCounters:
             "crops_offered": self.crops_offered,
             "crops_rejected_quality": self.crops_rejected_quality,
             "ocr_attempts": self.ocr_attempts,
+            "tracks_with_plate_crops": self.tracks_with_plate_crops,
             "plate_located_no_read": self.plate_located_no_read,
             "located_but_unread_rate": _round(self.located_but_unread_rate, 4),
             "events_built": self.events_built,
@@ -1103,9 +1120,10 @@ class BenchmarkReport:
                 )
         if self.counters is not None and self.counters.plate_located_no_read:
             notes.append(
-                f"{self.counters.plate_located_no_read} plate(s) located but never read, of "
-                f"{self.counters.crops_offered} crop(s) offered -- an OCR shortfall rather "
-                f"than a plate-detection one, and invisible in the events themselves."
+                f"{self.counters.plate_located_no_read} vehicle(s) had a plate located but "
+                f"never read, of {self.counters.tracks_with_plate_crops} that offered a crop "
+                f"-- an OCR shortfall rather than a plate-detection one, and invisible in the "
+                f"events themselves."
             )
         return notes
 
@@ -1288,7 +1306,7 @@ class BenchmarkReport:
                 unread = counters.located_but_unread_rate
                 lines.append(
                     f"  located but unread: {counters.plate_located_no_read} of "
-                    f"{counters.crops_offered} crop(s)"
+                    f"{counters.tracks_with_plate_crops} vehicle(s) with a plate crop"
                     + ("" if unread is None else f" ({unread * 100:.1f}%)")
                 )
             lines.append(counters.stage_table())
