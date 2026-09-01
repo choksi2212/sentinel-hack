@@ -62,6 +62,31 @@ track:
   track_buffer: 30
   min_hits: 3
 
+# --- stage 5: vehicle quality gate -------------------------------------------
+quality:
+  # The gate decides which tracks are worth spending plate detection and OCR on. Every
+  # number here trades recall against cost, and the cost is the 12 GB card: a gate that
+  # passes everything turns a 25 fps stream into a 6 fps one and the demo drops frames.
+
+  # 60 px of vehicle height. Below it the plate is under about 12 px wide at any plausible
+  # plate-to-vehicle ratio, which is under half the OCR floor -- so the crop would be cut,
+  # read, and thrown away. Raising this is the cheapest way to buy throughput; lowering it
+  # spends OCR passes on vehicles that cannot be read.
+  min_height_px: 60
+
+  # Detector confidence floor. Note this is inert under the shipped tracker: ByteTrack only
+  # starts a track from a detection above its own high_threshold of 0.5, so no track can
+  # arrive here below that. It becomes load-bearing the moment a config lowers that
+  # threshold or a different tracker is used, and it is set here so that day is a config
+  # change rather than a code change.
+  min_confidence: 0.35
+
+  # A vehicle already this tall and shrinking frame-on-frame is leaving: it showed its plate
+  # on an earlier frame at a better size, and paying for a plate pass now buys a worse crop
+  # of the same vehicle. 110 px because that is comfortably above min_height_px -- a gate
+  # that called a 60 px vehicle "departing" would refuse the only frames it ever had.
+  departing_height_px: 110
+
 # --- stage 6: plate detection ------------------------------------------------
 plate:
   confidence_threshold: 0.25
@@ -105,6 +130,19 @@ fusion:
   # Hard ceiling. A stationary vehicle at a red light would otherwise hold a track open
   # indefinitely and never emit, so a parked car becomes a vehicle that was never seen.
   max_track_duration_ms: 15000
+
+# --- stage 12: dedup ---------------------------------------------------------
+dedup:
+  # Suppression window for the same plate on the same camera. Two events inside it are one
+  # vehicle counted twice -- a track that broke and restarted behind an occlusion, or the
+  # same car in two lanes of a wide junction view.
+  #
+  # 10 seconds. The floor is set by fusion.track_idle_ms (800 ms): anything near that and a
+  # re-acquired track slips through as a second sighting. The ceiling is set by the road: at
+  # 10 s a vehicle doing 40 km/h has travelled 110 m and is out of frame, so a genuine
+  # second pass is a genuine second event. Widen this and a vehicle that legitimately
+  # circles back through the junction disappears from the map.
+  window_seconds: 10
 
 # --- stage 13: emission ------------------------------------------------------
 emit:
