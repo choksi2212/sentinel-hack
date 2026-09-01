@@ -96,6 +96,27 @@ class OCRRead:
         return self.variants_agreeing / self.variants_tried
 
 
+@dataclass(frozen=True)
+class FrameRef:
+    """Which frame a deferred plate crop came from. Identity only, no pixels.
+
+    Exists because the pipeline reads a track's crops when the track finishes rather
+    than when each frame arrives, and by then the frame is gone. A backend that needs
+    frame identity -- the oracle, to look up ground truth; the scripted stub, to index
+    its script -- gets it from this instead of from the FrameEnvelope it can no longer
+    see.
+
+    Deliberately not the envelope itself and deliberately not holding frame_bgr. Four
+    crops per track across eight open tracks would pin eight whole frames, which at
+    1920x1080 is 48 MB retained for four integers' worth of information.
+    """
+
+    camera_id: str
+    stream_session_id: str
+    frame_index: int
+    pts_ms: int
+
+
 @runtime_checkable
 class OCREngine(Protocol):
     """What the pipeline requires of an OCR backend."""
@@ -106,6 +127,18 @@ class OCREngine(Protocol):
 
     def read(
         self, frame_bgr: np.ndarray, candidate: PlateCandidate
+    ) -> Optional[OCRRead]: ...
+
+    def cut_crop(
+        self, frame_bgr: np.ndarray, candidate: PlateCandidate
+    ) -> Optional[np.ndarray]: ...
+
+    def read_crop(
+        self,
+        crop_bgr: Optional[np.ndarray],
+        candidate: PlateCandidate,
+        *,
+        frame_ref: Optional["FrameRef"] = None,
     ) -> Optional[OCRRead]: ...
 
     @property
@@ -184,6 +217,55 @@ class BaseOCR(ABC):
         self, frame_bgr: np.ndarray, candidate: PlateCandidate
     ) -> Optional[OCRRead]:
         """Read one plate. None means "no plate could be read", which is an answer."""
+        return self.read_crop(self.cut_crop(frame_bgr, candidate), candidate)
+
+    def cut_crop(
+        self, frame_bgr: np.ndarray, candidate: PlateCandidate
+    ) -> Optional[np.ndarray]:
+        """Exactly the crop read() would read, for a caller that defers the read.
+
+        The pipeline runs OCR on a track's top-K crops when the track finishes, not on
+        every sampled frame -- that is the whole reason ai/fusion keeps a top-K buffer.
+        By then the frame is gone, so the crop has to be cut at offer time and carried.
+        Cutting it here rather than in the pipeline is what keeps the deferred read
+        identical to the immediate one: the padding is this backend's pad_px, and a
+        caller that guessed 4 px where the backend uses 3 would produce reads that
+        cannot be compared against a non-deferred run.
+
+        Returns a VIEW. A view keeps the entire frame alive as its base, so a caller
+        that stores one for later must copy it -- four views per track across eight
+        tracks is eight whole frames pinned in memory, which at 1920x1080 is 48 MB of
+        invisible retention that looks like a leak in the decoder.
+        """
+        return self._crop_plate(frame_bgr, candidate.plate_bbox_xyxy)
+
+    def read_crop(
+        self,
+        crop_bgr: Optional[np.ndarray],
+        candidate: PlateCandidate,
+        *,
+        frame_ref: Optional["FrameRef"] = None,
+    ) -> Optional[OCRRead]:
+        """Read an already-cut, already-padded plate crop.
+
+        `frame_ref` restores frame identity for a deferred read, and omitting it when the
+        backend needs it is a silent failure rather than a loud one. OracleOCR resolves
+        ground truth per frame and ScriptedOCR indexes its script by frame_index; read at
+        flush time with no reference, both would answer against whichever frame happened
+        to be last, find no vehicle whose box matches, and return None. Every plate comes
+        back unread, every event carries plate: null, and nothing raises -- so the offline
+        run that exists to verify the pipeline reports a clean, plausible zero.
+
+        The width floor is checked against the candidate rather than the crop, and that
+        is deliberate: the candidate carries the plate's width in the scene, and the
+        crop's own width is that plus padding, or double it after an upscale variant.
+        Checking the crop would let a 20 px plate through as soon as somebody enlarged
+        it, which is the exact failure MIN_OCR_PLATE_WIDTH_PX exists to prevent -- the
+        characters are not in the data, and interpolation cannot put them there.
+        """
+        if frame_ref is not None:
+            self._begin_frame(frame_ref)
+
         self.plates_seen += 1
 
         if candidate.plate_width_px < self.min_plate_width_px:
@@ -191,12 +273,11 @@ class BaseOCR(ABC):
             self.refused_small += 1
             return None
 
-        crop = self._crop_plate(frame_bgr, candidate.plate_bbox_xyxy)
-        if crop is None or crop.size == 0:
+        if crop_bgr is None or crop_bgr.size == 0:
             self.crops_empty += 1
             return None
 
-        return self._read_variants(crop, candidate)
+        return self._read_variants(crop_bgr, candidate)
 
     def read_all(
         self, frame_bgr: np.ndarray, candidates: dict[int, PlateCandidate]
