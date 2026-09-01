@@ -76,6 +76,74 @@ MIN_LEGIBLE_PLATE_WIDTH_PX = 30
 # from the denominator.
 MIN_PLATE_VISIBLE_FRACTION = 0.9
 
+# --- traffic geometry ---------------------------------------------------------
+#
+# These five numbers decide whether a tracker can associate anything at all in a
+# synthetic clip, and getting them wrong produces the most misleading failure this
+# package can produce: a correct tracker measuring 0.000 recall on a scene no
+# tracker could ever follow. That happened, so the reasoning is written down.
+#
+# What matters is not pixels per generated frame, it is **pixels per EMITTED frame
+# divided by box width**. The sampler emits roughly one raw frame in
+# target_interval_ms / step_ms, so at 100 ms against a 40 ms generator step only
+# every 2.5th frame reaches the tracker, and the apparent jump is 2.5x the drawn
+# one. For two axis-aligned boxes of width W offset horizontally by dx,
+#
+#     IoU = (W - dx) / (W + dx)
+#
+# so dx = W/3 gives IoU 0.5 and dx = 0.54 W gives 0.3. Anything past dx = W is
+# exactly zero overlap, and no amount of Kalman filtering rescues a first
+# association from an IoU of zero.
+#
+# The first version of this generator moved every vehicle from -260 to width+260 --
+# 1800 px -- in 24 to 70 raw frames, at a pixel speed that did not depend on how
+# large the vehicle was drawn. Measured consequence, at 120 ms sampling:
+#
+#     emitted boxes   (0,507,90,573) -> (164,503,276,578) -> (337,498,463,582)
+#     displacement    ~170 px per emitted frame
+#     box width       ~90-140 px
+#     IoU             0.000, every pair, every vehicle
+#
+# Two independent errors, and both had to be fixed.
+#
+# 1. MAGNITUDE. 1800 px in 24-70 raw frames is 26-75 px per raw frame; the crossing
+#    took under three seconds of scene time. A vehicle taking 6-12 s to cross the
+#    field of view is what an urban junction actually shows -- 1800 px is roughly
+#    40 m of road, so 6 s is 24 km/h and 12 s is 12 km/h, an approach slowing for a
+#    signal. Crossing time is therefore specified in SECONDS and converted through
+#    step_ms, which also means it stays correct if the generator's frame rate
+#    changes. The bound that has to hold is
+#
+#        frames_visible - 1  >=  travel_px * sample_ratio / (0.54 * mean_height)
+#
+#    Worst case here is mean_height 64 px at sample_ratio 3, needing 105 frames;
+#    MIN_CROSSING_SECONDS 6.0 at 40 ms gives 149. A 1.4x margin, deliberately, so
+#    a caller sampling more coarsely than the pipeline does still gets a usable clip.
+#
+# 2. COUPLING, which is the more interesting one. Horizontal speed was linear in
+#    progress while apparent size grew -- so a distant 51 px-wide vehicle crossed
+#    the same pixels per frame as a near 235 px-wide one, and only the small ones
+#    were untrackable. Under real perspective both pixel speed and apparent size
+#    scale with 1/distance, so speed is proportional to height. Making that true
+#    (see _travelled_at) causes the height to cancel out of the bound above, and
+#    frame-to-frame IoU becomes constant along the whole trajectory instead of
+#    worst exactly where detection is already hardest. Measured after the fix, for
+#    the smallest vehicle the planner can produce: IoU 0.45 on its first pair of
+#    frames and 0.45 on its last.
+#
+# The remaining three numbers keep the scene physically possible. Direction follows
+# lane parity, so a lane is a carriageway and not a head-on collision; headway is a
+# time gap, so same-lane vehicles are separated by 30-65 frames rather than drawn on
+# top of each other; and four lanes rather than three because raising crossing time
+# from ~1.5 s to ~9 s tripled how long each vehicle is on screen.
+LANE_COUNT = 4
+LANE_MARGIN_PX = 260.0
+MIN_CROSSING_SECONDS = 6.0
+MAX_CROSSING_SECONDS = 12.0
+MIN_HEADWAY_SECONDS = 1.2
+MAX_HEADWAY_SECONDS = 2.6
+MAX_SPAWN_JITTER_FRAMES = 6
+
 
 @dataclass(frozen=True)
 class SyntheticFaults:
@@ -211,6 +279,9 @@ class SyntheticReplaySource(BaseMediaSource):
         # frames had been read, and a test that reads 50 frames would disagree
         # with one that reads 500.
         rng = random.Random(seed)
+        self._requested_vehicles = max(
+            1, int(round(total_frames * vehicles_per_100_frames / 100.0))
+        )
         self._vehicles = self._plan_vehicles(rng, vehicles_per_100_frames)
         self._background_seed = rng.randrange(1 << 30)
         self._cut_seed = rng.randrange(1 << 30)
@@ -282,16 +353,34 @@ class SyntheticReplaySource(BaseMediaSource):
     def _plan_vehicles(
         self, rng: random.Random, per_100_frames: float
     ) -> list[SyntheticVehicle]:
-        count = max(1, int(round(self.total_frames * per_100_frames / 100.0)))
-        lanes = 3
-        lane_height = self.height // (lanes + 1)
+        requested = max(1, int(round(self.total_frames * per_100_frames / 100.0)))
+        lane_height = self.height // (LANE_COUNT + 1)
+        travel_px = self.width + 2.0 * LANE_MARGIN_PX
+
+        # A per-lane random phase, so the first four vehicles do not all appear on
+        # frame 0 in a row.
+        next_free = [rng.randrange(0, 24) for _ in range(LANE_COUNT)]
 
         vehicles: list[SyntheticVehicle] = []
-        for vehicle_id in range(1, count + 1):
-            plate = self.plates[(vehicle_id - 1) % len(self.plates)]
-            lane = rng.randrange(lanes)
-            frames_visible = rng.randint(24, 70)
-            spawn = rng.randrange(0, max(1, self.total_frames - 5))
+        next_id = 1
+        for slot in range(requested):
+            lane = slot % LANE_COUNT
+            spawn = next_free[lane] + rng.randrange(0, MAX_SPAWN_JITTER_FRAMES + 1)
+            if spawn >= self.total_frames:
+                # More traffic was asked for than this many lanes can carry at a
+                # realistic headway. Placing it anyway would mean vehicles stacked
+                # on top of each other in one lane, which is not dense traffic --
+                # it is two vehicles occupying one space, and every tracking number
+                # measured on it would be measuring an impossible scene. Skipping is
+                # the honest answer; achievable count is reported in stats().
+                continue
+
+            seconds_visible = rng.uniform(MIN_CROSSING_SECONDS, MAX_CROSSING_SECONDS)
+            frames_visible = max(2, round(seconds_visible * 1000.0 / self.step_ms))
+            headway_seconds = rng.uniform(MIN_HEADWAY_SECONDS, MAX_HEADWAY_SECONDS)
+            next_free[lane] = spawn + max(
+                2, round(headway_seconds * 1000.0 / self.step_ms)
+            )
 
             # Approaching: the box grows as it crosses, so one vehicle's plate
             # passes through several width buckets during its own track. That is
@@ -301,15 +390,17 @@ class SyntheticReplaySource(BaseMediaSource):
             start_height = rng.randint(34, 70)
             end_height = start_height + rng.randint(60, 150)
 
-            left_to_right = rng.random() < 0.5
-            margin = 260.0
-            start_x = -margin if left_to_right else self.width + margin
-            end_x = self.width + margin if left_to_right else -margin
+            # Direction follows the lane rather than a coin flip. Two vehicles in
+            # one lane travelling opposite ways pass through each other, and a
+            # frame containing that is not a frame any camera will ever produce.
+            left_to_right = lane % 2 == 0
+            start_x = -LANE_MARGIN_PX if left_to_right else self.width + LANE_MARGIN_PX
+            end_x = self.width + LANE_MARGIN_PX if left_to_right else -LANE_MARGIN_PX
 
             vehicles.append(
                 SyntheticVehicle(
-                    vehicle_id=vehicle_id,
-                    plate=plate,
+                    vehicle_id=next_id,
+                    plate=self.plates[(next_id - 1) % len(self.plates)],
                     vehicle_type=VEHICLE_TYPES[rng.randrange(len(VEHICLE_TYPES))],
                     colour=(
                         rng.randint(40, 215),
@@ -325,6 +416,7 @@ class SyntheticReplaySource(BaseMediaSource):
                     end_height=end_height,
                 )
             )
+            next_id += 1
 
         vehicles.sort(key=lambda v: (v.spawn_frame, v.vehicle_id))
         return vehicles
@@ -442,6 +534,10 @@ class SyntheticReplaySource(BaseMediaSource):
                 "resolution": f"{self.width}x{self.height}",
                 "raw_frames_generated": self._raw_index,
                 "planned_vehicles": len(self._vehicles),
+                # Below requested means the asked-for density did not fit in
+                # LANE_COUNT lanes at a realistic headway. Worth seeing, because a
+                # recall figure quoted against the requested count would be wrong.
+                "requested_vehicles": self._requested_vehicles,
                 "faults_configured": [
                     name
                     for name, value in vars(self.faults).items()
@@ -521,6 +617,29 @@ def _height_at(vehicle: SyntheticVehicle, progress: float) -> int:
     )
 
 
+def _travelled_at(vehicle: SyntheticVehicle, progress: float) -> float:
+    """Fraction of the crossing completed, with pixel speed proportional to size.
+
+    Under perspective, both a vehicle's apparent width and its apparent speed scale
+    with 1/distance, so the two are proportional to each other. Integrating
+    dx/dp proportional to h(p) = h0 + (h1-h0)p over [0, p] and normalising by the
+    whole crossing gives the closed form below -- which is why this is arithmetic
+    rather than a per-frame accumulator, and why it stays exact when frames are
+    sampled unevenly.
+
+    The reason it matters is in the traffic-geometry note at the top of this module:
+    it makes displacement-per-frame divided by box width constant along the
+    trajectory, so a clip is either trackable throughout or not at all, instead of
+    being trackable only once vehicles are close.
+    """
+    start = float(vehicle.start_height)
+    growth = float(vehicle.end_height - vehicle.start_height)
+    mean_height = start + growth / 2.0
+    if mean_height <= 0.0:  # degenerate plan; fall back to constant speed
+        return progress
+    return (start * progress + growth * progress * progress / 2.0) / mean_height
+
+
 def _resolve_occlusion(truth: FrameTruth, owner: np.ndarray) -> None:
     """Downgrade plates that a later-drawn vehicle covered up.
 
@@ -559,7 +678,8 @@ def _draw_vehicle(
 ) -> Optional[VehicleTruth]:
     height_px = _height_at(vehicle, progress)
     width_px = int(height_px * 1.5)
-    centre_x = int(vehicle.start_x + (vehicle.end_x - vehicle.start_x) * progress)
+    travelled = _travelled_at(vehicle, progress)
+    centre_x = int(vehicle.start_x + (vehicle.end_x - vehicle.start_x) * travelled)
 
     x0 = centre_x - width_px // 2
     y0 = vehicle.lane_y - height_px // 2
