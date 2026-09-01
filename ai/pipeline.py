@@ -205,6 +205,20 @@ class Pipeline:
         self._last_pts_ms: int = 0
         self._frames = 0
 
+        # Per-stage milliseconds for the frame currently being processed, summed across
+        # however many times a stage runs within it -- one detect call, but four OCR reads.
+        # Cleared at the top of process_frame and handed to the counters at the bottom, only
+        # if observe_frame says the frame counted. Submitting as we go would seem simpler and
+        # would be subtly wrong: observe_stage applies the warm-up rule against
+        # frames_sampled, which this frame has not been added to yet, so frame 3's stages
+        # would be discarded while frame 3's total latency was kept and the stage table's n
+        # would sit one below the frame count for no visible reason.
+        #
+        # An instance attribute rather than a parameter threaded through five methods. Its
+        # lifetime is one frame and one pipeline drives one camera on one thread, which is the
+        # only reason that is safe.
+        self._frame_ms_by_stage: dict[str, float] = {}
+
         # Offline runs have no wallclock, and an event without observed_at is a 422. See
         # _observed_at for why this is an anchored replay timeline rather than time.now().
         self._replay_base = (replay_anchor or datetime.now(timezone.utc)).astimezone(timezone.utc)
@@ -217,6 +231,20 @@ class Pipeline:
         self.last_outcome: Optional[FrameOutcome] = None
 
     # ------------------------------------------------------------------------ lifecycle
+
+    def _mark(self, stage: str, started: float) -> float:
+        """Add this stage's elapsed time to the current frame and return a fresh mark.
+
+        Returns the new perf_counter reading so stages can be chained without a second call
+        per boundary: `t = self._mark("detect", t)`. perf_counter rather than monotonic --
+        monotonic on Windows is GetTickCount64 at roughly 15.6 ms granularity, so every stage
+        that takes under a tick would measure as exactly 0.0 and the table would report a
+        pipeline with no cost at all.
+        """
+        now = time.perf_counter()
+        stage_ms = (now - started) * 1000.0
+        self._frame_ms_by_stage[stage] = self._frame_ms_by_stage.get(stage, 0.0) + stage_ms
+        return now
 
     def load(self) -> None:
         """Load every model. Raises whatever the backend raises, unwrapped.
@@ -263,6 +291,7 @@ class Pipeline:
         started = time.perf_counter()
         outcome = FrameOutcome(frame_index=envelope.frame_index, pts_ms=envelope.pts_ms)
         events: list[EventEnvelope] = []
+        self._frame_ms_by_stage.clear()
 
         if envelope.camera_id != self.camera_id:
             raise ValueError(
@@ -277,10 +306,13 @@ class Pipeline:
         self._last_pts_ms = envelope.pts_ms
         observed_at = self._observed_at(envelope)
 
+        mark = time.perf_counter()
         detections = self.detector.detect_envelope(envelope)
+        mark = self._mark("detect", mark)
         tracks: list[TrackResult] = self.tracker.update(
             detections, frame_index=envelope.frame_index, pts_ms=envelope.pts_ms
         )
+        mark = self._mark("track", mark)
         outcome.tracks = len(tracks)
 
         gated: list[TrackResult] = []
@@ -300,11 +332,13 @@ class Pipeline:
                 reason = decision.reason or "unknown"
                 outcome.gate_rejected[reason] = outcome.gate_rejected.get(reason, 0) + 1
         outcome.gate_passed = len(gated)
+        mark = self._mark("gate", mark)
 
         candidates: dict[int, PlateCandidate] = {}
         if gated:
             candidates = self.plate_detector.detect_plates_envelope(envelope, gated)
         outcome.plates_found = len(candidates)
+        mark = self._mark("plate_detect", mark)
 
         by_id = {track.track_id: track for track in gated}
         plate_qualities: dict[int, float] = {}
@@ -322,12 +356,17 @@ class Pipeline:
             if quality is not None:
                 plate_qualities[track_id] = quality
                 outcome.crops_kept += 1
+        mark = self._mark("crop_quality", mark)
 
         self._stage_snapshots(envelope, tracks, plate_qualities)
+        mark = self._mark("snapshot", mark)
 
         finished = self.accumulator.take_finished(envelope.pts_ms)
         outcome.tracks_finished = len(finished)
         events.extend(self._finalize(finished, outcome))
+        # No umbrella mark around _finalize: it records ocr, fuse and emit itself, and a
+        # parent stage covering the same milliseconds would double-count them and break the
+        # one property that makes the table readable -- that the columns add up.
 
         outcome.latency_ms = (time.perf_counter() - started) * 1000.0
         # observe_frame increments frames_sampled. frames_seen is deliberately NOT touched
@@ -336,7 +375,16 @@ class Pipeline:
         # end of the run. Incrementing it per frame here would make the two counters equal
         # and quietly report an emit rate of 100% for a stage designed to drop nine frames in
         # ten.
-        self.counters.observe_frame(latency_ms=outcome.latency_ms, pts_ms=envelope.pts_ms)
+        counted = self.counters.observe_frame(
+            latency_ms=outcome.latency_ms, pts_ms=envelope.pts_ms
+        )
+        if counted:
+            # Gated on the same return value the frame total is gated on, so a stage sample
+            # and a frame sample always describe the same set of frames. The stage columns
+            # then sum to roughly the frame p50, which is what makes the table worth reading:
+            # it says which stage to spend the next hour on.
+            for stage, stage_ms in self._frame_ms_by_stage.items():
+                self.counters.observe_stage(stage, stage_ms)
         self.last_outcome = outcome
         return events
 
@@ -356,6 +404,11 @@ class Pipeline:
         log.info("flush(%s): finalizing %d open track(s)", reason, len(buffers))
         outcome = FrameOutcome(frame_index=-1, pts_ms=self._last_pts_ms)
         events = self._finalize(buffers, outcome)
+        # _finalize marked ocr/fuse/emit into _frame_ms_by_stage, and nothing submits them:
+        # this is not a frame, and folding a burst of thirty tracks finalized at once into the
+        # per-frame percentiles would put a p95 in the run summary that no frame ever took.
+        # process_frame clears the dict, so they cannot leak into the next one either.
+        self._frame_ms_by_stage.clear()
         return events
 
     # -------------------------------------------------------------------------- internals
@@ -530,8 +583,11 @@ class Pipeline:
                 )
                 continue
 
+            mark = time.perf_counter()
             observations = self._read_track(buffer)
+            mark = self._mark("ocr", mark)
             fused = fuse_observations(observations) if observations else None
+            mark = self._mark("fuse", mark)
 
             if buffer.has_plate_evidence:
                 self.counters.tracks_with_plate_crops += 1
@@ -545,6 +601,7 @@ class Pipeline:
                 self.events_suppressed += 1
                 outcome.events_suppressed += 1
                 self.snapshots.drop(key)
+                self._mark("emit", mark)
                 continue
 
             hit = bool(self.watchlist(normalized)) if (self.watchlist and normalized) else False
@@ -565,6 +622,11 @@ class Pipeline:
                 self.counters.events_with_plate += 1
             else:
                 self.counters.events_plate_null += 1
+            # Dedup, the watchlist lookup and the JPEG encode behind build_event_with_evidence
+            # all land here. The encode is the expensive one -- around 10 ms a still -- and it
+            # is worth seeing separately from OCR, because "the pipeline is slow" has been the
+            # snapshot writer twice as often as it has been a model.
+            self._mark("emit", mark)
         return events
 
     def _reportable(self, buffer: CropBuffer, peak_confidence: float) -> bool:
