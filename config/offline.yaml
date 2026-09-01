@@ -8,10 +8,20 @@
 # is correct; what it does not prove is that the models are good. config/benchmark.yaml is
 # for that.
 #
-# **This file is also the offline half of the source-independence acceptance test.** Running
-# this and then config/live.yaml must exercise the identical pipeline, with the only
-# difference being the source block. If a stage below has to change to make live work, the
-# invariant is broken and the fix belongs in ai/media, not here.
+# **This file is also the offline half of the source-independence acceptance test.** No stage
+# below knows where its frames came from: swapping `source.mode` between the five modes must
+# not require a line of code to change. If making a different source work ever requires a
+# change to detect/track/plate/ocr/fusion, the invariant has broken and the fix belongs in
+# ai/media, not here.
+#
+# Note what this file does *not* claim: that it differs from config/live.yaml only in `source:`.
+# It differs in the stages too, and that is a second axis, not a violation. This is the
+# *synthetic* configuration, so its four model stages are oracles that read the generator's
+# truth object -- which couples them to the synthetic source by construction, and the factory
+# refuses the combination out loud ("detector 'oracle' requires a source exposing
+# truth_for_envelope()"). The stage set that can actually cross a source boundary is the
+# weightless one -- motion, edge, template -- and tests/ drives that set across two modes to
+# prove the invariant, because oracle stages cannot.
 
 extends: base.yaml
 
