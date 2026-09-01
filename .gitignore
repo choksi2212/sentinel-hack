@@ -44,6 +44,10 @@ runs/
 benchmarks/out/
 spool/
 snapshots/
+# The SnapshotWriter's default root. Evidence stills are per-run output and are also the
+# one thing here that could contain a real registration plate from the live grid, so it is
+# named explicitly rather than left to the snapshots/ pattern above.
+artifacts/
 logs/
 *.log
 *.jsonl

@@ -124,6 +124,10 @@ class CropBuffer:
         if crop.quality > worst.quality:
             self.crops[-1] = crop
             self.crops.sort(key=lambda c: c.quality, reverse=True)
+            # Counts the crop that *left* the buffer, not the one offered -- which is
+            # why it increments on this path even though the new crop was kept. That
+            # keeps crops_offered == crops_kept + crops_rejected true at all times, so
+            # stats() can be read as a balance rather than three unrelated tallies.
             self.crops_rejected += 1
             return True
 
