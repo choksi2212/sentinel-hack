@@ -1,0 +1,93 @@
+# --- secrets -----------------------------------------------------------------
+# The live Sentinel stream password, the Postgres password and the model-hub
+# token live in .env, which is never committed. .env.example carries the key
+# names with empty values so a new machine knows what to fill in.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# --- model weights -----------------------------------------------------------
+# Checkpoints are large, are reproducible from a documented command, and would
+# make the repository unclonable over hotel wifi on demo day.
+weights/
+models/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.pdparams
+*.pdmodel
+*.safetensors
+
+# --- data --------------------------------------------------------------------
+# Recorded footage, frame dumps and crops. tests/fixtures/ is committed on
+# purpose and is the exception -- it is small JSON, not video.
+data/
+datasets/
+clips/
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.ts
+*.m3u8
+!tests/fixtures/**
+
+# --- run output --------------------------------------------------------------
+# Benchmarks, event spools and logs. A committed benchmark result is a claim
+# nobody can reproduce; the script that produces it is committed instead.
+runs/
+benchmarks/out/
+spool/
+snapshots/
+logs/
+*.log
+*.jsonl
+!tests/fixtures/*.jsonl
+
+# --- python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# --- node (dashboard) --------------------------------------------------------
+node_modules/
+.next/
+.nuxt/
+*.tsbuildinfo
+.pnpm-store/
+
+# --- editors and os ----------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- scratch -----------------------------------------------------------------
+# Debug renders and one-off check scripts. Useful while working, noise in a diff.
+_check_*
+_scratch_*
+scratch/
+tmp/
