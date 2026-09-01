@@ -66,6 +66,10 @@ _DETECTOR_KEYS: dict[str, frozenset[str]] = {
             "false_positives_per_frame",
             "confidence",
             "false_positive_confidence",
+            "confidence_full_width_px",
+            "min_confidence",
+            "low_confidence_rate",
+            "low_confidence_value",
             "seed",
         }
     ),

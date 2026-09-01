@@ -59,6 +59,15 @@ COCO_TO_VEHICLE_CLASS: dict[str, str] = {
     "bicycle": "motorcycle",
 }
 
+# Detections below this are dropped before anything downstream sees them.
+#
+# 0.35 is a reasonable *standalone* detector threshold and the wrong thing to run in
+# front of a two-stage tracker. ByteTrack's low band starts at 0.1, so this filter
+# removes the entire [0.1, 0.35) range that its second association stage exists to
+# consume, and the tracker becomes single-threshold without saying so. When a config
+# sets a tracker, its detector threshold should be at or below the tracker's
+# low_threshold; ai/track/base.py:check_detector_threshold states the invariant and
+# records what the misconfiguration costs, and scripts/validate_config.py enforces it.
 DEFAULT_CONFIDENCE_THRESHOLD = 0.35
 
 

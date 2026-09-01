@@ -129,6 +129,49 @@ class OracleDegradation:
     confidence: float = 0.92
     #: Confidence assigned to injected false positives.
     false_positive_confidence: float = 0.55
+    #: Box width at or above which a true detection scores the full `confidence`.
+    #: Below it, confidence falls linearly to `min_confidence` at zero width.
+    #: 0 disables the falloff entirely, which is the default so that an existing
+    #: measurement taken against a flat 0.92 does not silently change meaning.
+    #:
+    #: A flat confidence is the one thing about a stub detector that makes a whole
+    #: real mechanism untestable. ByteTrack's second association stage exists for
+    #: low-scoring boxes, and low scores are what a detector gives a small, distant
+    #: or partly occluded object -- so with every box at 0.92 the second stage
+    #: receives nothing, matches nothing, and an ablation that turns it off measures
+    #: no difference. That is not evidence the stage is useless; it is evidence the
+    #: fixture never posed the question. Measured on the flat model: 205 detections,
+    #: min 0.550, and 197 of them at 0.92 or above.
+    #:
+    #: The falloff is the honest shape. ai/detect/rfdetr.py measures single-pass
+    #: RF-DETR finding nothing at all below 60 px and tiling recovering 49
+    #: detections there, all at low scores -- confidence tracking apparent size is
+    #: what a real detector does.
+    confidence_full_width_px: int = 0
+    #: Floor for the size falloff. Below the low_threshold a tracker drops the box
+    #: entirely, so this being under it is meaningful: some boxes are simply lost.
+    min_confidence: float = 0.08
+    #: Fraction of vehicle-frames on which the detector is briefly unsure -- motion
+    #: blur, a wiper, a pedestrian crossing in front, spray off a bus.
+    #:
+    #: This is the only degradation that poses the question ByteTrack's second stage
+    #: was invented to answer, and it took a measurement to work out why. Stage 2
+    #: feeds low-confidence boxes to CONFIRMED tracks that stage 1 left unmatched, so
+    #: it needs a track whose confidence DROPS after it is already established. The
+    #: size falloff above does not produce that: a vehicle in this fixture approaches,
+    #: so its box only ever grows and its confidence only ever rises. Small boxes
+    #: occur at the start of a track, before any track exists to continue -- and
+    #: ByteTrack deliberately starts tracks only from high-confidence detections, so
+    #: nothing is there to match them against either. Result: stage 2 received
+    #: nothing, matched_low stayed 0 across every configuration, and turning the
+    #: stage off changed not one number.
+    #:
+    #: A mid-track dip is what actually happens on a junction camera, and it is the
+    #: case where losing the box costs a whole track.
+    low_confidence_rate: float = 0.0
+    #: Confidence during a dip. Between a tracker's low and high thresholds, so the
+    #: box survives to stage 2 rather than being discarded outright.
+    low_confidence_value: float = 0.3
     seed: int = 1
 
     @property
@@ -137,6 +180,18 @@ class OracleDegradation:
             self.miss_rate <= 0.0
             and self.jitter_px <= 0
             and self.false_positives_per_frame <= 0.0
+            and self.low_confidence_rate <= 0.0
+        )
+
+    def confidence_for(self, width_px: int) -> float:
+        """Confidence for a true detection of this apparent width."""
+        if self.confidence_full_width_px <= 0 or width_px >= self.confidence_full_width_px:
+            return self.confidence
+        if width_px <= 0:
+            return self.min_confidence
+        span = self.confidence - self.min_confidence
+        return self.min_confidence + span * (
+            width_px / float(self.confidence_full_width_px)
         )
 
 
@@ -175,6 +230,7 @@ class OracleDetector(BaseDetector):
         self.unresolved_frames = 0
         self.missed_on_purpose = 0
         self.false_positives_injected = 0
+        self.confidence_dips = 0
 
     def _load(self) -> None:
         return None
@@ -218,11 +274,21 @@ class OracleDetector(BaseDetector):
                 if bbox is None:
                     continue
 
+            confidence = degradation.confidence_for(bbox[2] - bbox[0])
+            if degradation.low_confidence_rate > 0.0 and _unit_hash(
+                degradation.seed, "dip", vehicle.plate, truth.frame_index
+            ) < degradation.low_confidence_rate:
+                # A dip, not a miss: the box is still where the vehicle is, the
+                # detector is just unsure. Keyed on plate+frame like the miss above,
+                # so the two degradations are independent and both reproducible.
+                confidence = min(confidence, degradation.low_confidence_value)
+                self.confidence_dips += 1
+
             detections.append(
                 DetectorResult(
                     bbox_xyxy=bbox,
                     class_name=vehicle.vehicle_type,
-                    confidence=degradation.confidence,
+                    confidence=round(confidence, 4),
                 )
             )
 
@@ -290,6 +356,7 @@ class OracleDetector(BaseDetector):
                 "unresolved_frames": self.unresolved_frames,
                 "missed_on_purpose": self.missed_on_purpose,
                 "false_positives_injected": self.false_positives_injected,
+                "confidence_dips": self.confidence_dips,
             }
         )
         return base
@@ -342,20 +409,55 @@ class MotionBlobDetector(BaseDetector):
     reported as "other" unless the geometry is unambiguous -- and per-class
     accuracy must never be quoted from this backend.
 
-    **Measured on the synthetic road scenes** (seed 42, 100 emitted frames, 281
-    ground-truth vehicle boxes, IoU 0.3 matching):
+    **Measured on the synthetic road scenes** (seed 42, 300 emitted frames at 120 ms,
+    466 ground-truth vehicle boxes, IoU 0.3 matching, default config):
 
-        recall     0.883      precision  0.947
-        latency    41 ms median, 53 ms p95 on 1280x720, pure numpy, one core
-        classes    other 242, motorcycle 19, truck 1
+        recall     0.785      precision  0.781
+        latency    59 ms median, 94 ms p95 on 1280x720, pure numpy, one core
+        classes    other 398, truck 46, motorcycle 22
 
-    The 33 misses break down as: 20 vehicles merged into a neighbour's box, 6
-    below the minimum width as they crossed the frame edge, 2 during the
-    background warm-up, 5 unexplained. Merging dominates, which is the honest
-    headline: this backend loses vehicles in traffic, exactly where it matters.
+    The 100 misses split 33 with *no* overlap at all against 67 that overlapped a
+    prediction but by less than 0.3 -- so two thirds of the failures are a vehicle the
+    detector saw and bounded badly, not a vehicle it missed. That is the merging
+    failure: two vehicles in adjacent lanes connect into one blob, and the union box
+    matches neither well enough to count. Of the 33 true absences, 12 are boxes under
+    30 px wide at the frame edge and one is the background warm-up.
 
-    41 ms per frame is roughly 40% of one core at the 10 fps sampling rate, so it
-    is affordable per camera and not affordable across thirty of them on one box.
+    **diff_threshold trades recall against precision, and it runs backwards.** Swept
+    on the same corpus, holding everything else at default:
+
+        diff_threshold 45   recall 0.785   precision 0.781   467 predictions
+        diff_threshold 30   recall 0.717   precision 0.963   347 predictions
+        diff_threshold 20   recall 0.586   precision 0.907   301 predictions
+
+    A *lower* threshold produces *fewer* detections, which is the opposite of the
+    obvious reading. Below about 30, background noise and vehicle interiors both clear
+    the bar, adjacent vehicles connect through the pixels between them, and several
+    become one. So the low-threshold setting does not detect more -- it merges more.
+    45 is kept because for a "something moved, roughly where" fallback a missed vehicle
+    is a missed sighting while a false positive is cheap: the tracker's min_hits=3
+    discards anything that does not persist for three frames, and a blob with no plate
+    in it produces no event. If this backend were ever used for counting rather than
+    for triage, 30 would be the right setting.
+
+    **min_fill_ratio is nearly inert and is kept only as a guard.** Sweeping it from
+    0.35 down to 0.15 moves recall 0.785 -> 0.788 and precision not at all. It was
+    expected to be the dominant gate -- a slow vehicle changes only 27-40% of the
+    pixels in its own box between frames, so a 0.35 floor looked decisive -- and the
+    measurement says otherwise, because the detector compares against an accumulated
+    background rather than against the previous frame. Recorded because the plausible
+    reasoning was wrong and the number is what settled it.
+
+    **These figures depend on the fixture's motion model, and an earlier version of
+    it made this backend look far better than it is.** When synthetic vehicles crossed
+    the frame in under three seconds, consecutive boxes did not overlap at all, every
+    pixel of every vehicle differed from the background, and recall measured 0.883.
+    That number described a scene no real camera sees. At realistic crossing speeds a
+    background subtractor gets a partial blob, and 0.785 is the honest figure.
+
+    59 ms per frame is around 59% of one core at the 100 ms sampling interval, so this
+    backend is affordable on one camera and not affordable on thirty of them on one
+    box. It is a per-edge-device fallback, not a way to run the whole grid on CPUs.
 
     **Where it fails, stated rather than discovered.**
       - Two vehicles that overlap in the frame merge into one box. This is the
