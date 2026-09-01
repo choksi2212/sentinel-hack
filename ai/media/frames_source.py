@@ -37,6 +37,55 @@ DEFAULT_FRAME_INTERVAL_MS = 40
 _TRAILING_NUMBER = re.compile(r"(\d+)(?=\D*$)")
 
 
+def _pick_decoder() -> Any:
+    """Return a `path -> BGR ndarray | None` reader, preferring OpenCV.
+
+    OpenCV first because imread returns BGR already and is the faster of the two, and every
+    other adapter in this package needs it anyway. Pillow second because this adapter is the
+    one that genuinely does not: a directory of PNGs needs an image decoder, not a video
+    codec, and requiring a 60 MB wheel to replay twenty extracted hard cases is what turns
+    "reproduce this misread" into an afternoon.
+
+    That matters more than it looks. config/offline.yaml claims to work on a fresh clone with
+    nothing installed but the dependencies -- and ai/README.md hands the dependency list to
+    the backend lane, so every hard requirement removed here is one fewer thing that has to
+    be installed on a machine that will never touch a camera.
+
+    Both are optional and the failure names both, because "No module named 'cv2'" from inside
+    a frame reader sends people to install OpenCV when Pillow would have done.
+    """
+    try:
+        import cv2
+
+        return cv2.imread
+    except ImportError:
+        pass
+
+    try:
+        from PIL import Image
+    except ImportError:
+        raise RuntimeError(
+            "frames mode needs an image decoder and found neither OpenCV nor Pillow. "
+            "Install either: `pip install pillow` is the smaller of the two."
+        ) from None
+
+    def read(path: str) -> Optional[np.ndarray]:
+        try:
+            with Image.open(path) as handle:
+                # convert() before asarray, so a palette PNG or a 16-bit TIFF becomes the
+                # HxWx3 uint8 every downstream stage indexes into rather than an array whose
+                # shape depends on how the file was exported.
+                rgb = np.asarray(handle.convert("RGB"))
+        except Exception:  # noqa: BLE001 - matches cv2.imread: unreadable file, not a crash
+            return None
+        # RGB to BGR. The contract says BGR (OpenCV order) and a stage that measures exposure
+        # or draws a crop does not ask which decoder produced the array; swapped channels
+        # would show up as a quality score that is subtly wrong and never as an error.
+        return np.ascontiguousarray(rgb[:, :, ::-1])
+
+    return read
+
+
 class FrameSequenceSource(BaseMediaSource):
     """Emits FrameEnvelopes from an ordered directory of images."""
 
@@ -78,13 +127,15 @@ class FrameSequenceSource(BaseMediaSource):
         self._cursor = 0
         self._decoded = 0
         self._unreadable: list[str] = []
+        # Chosen at open(), not here: a source is constructed by the factory before anything
+        # decides to run it, and refusing to construct because Pillow is missing would make
+        # `validate_config.py` fail on a machine that only ever needed to check the YAML.
+        self._decode: Any = None
 
     # ------------------------------------------------------------------ capture
 
     def _open_capture(self) -> None:
-        import cv2  # lazy: only imread is needed, and only when actually reading
-
-        self._cv2 = cv2
+        self._decode = _pick_decoder()
 
         if not os.path.isdir(self.directory):
             raise NotADirectoryError(f"frame directory not found: {self.directory}")
@@ -106,7 +157,7 @@ class FrameSequenceSource(BaseMediaSource):
             index = self._cursor
             self._cursor += 1
 
-            frame = self._cv2.imread(os.path.join(self.directory, name))
+            frame = self._decode(os.path.join(self.directory, name))
             if frame is None:
                 # A truncated or non-image file. Record it and move on -- one bad
                 # file must not abort a 300-frame fixture, but it must not vanish
