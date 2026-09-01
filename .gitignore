@@ -91,3 +91,11 @@ _check_*
 _scratch_*
 scratch/
 tmp/
+
+# --- working material, not project documentation ------------------------------
+# Exported planning conversations and the superseded pre-audit .docx plans. The
+# authoritative versions are the REFINED_v2 markdown files in docs/, and having
+# two copies of a plan in one repository means someone builds against the wrong
+# one. .docx is also opaque to review -- a diff of a binary tells nobody anything.
+chat-context.md
+*.docx

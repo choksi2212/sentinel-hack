@@ -1,0 +1,28 @@
+# Normalise line endings. Four machines, at least two operating systems, and a
+# Linux CI runner. Without this, a Windows checkout commits CRLF, the runner sees
+# every line of a file as changed, and a one-line review becomes a 400-line diff.
+* text=auto eol=lf
+
+# Windows-only scripts must keep CRLF or cmd.exe mis-parses them.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary. Never diffed, never line-ending-converted -- conversion corrupts them.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.mp4 binary
+*.onnx binary
+*.pt binary
+*.pth binary
+*.pdparams binary
+*.docx binary
+*.pdf binary
+
+# Generated or vendored files, collapsed in review so real changes stay visible.
+package-lock.json linguist-generated=true
+pnpm-lock.yaml linguist-generated=true
+
+# Fixtures are hand-written and normative -- Contracts section 9. They are the
+# opposite of generated and must always be reviewed line by line.
+tests/fixtures/** -linguist-generated
