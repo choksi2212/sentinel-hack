@@ -72,6 +72,7 @@ from typing import Any, Callable, Optional
 from ai import PIPELINE_VERSION
 from ai.config import AppConfig, ConfigError, load_config, load_env
 from ai.contracts.event import EventEnvelope, ModelProvenance
+from ai.contracts.timebase import parse_iso
 from ai.detect import build_detector
 from ai.dedup.key import SightingDeduper
 from ai.emit.http_sink import FileEventSink, HttpEventSink, NullEventSink
@@ -100,6 +101,10 @@ EXIT_CONFIG = 2
 _GATE_KEYS = ("min_height_px", "min_confidence", "departing_height_px")
 _DEDUP_KEYS = ("window_seconds",)
 _FUSION_KEYS = ("top_k", "track_idle_ms", "max_track_duration_ms")
+
+# Keys accepted in the `run:` section. Free-text provenance plus the replay anchor, which is
+# the only one that changes what the pipeline computes.
+_RUN_KEYS = ("name", "notes", "replay_anchor")
 
 # The environment variable holding the ingest bearer token. Named here rather than inlined so
 # .env.example and this file cannot drift apart silently.
@@ -186,6 +191,30 @@ def _sub_config(config: AppConfig, name: str, allowed: tuple[str, ...]) -> dict[
             f"{name}: unknown key(s) {unknown}. Accepted here: {list(allowed)}."
         )
     return block
+
+
+def _replay_anchor(config: AppConfig) -> Optional[datetime]:
+    """Read `run.replay_anchor` if the config pins one.
+
+    Offline events derive observed_at from an anchor plus each frame's PTS (see
+    Pipeline._observed_at). Left unpinned the anchor is the moment the run started, so two
+    replays of the same clip produce different timestamps and cannot be diffed. Pinning it
+    makes a rerun byte-identical, which is what turns "the benchmark is reproducible" into a
+    claim someone can check rather than one they have to take on trust.
+
+    An unparseable value raises. Falling back to now() would produce a run that looks pinned
+    and is not, and the diff against the previous run would then show every event changed for
+    a reason no one could find.
+    """
+    raw = _sub_config(config, "run", _RUN_KEYS).get("replay_anchor")
+    if raw in (None, ""):
+        return None
+    try:
+        return parse_iso(str(raw))
+    except ValueError as exc:
+        raise ConfigError(
+            f"run.replay_anchor {raw!r} is not a timezone-aware ISO instant: {exc}"
+        ) from exc
 
 
 def build_sink(config: AppConfig, env: dict[str, str]) -> Any:
@@ -324,6 +353,7 @@ def build_pipeline(
         snapshots=build_snapshot_writer(config.section("snapshot")),
         counters=counters,
         watchlist=watchlist,
+        replay_anchor=_replay_anchor(config),
     )
     stages = {
         "detector": detector,

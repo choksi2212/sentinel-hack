@@ -35,6 +35,13 @@ run:
   name: benchmark
   notes: "MANUAL STEP: set source.path and record the clip's ground-truth label file."
 
+  # Pinned here and nowhere else, because this is the config whose numbers get quoted.
+  # Offline observed_at is this anchor plus each frame's PTS, so pinning it makes two runs of
+  # the same clip byte-identical and a regression a diff rather than an argument. It is a
+  # replay origin, not a claim about when the footage was shot -- source_pts_ms carries the
+  # real position in the clip, and the clip's own recording time belongs in its label file.
+  replay_anchor: "2026-09-01T00:00:00+05:30"
+
 source:
   mode: file
 

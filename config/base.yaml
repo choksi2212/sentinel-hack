@@ -34,6 +34,16 @@ run:
   name: base
   notes: ""
 
+  # An ISO instant with an offset, or empty. Offline events have no wallclock -- stamping
+  # arrival time onto recorded footage would be a false claim -- so observed_at is derived
+  # from this anchor plus each frame's own PTS. Empty means "the moment this run started",
+  # which is correct for a demo and wrong for a benchmark: two replays of the same clip then
+  # produce different timestamps and cannot be diffed. Pin it before quoting a number twice.
+  #
+  # Declared here even though it is empty, because --set only overwrites keys that already
+  # exist: a value absent from this file cannot be reached from the command line at all.
+  replay_anchor: ""
+
 # --- stage 3: vehicle detection ----------------------------------------------
 detect:
   # 0.05, not the 0.35 that reads as a sensible default -- and this is the single most
