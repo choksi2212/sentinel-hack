@@ -23,16 +23,29 @@ import numpy as np
 # Correlation between consecutive emitted frames below which we call it a cut.
 #
 # Measured on the synthetic road scenes, 64 bins, 160 px long edge:
-#     same scene, 100 ms apart, traffic moving      0.99+
-#     different daytime road, different seed        0.72 - 0.95
-#     unrelated scene (night, indoor)               0.00 - 0.01
 #
-# 0.70 sits just under the "different but similar scene" band, which makes this
-# detector deliberately conservative: it fires on drastically different content
-# and not on a camera re-aimed at a comparable-looking road. Loosening it to
-# catch that case would put it inside the range that ordinary traffic and
-# lighting drift can reach, and a session rotating spuriously destroys tracking
-# far more reliably than a missed re-aim does.
+#     same scene, consecutive emitted frames         1.0000
+#     same scene, 40 emitted frames apart            0.9983
+#     same scene, 59 emitted frames apart            0.9933
+#     different road scene (10 seed pairs)           0.30 - 0.93
+#     unrelated content (uniform noise)              0.27
+#     black frame vs blown-out frame                -0.02
+#
+# What those numbers do and do not license. The margin against SPURIOUS firing is large and
+# that is the number that matters most: a whole scene's worth of traffic turning over moves
+# the correlation from 1.0000 to 0.9933, which is still 0.29 clear of the threshold. A session
+# rotating on ordinary traffic would destroy tracking on every camera at once, so this is the
+# direction the margin has to be generous in, and it is.
+#
+# The other direction is weaker than it looks. Two visually comparable road scenes measured
+# anywhere from 0.30 to 0.93 across ten pairs, and five of the ten fell below 0.70 -- so this
+# threshold does NOT reliably distinguish "camera re-aimed at a similar-looking junction" from
+# "camera re-aimed at something unrelated". It fires on about half of them. That is
+# under-detection of re-aims rather than over-detection of cuts, which is the safe way round:
+# a missed re-aim costs the ids in one scene, a spurious rotation costs every id everywhere.
+# Anyone tempted to raise this to catch the other half should know they are trading against the
+# 0.9933 figure above, and that ordinary lighting drift over a longer window has not been
+# measured at all.
 #
 # KNOWN LIMITATION, and the reason this is one of two signals rather than the
 # only one: a Sentinel loop that restarts the SAME clip produces a near-identical
@@ -66,7 +79,34 @@ class DiscontinuityDetector:
         bins: int = HISTOGRAM_BINS,
         long_edge: int = DOWNSCALE_LONG_EDGE,
     ) -> None:
-        self.threshold = threshold
+        # A Pearson correlation, so strictly inside (-1, 1). Checked here rather than at the
+        # config layer because this class owns what the number means, and every route to it --
+        # YAML, --set, a Python caller -- has to be covered by one check.
+        #
+        # Both ends are refused for the same reason: they disable the detector while looking
+        # like they configure it. At or above 1.0 nothing correlates highly enough, so every
+        # emitted frame rotates the session, every track is cut to one frame, and the run emits
+        # nothing. At or below -1.0 nothing ever fires and a loop cut goes unnoticed. If the
+        # detector is genuinely unwanted, `detect_discontinuity: false` says so honestly.
+        #
+        # The units trap is named in the message because it is the mistake that actually
+        # happened: config/offline.yaml and config/live.yaml both carried 2000, a millisecond
+        # figure meant for a PTS jump, and it was silently discarded on the way here.
+        if not isinstance(threshold, (int, float)) or isinstance(threshold, bool):
+            raise ValueError(
+                f"discontinuity threshold must be a number, got {threshold!r}"
+            )
+        if not -1.0 < float(threshold) < 1.0:
+            raise ValueError(
+                f"discontinuity threshold {threshold!r} is out of range: it is a Pearson "
+                "correlation between consecutive frame histograms and must be strictly "
+                "inside (-1, 1). A value of 1.0 or more rotates the session on every frame "
+                "and the run emits nothing; -1.0 or less never fires, so use "
+                "detect_discontinuity=False instead. If this was a duration in milliseconds, "
+                f"it belongs in ai/media/pts.py, not here (default "
+                f"{DISCONTINUITY_CORRELATION_THRESHOLD})"
+            )
+        self.threshold = float(threshold)
         self.bins = bins
         self.long_edge = long_edge
         self._previous: Optional[np.ndarray] = None
@@ -145,11 +185,20 @@ def _to_gray_small(frame_bgr: np.ndarray, long_edge: int) -> np.ndarray:
 def _correlate(a: np.ndarray, b: np.ndarray) -> float:
     """Pearson correlation between two normalized histograms.
 
-    Returns 1.0 when either histogram is constant and they are equal, 0.0 when
-    one is constant and they differ. A constant histogram means a uniform frame
-    -- a fully black or blown-out image -- where correlation is undefined; the
-    equality fallback keeps a run of black frames from being reported as a
-    scene change on every frame.
+    Correlation is undefined when either histogram has zero variance, so that case falls back
+    to an equality test: 1.0 if the two are identical, 0.0 otherwise.
+
+    Zero variance means every one of the 64 bins holds an exactly equal share -- a frame whose
+    intensities are perfectly uniformly distributed. It is NOT the fully-black or blown-out
+    frame that an earlier version of this comment claimed: a black frame puts every pixel in
+    bin 0, which is the highest-variance histogram available (measured 0.0154), and even a
+    clean 0-255 gradient only reaches 1.7e-05. So this branch is effectively unreachable from
+    real footage and exists to keep the arithmetic total rather than to handle a known case.
+
+    A run of black frames stays quiet for a different reason than that earlier comment gave:
+    identical histograms correlate at exactly 1.0 through the ordinary path, no fallback
+    involved. Black against blown-out measures -0.02 and fires, which is correct -- the camera
+    has stopped showing the scene either way.
     """
     a_var, b_var = float(np.var(a)), float(np.var(b))
     if a_var == 0.0 or b_var == 0.0:

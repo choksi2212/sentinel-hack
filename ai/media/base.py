@@ -93,7 +93,15 @@ class BaseMediaSource(ABC):
         self._sampler = PtsSampler(target_interval_ms)
         self._pts = PtsValidator()
         self._discontinuity = DiscontinuityDetector(
-            **({"threshold": discontinuity_threshold} if discontinuity_threshold else {})
+            # `is not None`, not truthiness. A threshold of 0.0 is a real (if unwise) value and
+            # truthiness silently replaced it with the 0.70 default -- a config that said one
+            # thing while the detector did another, which is the failure this whole module
+            # exists to make impossible for streams.
+            **(
+                {}
+                if discontinuity_threshold is None
+                else {"threshold": discontinuity_threshold}
+            )
         )
         self._reconnect = reconnect or ReconnectPolicy()
 

@@ -102,6 +102,7 @@ class FrameSequenceSource(BaseMediaSource):
         speed: Optional[float] = None,
         target_interval_ms: int = TARGET_INTERVAL_MS,
         detect_discontinuity: bool = False,
+        discontinuity_threshold: Optional[float] = None,
         max_frames: Optional[int] = None,
     ) -> None:
         # Discontinuity detection defaults OFF here. A hand-picked directory of
@@ -111,6 +112,7 @@ class FrameSequenceSource(BaseMediaSource):
             camera_id,
             target_interval_ms=target_interval_ms,
             detect_discontinuity=detect_discontinuity,
+            discontinuity_threshold=discontinuity_threshold,
             max_frames=max_frames,
             pacer=ReplayPacer(speed) if speed is not None else None,
         )

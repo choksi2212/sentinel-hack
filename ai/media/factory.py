@@ -127,10 +127,33 @@ def build_source(
 
     shared = {
         key: config[key]
-        for key in ("target_interval_ms", "detect_discontinuity", "max_frames")
+        for key in (
+            "target_interval_ms",
+            "detect_discontinuity",
+            "discontinuity_threshold",
+            "max_frames",
+        )
         if key in config
     }
 
+    # ValueError from a constructor is a malformed config value, not a bug: every source
+    # constructor validates its own numbers and that is the only way they can refuse one.
+    # Relabelled so a caller that catches SourceConfigError sees it -- scripts/validate_config.py
+    # reports anything else as "could not construct", a label reserved for non-config failures
+    # like a missing clip, which would describe a bad threshold as the wrong kind of problem.
+    try:
+        return _construct(mode, resolved_camera, config, shared)
+    except ValueError as exc:
+        raise SourceConfigError(f"source mode {mode!r}: {exc}") from exc
+
+
+def _construct(
+    mode: str,
+    resolved_camera: str,
+    config: Mapping[str, Any],
+    shared: dict[str, Any],
+) -> BaseMediaSource:
+    """Per-mode construction. Split out so one try/except covers every mode."""
     if mode == "file":
         return VideoFileSource(
             resolved_camera,

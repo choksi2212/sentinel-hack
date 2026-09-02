@@ -56,7 +56,11 @@ source:
   # boundary hands ByteTrack a frame where every vehicle teleported -- it recovers by
   # reassigning ids, which merges the vehicles from before the cut with the ones after.
   detect_discontinuity: true
-  discontinuity_threshold: 2000
+
+  # No discontinuity_threshold here either, and for this file the paragraph below is the
+  # reason: live footage does not get its own thresholds. 0.70 is a measured correlation
+  # (ai/media/discontinuity.py), and if the live grid genuinely needs a different one, that
+  # is a finding to record rather than a number to quietly tune here.
 
 # --- real models -------------------------------------------------------------
 # Every stage is the shipping one, and every stage names its backend and its own keys. Note

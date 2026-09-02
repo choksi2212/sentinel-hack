@@ -48,12 +48,14 @@ class VideoFileSource(BaseMediaSource):
         speed: Optional[float] = None,
         target_interval_ms: int = TARGET_INTERVAL_MS,
         detect_discontinuity: bool = True,
+        discontinuity_threshold: Optional[float] = None,
         max_frames: Optional[int] = None,
     ) -> None:
         super().__init__(
             camera_id,
             target_interval_ms=target_interval_ms,
             detect_discontinuity=detect_discontinuity,
+            discontinuity_threshold=discontinuity_threshold,
             max_frames=max_frames,
             pacer=ReplayPacer(speed) if speed is not None else None,
         )

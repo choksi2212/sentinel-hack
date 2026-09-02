@@ -60,6 +60,7 @@ class ThreadedLiveSource(BaseMediaSource):
         read_timeout_seconds: float = DEFAULT_READ_TIMEOUT_SECONDS,
         target_interval_ms: int = TARGET_INTERVAL_MS,
         detect_discontinuity: bool = True,
+        discontinuity_threshold: Optional[float] = None,
         reconnect: Optional[ReconnectPolicy] = None,
         max_frames: Optional[int] = None,
     ) -> None:
@@ -67,6 +68,7 @@ class ThreadedLiveSource(BaseMediaSource):
             camera_id,
             target_interval_ms=target_interval_ms,
             detect_discontinuity=detect_discontinuity,
+            discontinuity_threshold=discontinuity_threshold,
             reconnect=reconnect,
             max_frames=max_frames,
         )

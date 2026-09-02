@@ -53,7 +53,16 @@ source:
   # numbering at 1, so without the session boundary two unrelated vehicles merge into one
   # track. That has to be exercised where it is cheap to debug, not first discovered live.
   detect_discontinuity: true
-  discontinuity_threshold: 2000
+
+  # discontinuity_threshold is deliberately not set. It is a Pearson correlation between
+  # consecutive frame histograms, and 0.70 is measured rather than chosen -- ai/media/
+  # discontinuity.py records the bands it separates. This file has no reason to differ from
+  # the measurement, and a config that restates a default is a config that silently stops
+  # tracking it.
+  #
+  # It carried 2000 until it was caught: a millisecond figure meant for a PTS jump, in a
+  # parameter that tops out at 1.0. It did nothing at all, because the factory accepted the
+  # key and then dropped it. Both halves are fixed, so the same value now refuses to load.
 
 # --- oracle stages -----------------------------------------------------------
 # Every stage below reads ground truth from the synthetic frame and degrades it by a
