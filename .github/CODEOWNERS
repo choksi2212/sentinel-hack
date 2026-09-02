@@ -1,0 +1,52 @@
+# CODEOWNERS — TRINETRA
+#
+# The ownership matrix from docs/REPOSITORY.md §5 and §5.1, encoded so GitHub
+# requests the right reviewer automatically. That document is authoritative: if
+# this file and §5 ever disagree, §5 wins and this file is the bug to fix.
+#
+# ─── FILL IN BEFORE THIS ENFORCES ───────────────────────────────────────────
+# The @handles below are placeholders — the team's real GitHub usernames were
+# not known when this was written. GitHub treats an unknown owner as an invalid
+# rule and does NOT enforce it, so review is only requested once these are real.
+# Replace every @FILL-IN-*-handle with the actual username, then open the repo's
+# "Code owners" settings and confirm each path resolves to a real user.
+# ─────────────────────────────────────────────────────────────────────────────
+#
+# Matching is last-wins: the final pattern that matches a file decides its
+# owner, so the most specific rules are placed last (e.g. /docs/demo/ overrides
+# /docs/).
+
+# Default owner — the architect, who owns cross-lane coherence and every
+# root-level file not claimed below (§5, §5.2 tie-break).
+*                                   @FILL-IN-manas-handle
+
+# ── AI lane — Manas / Niklaus (§5) ───────────────────────────────────────────
+/ai/                                @FILL-IN-manas-handle
+/config/                            @FILL-IN-manas-handle
+/tests/fixtures/                    @FILL-IN-manas-handle
+/docs/                              @FILL-IN-manas-handle
+/.github/                           @FILL-IN-manas-handle
+/.gitignore                         @FILL-IN-manas-handle
+/README.md                          @FILL-IN-manas-handle
+
+# ── Backend & data platform — Mihir (§5, §5.1) ───────────────────────────────
+# .env.example and requirements.txt are Mihir's per §5.1; other lanes append via
+# PR, never by direct edit.
+/backend/                           @FILL-IN-mihir-handle
+/docker-compose.yml                 @FILL-IN-mihir-handle
+/requirements.txt                   @FILL-IN-mihir-handle
+/.env.example                       @FILL-IN-mihir-handle
+/scripts/sync_cameras.py            @FILL-IN-mihir-handle
+/scripts/seed_*.py                  @FILL-IN-mihir-handle
+
+# ── CV data & benchmarking — Akshat (§5) ─────────────────────────────────────
+/datasets/                          @FILL-IN-akshat-handle
+/benchmarks/                        @FILL-IN-akshat-handle
+/scripts/synth/                     @FILL-IN-akshat-handle
+/scripts/check_split_leakage.py     @FILL-IN-akshat-handle
+/scripts/freeze_manifest.py         @FILL-IN-akshat-handle
+
+# ── Frontend & demo — Parth (§5) ─────────────────────────────────────────────
+# Placed after /docs/ so the demo subtree overrides the AI-lane docs default.
+/frontend/                          @FILL-IN-parth-handle
+/docs/demo/                         @FILL-IN-parth-handle

@@ -1,0 +1,63 @@
+# CI — TRINETRA
+#
+# The lane-scoped pipeline from docs/REPOSITORY.md §14. That spec defines four
+# jobs — contracts, backend, frontend, data — a cross-lane net plus one gate per
+# lane, each path-filtered so a frontend PR never waits on backend tests.
+#
+# This repository currently carries only the AI lane, so this file ships the two
+# jobs that have code to run against:
+#
+#   contracts  the cross-lane safety net (§14.1's "runs on everything"): the
+#              fixtures every lane encodes against must still satisfy the schemas.
+#   ai         the AI lane's own gate — peer of §14's backend / frontend / data —
+#              the full worker suite plus the repo-wide guard.
+#
+# backend / frontend / data join verbatim from §14 as those lanes land; each is
+# owned by its lane and added by PR to the .github owner (§5). They are kept out
+# until then on purpose: backend/, frontend/ and datasets/ do not exist yet, and
+# a gate that is red from birth is one people quickly learn to ignore.
+#
+# Dependencies: requirements.txt is the backend lane's single pinned environment
+# (§5.1) and is not present yet, so these jobs install the AI lane's documented
+# runtime set directly (see ai/README.md → "Core" + "Tracking"). That list
+# collapses to `pip install -r requirements.txt` once the backend lane owns it.
+# The heavy model backends (torch, cv2, onnxruntime, paddleocr, transformers)
+# are lazily imported and exercised through scripted fakes and oracles, so the
+# suite needs none of them installed.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  contracts:
+    # The cross-lane safety net (§14.1): runs on every PR, no path filter, so a
+    # change in any lane that breaks a shared fixture is caught here first.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install contract-test dependencies
+        run: pip install numpy PyYAML requests Pillow scipy pytest
+      - name: Contract fixtures vs schemas
+        run: python -m pytest tests/test_contracts.py -q
+
+  ai:
+    # The AI lane's gate: the full worker suite, which includes the repo-wide
+    # guard in tests/test_no_attribution.py — no authorship marker and no access
+    # token may appear in any tracked file. `git ls-files` (what the guard walks)
+    # is exactly what actions/checkout lays down, so the guard runs unchanged.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install AI worker dependencies
+        run: pip install numpy PyYAML requests Pillow scipy pytest
+      - name: Full worker suite + repo-wide guard
+        run: python -m pytest -q
