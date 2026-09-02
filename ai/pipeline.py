@@ -528,7 +528,6 @@ class Pipeline:
                 vehicle_bbox_xyxy=track.bbox_xyxy,
                 vehicle_class=track.class_name,
                 vehicle_confidence=track.confidence,
-                frame_quality=quality,
             ),
         )
         if not kept:

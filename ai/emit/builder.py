@@ -43,11 +43,13 @@ from ai.fusion.accumulator import CropBuffer, TrackCrop
 from ai.fusion.consensus import fuse_observations
 from ai.normalize.matching import match_state_for
 
-# Fallback when a track produced no vehicle box at all. Should not happen -- note_track
-# records a box on the first frame -- but a zero box is a visibly wrong value that shows
-# up in the UI as a degenerate rectangle, whereas a guessed box looks plausible and is
-# not. Preferring the obviously-broken output over the plausibly-broken one is the same
-# choice plate: null makes.
+# Fallback when a track produced no vehicle box at all. Unreachable through the pipeline --
+# note_track records a box on the first frame, and a buffer with no note_track call has no
+# observed_at either, so build_event raises on that first. Kept, and kept as zeros, because
+# a zero box does not survive validate(): _bbox_errors rejects a degenerate rectangle, so
+# this value turns into a named EventBuildError in the process that built it rather than
+# into a plausible-looking box on the wire. Preferring the obviously-broken output over the
+# plausibly-broken one is the same choice plate: null makes.
 _EMPTY_BBOX = (0, 0, 0, 0)
 
 
@@ -172,12 +174,19 @@ def build_event(
         source_pts_ms=int(pts_ms),
         source_mode=source_mode,
         vehicle=vehicle,
-        # The best plate crop's quality when there is one, else the best frame's. These
-        # are different measurements and the field carries whichever was actually used
-        # to weight the plate decision, so that a reader comparing image_quality against
-        # plate confidence is comparing the two numbers that were multiplied inside
-        # fuse() -- and not one of them against an unrelated third.
-        image_quality=float(buffer.best_frame_quality),
+        # The best plate crop's quality, from ai/quality, and 0.0 when this track never
+        # produced a plate crop at all. Not a frame quality: nothing in the pipeline
+        # measures one, and the field carries the number that was actually used to weight
+        # the plate decision, so that a reader comparing image_quality against plate
+        # confidence is comparing the two numbers that were multiplied inside fuse() -- and
+        # not one of them against an unrelated third.
+        #
+        # 0.0 therefore means "no plate crop was ever scored" and not "the image was as bad
+        # as it gets". There is no field that distinguishes the two, and adding one to a
+        # locked schema is not this lane's call, so it is written down here instead: on an
+        # event whose plate is null, treat image_quality as absent rather than as a low
+        # score. ai/metrics.py never buckets on it for exactly this reason.
+        image_quality=float(buffer.best_crop_quality),
         model=model,
         plate=plate_block,
         evidence=EvidenceBlock(

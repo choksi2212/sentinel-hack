@@ -46,6 +46,12 @@ class TrackCrop:
     The vehicle fields travel with the crop because by the time fusion runs the
     track is gone, and reconstructing which vehicle a crop belonged to after
     the fact is exactly the kind of bookkeeping that goes wrong quietly.
+
+    `quality` is the PLATE CROP's quality from ai/quality, not the frame's. There
+    is deliberately no frame-quality field: nothing downstream uses one, and a
+    second quality number on the same object would be read as the frame's by the
+    next person to touch build_event -- which is how a clean background ends up
+    vouching for an unreadable plate.
     """
 
     quality: float
@@ -57,7 +63,6 @@ class TrackCrop:
     vehicle_bbox_xyxy: tuple[int, int, int, int]
     vehicle_class: str
     vehicle_confidence: float
-    frame_quality: float = 0.0
 
     @property
     def plate_width_px(self) -> int:
@@ -86,7 +91,12 @@ class CropBuffer:
     best_vehicle_confidence: float = 0.0
     best_vehicle_bbox: Optional[tuple[int, int, int, int]] = None
     vehicle_class: str = "other"
-    best_frame_quality: float = 0.0
+    # The best PLATE CROP quality offered, which is what lands in the event's
+    # image_quality. Named for the crop and not the frame because that is what it
+    # is: note_track is never given a quality, so a track that produced no plate
+    # crop leaves this at 0.0, and 0.0 there means "never measured" rather than
+    # "measured and terrible". See ai/emit/builder.py, which says so in the event.
+    best_crop_quality: float = 0.0
 
     def note_track(self, track: TrackResult, observed_at: str) -> None:
         """Record that the track was seen, whether or not a plate was found."""
@@ -113,7 +123,7 @@ class CropBuffer:
     def offer(self, crop: TrackCrop) -> bool:
         """Add a crop if it beats the worst one held. Returns True if kept."""
         self.crops_offered += 1
-        self.best_frame_quality = max(self.best_frame_quality, crop.quality)
+        self.best_crop_quality = max(self.best_crop_quality, crop.quality)
 
         if len(self.crops) < self.top_k:
             self.crops.append(crop)
@@ -151,7 +161,7 @@ class CropBuffer:
             "crops_offered": self.crops_offered,
             "crops_kept": len(self.crops),
             "duration_ms": self.duration_ms,
-            "best_crop_quality": round(self.best_frame_quality, 4),
+            "best_crop_quality": round(self.best_crop_quality, 4),
         }
 
 
