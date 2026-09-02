@@ -57,12 +57,33 @@ class ReconnectPolicy:
         self.total_reconnects = 0
         self._healthy_since: Optional[float] = None
 
+        # (attempt, delay_ms) for the delay this attempt will actually wait. Cached because
+        # next_delay_ms draws from the rng, so without it every call returned a different
+        # number: stats() reported 672 ms and wait() then slept 628 ms, and calling stats()
+        # twice gave two answers. A field named next_delay_ms has to be the delay that is
+        # coming, or the reconnect log cannot be checked against observed timing -- which is
+        # the one thing that log exists for.
+        self._pending_delay: Optional[tuple[int, int]] = None
+
     def next_delay_ms(self) -> int:
-        """Delay for the current attempt, with jitter applied. Does not sleep."""
+        """Delay for the current attempt, with jitter applied. Does not sleep.
+
+        Idempotent within an attempt: repeated calls return the same number, and it is the
+        number wait() will use. The sample is drawn once, on first ask, and discarded when the
+        attempt counter moves.
+
+        Note this can exceed max_ms by up to 50%. The cap is applied before jitter, per the
+        owner's manual section 4.5 formula, so a max_ms of 30 s permits a 45 s wait. That is
+        the specification rather than an oversight -- see test_recovery.py.
+        """
+        if self._pending_delay is not None and self._pending_delay[0] == self.attempt:
+            return self._pending_delay[1]
         shift = min(self.attempt, _MAX_SHIFT)
         delay = min(self.base_ms * (2 ** shift), self.max_ms)
         delay *= 0.5 + self._rng.random()
-        return int(delay)
+        delay_ms = int(delay)
+        self._pending_delay = (self.attempt, delay_ms)
+        return delay_ms
 
     def wait(self) -> int:
         """Sleep for the next delay, then increment the attempt counter.
@@ -74,6 +95,7 @@ class ReconnectPolicy:
         delay_ms = self.next_delay_ms()
         self.attempt += 1
         self.total_reconnects += 1
+        self._pending_delay = None
         self._sleep(delay_ms / 1000.0)
         return delay_ms
 
@@ -89,6 +111,9 @@ class ReconnectPolicy:
             return
         if self.attempt and now - self._healthy_since >= self.healthy_reset_seconds:
             self.attempt = 0
+            # Recovered, so the delay drawn for the old attempt number is void. Keeping it
+            # would hand the next outage a jitter sample chosen during the previous one.
+            self._pending_delay = None
 
     def note_failure(self) -> None:
         """Call when a read fails, so the healthy window restarts."""
