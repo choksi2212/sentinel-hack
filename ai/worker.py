@@ -519,16 +519,25 @@ def run_once(args: argparse.Namespace) -> int:
         counters.start()
         measuring = True
         for envelope in source:
-            deliver(pipeline.process_frame(envelope))
+            # Drained before the frame is processed, not after. Only the log ordering is
+            # at stake here -- VehiclePipeline discovers the boundary from
+            # envelope.stream_session_id and flushes on its own, so nothing downstream
+            # depends on this loop noticing at all. But the read() that produced this
+            # envelope is the read() that rotated the session, so draining first puts
+            # the "session A -> B" line above the first frame of B instead of below it.
+            # Anyone reading the log to work out when a reconnect happened is reading it
+            # to place a frame on one side or the other of that line.
             for change in source.drain_session_events():
                 log.info(
-                    "session %s -> %s (%s%s) at frame %d",
+                    "session %s -> %s on %s (%s%s) at frame %d",
                     change.previous_session_id or "-",
                     change.new_session_id,
+                    change.camera_id,
                     change.reason,
                     f": {change.detail}" if change.detail else "",
                     change.at_frame_index,
                 )
+            deliver(pipeline.process_frame(envelope))
             if stop.requested:
                 flush_reason = "shutdown"
                 break

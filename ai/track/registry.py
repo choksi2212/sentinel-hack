@@ -1,19 +1,29 @@
 """TrackerRegistry -- one tracker per camera, flushed on every session change.
 
-This module is the reason the TrackKey story actually holds in running code rather
-than only in the dataclass. Two jobs:
+Two jobs:
 
   1. Hold one tracker per camera, so a worker process serving several cameras
      cannot leak state between them.
-  2. Listen for SessionChange from the media layer and reset the affected tracker
-     before the first frame of the new session reaches it.
+  2. Reset the affected tracker before the first frame of a new session reaches it.
+
+Not what the single-camera path uses, and that is worth stating up front because
+this module reads like the place session boundaries are handled and it is not.
+VehiclePipeline holds one tracker for one camera and discovers the boundary from
+envelope.stream_session_id, flushing when it differs from the session it is holding
+(ai/pipeline.py, _handle_session). That is strictly better than consuming an event:
+the envelope cannot arrive late relative to the frame, because it is the frame.
+
+This registry is for the fan-in shape -- one process, N sources, frames and session
+events interleaved from all of them. There the envelope trick still works per frame,
+but a tracker has to be found before it can be flushed, and that is what the
+per-camera map is for.
 
 Job 2 has an ordering requirement that is easy to get wrong and expensive when it
-is. The media source emits SessionChange when it detects the break, and the worker
-must drain those events and call on_session_change() **before** passing the frame
-to the tracker. Drain afterwards and the first frame of the new session is
-associated against the old session's tracks: a vehicle from before the reconnect
-matches a different vehicle after it, and the two get one track id and one plate.
+is. A source emits SessionChange when it detects the break, and the caller must
+drain those events and call on_session_change() **before** passing the frame to the
+tracker. Drain afterwards and the first frame of the new session is associated
+against the old session's tracks: a vehicle from before the reconnect matches a
+different vehicle after it, and the two get one track id and one plate.
 
 The correct order is asserted rather than documented, which is what
 expect_session() is for. Passing a frame whose session id does not match the
@@ -112,19 +122,30 @@ class TrackerRegistry:
     def on_session_change(self, change: Any) -> None:
         """Handle one SessionChange from the media layer.
 
-        Accepts anything carrying camera_id and stream_session_id, so the registry
-        does not import the media package. The AI stages are meant to be usable
-        without a media source at all -- that is what makes them testable from a
-        fixture -- and a type-only import would break it.
+        Duck-typed on purpose, so the registry does not import the media package.
+        The AI stages are meant to be usable without a media source at all -- that is
+        what makes them testable from a fixture -- and even a type-only import would
+        break it.
+
+        Reads the session under three names because the media layer calls it
+        new_session_id (the session that *starts* here, which is the useful half of a
+        boundary) while everything downstream of the tracker calls the same value
+        stream_session_id. An earlier version of this method accepted only the
+        downstream names, which meant it raised on every real SessionChange ever
+        emitted -- including the "open" event that every source produces before its
+        first frame. Nothing caught it, because the shipped single-camera path
+        derives the session from the envelope and never calls this.
         """
         camera_id = getattr(change, "camera_id", None)
-        session_id = getattr(change, "stream_session_id", None) or getattr(
-            change, "session_id", None
+        session_id = (
+            getattr(change, "stream_session_id", None)
+            or getattr(change, "session_id", None)
+            or getattr(change, "new_session_id", None)
         )
         if not camera_id or not session_id:
             raise ValueError(
-                "session change needs camera_id and stream_session_id, got "
-                f"{change!r}"
+                "session change needs camera_id and a session id (stream_session_id, "
+                f"session_id or new_session_id), got {change!r}"
             )
 
         tracker = self._trackers.get(camera_id)
@@ -157,7 +178,8 @@ class TrackerRegistry:
         fires when the source notices the break, which may be inside the same read()
         that returns the first frame of the new session. Ordering is only guaranteed
         by draining explicitly before tracking. Use this for logging, use drain() for
-        correctness.
+        ordering, and note that neither is what the single-camera pipeline relies on
+        -- see the module docstring.
         """
         source.add_session_listener(self.on_session_change)
 

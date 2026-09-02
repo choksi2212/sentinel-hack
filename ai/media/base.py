@@ -46,8 +46,16 @@ class SessionChange:
     state, evidence buffers and every in-flight fusion accumulator for the
     previous session. Contracts section 1.2. This type exists so that obligation
     is delivered as data rather than remembered as a convention.
+
+    camera_id is here because these events get fanned in. One source knows which
+    camera it is and does not need telling, but the moment a process pulls from N
+    sources into one queue -- which is the whole point of ai/track/registry.py --
+    an event that cannot say which camera it belongs to can only be routed by
+    whatever happened to be next to it in the loop. That is a bug waiting for the
+    second camera, and the field costs nothing.
     """
 
+    camera_id: str
     previous_session_id: Optional[str]
     new_session_id: str
     reason: str            # one of EndReason
@@ -267,7 +275,19 @@ class BaseMediaSource(ABC):
     # ------------------------------------------------------------------ session
 
     def add_session_listener(self, listener: Callable[[SessionChange], None]) -> None:
-        """Register a flush callback. The pipeline uses this."""
+        """Register a callback fired the moment a session starts.
+
+        Not what the pipeline uses, and the distinction is worth stating because a
+        push callback looks like the obvious way to wire this up. VehiclePipeline
+        compares envelope.stream_session_id against the session it is holding and
+        flushes on the difference -- see ai/pipeline.py's _handle_session -- so the
+        boundary is discovered from the frame itself rather than from an event that
+        has to arrive first. A listener can fire inside the same read() that returns
+        frame 0 of the new session, so ordering is not guaranteed; the envelope is
+        never early or late because it *is* the frame.
+
+        Use this for logging and metrics, where being a frame off does not matter.
+        """
         self._session_listeners.append(listener)
 
     def drain_session_events(self) -> list[SessionChange]:
@@ -304,6 +324,7 @@ class BaseMediaSource(ABC):
             self._pts.last_pts_ms = seed_pts_ms
 
         change = SessionChange(
+            camera_id=self.camera_id,
             previous_session_id=previous,
             new_session_id=self._session_id,
             reason=reason,
