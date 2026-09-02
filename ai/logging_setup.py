@@ -106,7 +106,7 @@ def _kv_replacement(match: "re.Match[str]") -> str:
     **A URL value.** `dsn` is a secret-named key whose value is normally an entire connection
     string, so the blunt rule turned
 
-        db dsn: postgresql://trinetra:REDACTED@localhost:5432/trinetra
+        db dsn: postgresql://trinetra:s3cr3t@localhost:5432/trinetra
 
     into `db dsn: ***` -- safe, and useless. The line exists to say which database refused the
     connection, and that is exactly what got thrown away. The userinfo pass has already

@@ -172,10 +172,10 @@ def test_env_file_values_never_reach_os_environ(tmp_path, monkeypatch):
     key = "TRINETRA_DB_PASSWORD"
     monkeypatch.delenv(key, raising=False)
     env_file = tmp_path / ".env"
-    env_file.write_text(f"{key}=REDACTED\n", encoding="utf-8")
+    env_file.write_text(f"{key}=synthetic-db-secret\n", encoding="utf-8")
 
     values = load_env(str(env_file))
-    assert values[key] == "REDACTED"  # reached the dict this module owns
+    assert values[key] == "synthetic-db-secret"  # reached the dict this module owns
     assert key not in os.environ  # and never the process environment
 
 
@@ -274,10 +274,10 @@ def test_redact_leaves_an_empty_or_absent_secret_as_is():
 
 
 def test_appconfig_redacted_is_the_loggable_form_and_raw_keeps_the_secret():
-    cfg = AppConfig(path=None, raw={"source": {"password": "REDACTED", "mode": "live_rtsp"}})
+    cfg = AppConfig(path=None, raw={"source": {"password": "FAKE-FEED-PASS", "mode": "live_rtsp"}})
     assert cfg.redacted()["source"]["password"] == REDACTED
     assert cfg.redacted()["source"]["mode"] == "live_rtsp"  # non-secret survives
-    assert cfg.raw["source"]["password"] == "REDACTED"  # raw is unmasked, do not log
+    assert cfg.raw["source"]["password"] == "FAKE-FEED-PASS"  # raw is unmasked, do not log
 
 
 # ============================================================================ TIER 2
