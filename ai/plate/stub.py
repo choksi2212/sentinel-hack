@@ -266,8 +266,18 @@ class EdgePlateDetector(BasePlateDetector):
     trades tight boxes for more of them moves the two figures in opposite directions
     (see EDGE_COL_QUANTILE above, where 0.60 raises recall and drops mean IoU to 0.577).
 
-    The oracle's own 0.956 is not a bug: 10 of the 226 sit in the 40-60 px bucket where
-    the tracker's box match fails, which is loss before this stage rather than in it.
+    The oracle's own 0.956 is not a bug, and it is not this stage: 10 of the 226 have no
+    emitted track at all on the frame in question, because ByteTrack needs
+    DEFAULT_MIN_HITS = 3 hits before a track is CONFIRMED and BaseTracker.update returns
+    only active tracks. Dropping min_hits to 1 recovers 7 of the 10. An earlier version
+    of this line blamed the tracker's box match failing against ORACLE_MATCH_IOU, which
+    is measurably false -- no_truth_match is 0 across the whole run.
+
+    All 10 land in 40-60 px for a mechanical reason: a vehicle enters the frame far away,
+    so its plate is small exactly while its track is still TENTATIVE, and by the time the
+    track confirms the plate has grown past 60 px. The small-plate bucket therefore
+    carries the tracker's warm-up on top of its own difficulty, so the oracle row is the
+    ceiling for the *pipeline* rather than for this stage alone.
 
     By plate width, which is the only breakdown that means anything here:
 
