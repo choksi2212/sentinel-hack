@@ -476,6 +476,15 @@ class HttpEventSink:
         terms a reader forgets, and forgetting them is what makes a mid-run sample look
         like data loss: an event two seconds into a retry is in no other counter.
 
+        **It is exact at quiescence, not at literally every instant**, and the difference
+        matters to anyone writing an assertion. There are two hand-off windows where an
+        event is momentarily in no term on the right: send() increments `submitted` before
+        it enqueues, and the worker dequeues before _deliver increments `in_flight`. A
+        sample taken inside one of those reads SHORT by however many events are in them.
+        It cannot read long -- no path increments a right-hand term before the matching
+        left-hand one -- so the only skew possible is the one that looks like loss, never
+        the one that looks like success. Sample after flush() for an exact equality.
+
         Two things this deliberately does not do. `spooled` counts spool *writes*, not
         distinct undelivered events -- an event spooled, replayed and delivered leaves
         spooled=1 forever, which is a true statement about what happened rather than about

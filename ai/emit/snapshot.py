@@ -7,22 +7,31 @@ assertion.
 
 **This is the file where the USP could quietly be broken.** "We don't centralize every
 video. We centralize intelligence." A still per sighting is intelligence; a still per frame
-is video with extra steps. So the arithmetic is written down rather than assumed. Measured
-on 1920x1080 traffic frames at the defaults below: 60.4 KB per snapshot and 1.0 KB per
-plate crop, so 61 KB per event. Thirty cameras producing one sighting a second each is
-1.80 MB/s -- **152 GB a day, from thirty cameras.** The grid has 80,000. Hence: one pair of
-stills per *event*, never per frame; downscaled; and a writer that can be switched off
-entirely, which is what benchmark runs do.
+is video with extra steps. So the arithmetic is written down rather than assumed, and the
+measurement that produced it is named rather than implied -- these numbers are the mean over
+the 1920x1080 synthetic camera at seed 42, 134 emitted frames and 610 plate crops, at the
+defaults below (see tests/test_emit.py, which re-measures them):
 
-(The plate crop being 60x smaller than the snapshot is worth noticing, because it is the
+    snapshot, max_width 1280, q85     58,892 bytes    57.5 KB
+    plate crop, no resize, q92         2,080 bytes     2.0 KB
+    per event                         60,972 bytes    59.5 KB
+
+Thirty cameras producing one sighting a second each is 1.74 MB/s -- **147 GB a day, from
+thirty cameras.** The grid has 80,000. Hence: one pair of stills per *event*, never per
+frame; downscaled; and a writer that can be switched off entirely, which is what benchmark
+runs do.
+
+(The plate crop being 28x smaller than the snapshot is worth noticing, because it is the
 one an operator actually decides on. If storage ever has to be cut, the snapshot is the
-expensive half and the useful half costs a kilobyte.)
+expensive half and the useful half costs two kilobytes. The ratio is resolution-dependent
+in the direction that helps: a bigger frame grows the snapshot quadratically and the plate
+crop only as fast as the plate.)
 
 **Staging, not retention of frames.** The snapshot has to come from the best frame of the
 track, but `event_id` is not minted until the track finishes, and holding a 1080p BGR frame
-per open track costs 6.2 MB each -- 124 MB at twenty tracks, on a 12 GB budget where the
-detector wants most of it. So `stage_frame` encodes to JPEG bytes the moment a frame becomes
-the best one seen (a 101x reduction, measured 1.2 MB held at twenty open tracks) and
+per open track costs 6,220,800 bytes -- 118.6 MB at twenty tracks, on a 12 GB budget where
+the detector wants most of it. So `stage_frame` encodes to JPEG bytes the moment a frame
+becomes the best one seen (a 106x reduction, 1.12 MB held at twenty open tracks) and
 `commit` writes those bytes under the event's own name. Memory is bounded and reported in
 stats().
 
@@ -78,10 +87,18 @@ _UNSAFE_IN_FILENAME = re.compile(r"[^A-Za-z0-9._-]")
 def safe_component(value: str, *, fallback: str = "unknown") -> str:
     """One path component, with everything that could escape it removed.
 
-    Rejects rather than escapes: `..` collapses to `__` and a separator becomes `_`, so
-    there is no input that produces a path outside the root. Returning a mangled-but-safe
-    name beats raising, because a camera whose id has an odd character in the catalogue
-    should still produce evidence -- just in a differently-named folder.
+    Two mechanisms, and it is worth being precise about which does what, because the
+    obvious reading of this function is wrong. Characters outside `[A-Za-z0-9._-]` become
+    `_`, which is what disarms a separator: `a/b` is `a_b`. The dot is *not* in that set --
+    filenames need it -- so `..` survives the substitution untouched, and what actually
+    disarms it is the `lstrip(".")`: `..` becomes the empty string and falls through to the
+    fallback, and `../../etc/passwd` becomes `_.._etc_passwd`, which is one component with
+    no separators in it and therefore harmless wherever it lands.
+
+    Rejects rather than escapes, so there is no input that produces a path outside the
+    root. Returning a mangled-but-safe name beats raising, because a camera whose id has an
+    odd character in the catalogue should still produce evidence -- just in a
+    differently-named folder.
     """
     cleaned = _UNSAFE_IN_FILENAME.sub("_", (value or "").strip())
     cleaned = cleaned.lstrip(".")  # no hidden files, no leading-dot traversal games
@@ -268,8 +285,9 @@ class SnapshotWriter:
         The encode is almost free; the cost is two full-resolution pixel passes, and one of
         them was doing nothing but reordering three bytes. `arr[:, :, ::-1]` is a view and
         costs nothing, but it is non-contiguous, so Image.fromarray has to make a strided
-        copy of 6.2 MB to get a buffer it can use. PIL's raw decoder takes "BGR" as a
-        rawmode, which folds the reorder into the buffer read that had to happen anyway:
+        copy of the whole 6,220,800-byte frame to get a buffer it can use. PIL's raw decoder
+        takes "BGR" as a rawmode, which folds the reorder into the buffer read that had to
+        happen anyway:
 
             frombuffer(RGB, raw BGR) -> resize -> encode     10.6 ms
 
