@@ -50,9 +50,10 @@ def fuse_observations(
 ) -> Optional[FusedPlate]:
     """Typed wrapper around fuse() for one TrackKey.
 
-    Returns None when no observation produced any usable characters at all --
-    which is the unreadable case, and a correct outcome. The caller emits
-    plate: null rather than reaching for a guess.
+    Returns None when nothing usable was observed -- either no observation produced any
+    characters at all, or none of them carried any evidence weight. Both are the unreadable
+    case, and both are correct outcomes: the caller emits plate: null rather than reaching
+    for a guess.
 
     The confidence returned is a SHARE OF TOTAL EVIDENCE, not a probability.
     Do not multiply it by the detector confidence and present the product;
@@ -64,6 +65,22 @@ def fuse_observations(
 
     _assert_single_track(observations)
 
+    # Drop observations carrying no evidence weight before fusing. Two reasons, and the
+    # second one is why this is not merely defensive.
+    #
+    # The copied block divides by the total weight, so a track where every reading scored
+    # exactly zero -- an OCR engine reporting no confidence at all, or a crop the quality
+    # scorer rated worthless -- raises ZeroDivisionError and takes the frame down with it.
+    #
+    # More importantly, a zero-weight reading contributes nothing to the weighted vote and
+    # still increments evidence_count. evidence_count is what promotes a plate to
+    # "probable" (Contracts 3.3) and to the HIGH calibration band (4.4), so one real read
+    # plus two worthless ones that happened to agree with it would be reported as
+    # three-frame corroboration. Weightless agreement is not corroboration.
+    weighted = [obs for obs in observations if obs.fusion_weight > 0.0]
+    if not weighted:
+        return None
+
     raw_result = fuse(
         [
             {
@@ -71,7 +88,7 @@ def fuse_observations(
                 "ocr_confidence": obs.ocr_confidence,
                 "image_quality": obs.image_quality,
             }
-            for obs in observations
+            for obs in weighted
         ]
     )
     if raw_result is None:
