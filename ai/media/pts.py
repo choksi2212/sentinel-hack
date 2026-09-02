@@ -121,7 +121,7 @@ class PtsValidator:
             self._identical_run += 1
             if self._identical_run >= self.stall_threshold:
                 self.counts["stalled"] += 1
-                return PtsVerdict(
+                return self._verdict(
                     PtsAction.FORCE_RECONNECT,
                     pts,
                     f"decoder stalled: PTS {pts} unchanged for "
@@ -129,13 +129,13 @@ class PtsValidator:
                 )
             # Not yet a stall. Skip the frame rather than emit a duplicate
             # timestamp, which would make two frames indistinguishable in time.
-            return PtsVerdict(PtsAction.SKIP, pts, "duplicate pts, frame skipped")
+            return self._verdict(PtsAction.SKIP, pts, "duplicate pts, frame skipped")
 
         self._identical_run = 0
 
         if pts < self.last_pts_ms:
             self.counts["backwards"] += 1
-            return PtsVerdict(
+            return self._verdict(
                 PtsAction.NEW_SESSION,
                 pts,
                 f"PTS went backwards: {self.last_pts_ms} -> {pts}",
@@ -144,7 +144,7 @@ class PtsValidator:
         delta = pts - self.last_pts_ms
         if delta > self.max_forward_jump_ms:
             self.counts["forward_jump"] += 1
-            return PtsVerdict(
+            return self._verdict(
                 PtsAction.NEW_SESSION,
                 pts,
                 f"PTS jumped forward {delta} ms (> {self.max_forward_jump_ms} ms)",
@@ -161,7 +161,7 @@ class PtsValidator:
             # abandoning a working clock for. Skipping and not emitting matters
             # here -- the alternative is stamping the frame with the previous
             # frame's timestamp, which is a fabricated measurement.
-            return PtsVerdict(
+            return self._verdict(
                 PtsAction.SKIP,
                 self.last_pts_ms or 0,
                 f"pts unavailable ({self._unavailable_run}), frame skipped",
@@ -175,17 +175,32 @@ class PtsValidator:
         self.last_pts_ms = self._synthetic_pts_ms
         self.counts["synthesized"] += 1
         self.counts["accepted"] += 1
-        return PtsVerdict(
+        return self._verdict(
             PtsAction.OK,
             self._synthetic_pts_ms,
             "synthetic monotonic clock; session is pts_unreliable",
-            pts_unreliable=True,
         )
 
     def _accept(self, pts: int) -> PtsVerdict:
         self.last_pts_ms = pts
         self.counts["accepted"] += 1
-        return PtsVerdict(PtsAction.OK, pts, pts_unreliable=self.pts_unreliable)
+        return self._verdict(PtsAction.OK, pts)
+
+    def _verdict(
+        self,
+        action: PtsAction,
+        pts_ms: int,
+        reason: Optional[str] = None,
+    ) -> PtsVerdict:
+        """Stamp every verdict with the session's reliability, not just the accepting ones.
+
+        The authoritative flag is this validator's, and ai/media/base.py reads it from there.
+        But a rejection verdict reporting pts_unreliable=False while the session is running a
+        synthetic clock is a field that lies, and the one failure this module exists to
+        prevent is a timing number that looks measured. Stamping in one place means a verdict
+        site added later cannot forget to.
+        """
+        return PtsVerdict(action, pts_ms, reason, pts_unreliable=self.pts_unreliable)
 
     def stats(self) -> dict[str, object]:
         return {
