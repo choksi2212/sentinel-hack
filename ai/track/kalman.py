@@ -186,8 +186,9 @@ class KalmanBoxFilter:
         the caller's threshold has to be the chi-squared value for len(dims) degrees
         of freedom -- not the 4-DOF value. Dropping a dimension and keeping the
         4-DOF threshold silently loosens the gate, which is the failure mode that
-        looks like it works. Use CHI2_INV95[len(dims)]; ai/track/bytetrack.py derives
-        GATING_THRESHOLD from GATING_DIMS for exactly this reason.
+        looks like it works. Use CHI2_INV99[len(dims)], or CHI2_INV95[len(dims)] at the
+        conventional level; ai/track/bytetrack.py derives GATING_THRESHOLD from
+        GATING_DIMS for exactly this reason.
         """
         projected_mean, projected_cov = self.project(mean, covariance)
         index = list(dims)
@@ -203,9 +204,10 @@ class KalmanBoxFilter:
 
 
 # 95% confidence interval of the chi-squared distribution, by degrees of freedom.
-# Index 4 (a full four-dimensional observation) is the one used. Verbatim from the
-# DeepSORT reference so that a comparison against published tracker numbers is
-# comparing the same gate.
+# Verbatim from the DeepSORT reference so a comparison against published tracker numbers
+# is comparing the same gate. Not what this tracker gates on -- CHI2_INV99 is, and index 3
+# of it rather than index 4, because the gate drops aspect ratio. Kept because it is the
+# conventional table and a reader arriving from the DeepSORT paper will look for it.
 CHI2_INV95: dict[int, float] = {
     1: 3.8415,
     2: 5.9915,
@@ -220,19 +222,30 @@ CHI2_INV95: dict[int, float] = {
 
 # 99% of the same distribution, and the one the tracker actually gates on.
 #
-# The reason is arithmetic, not taste. A 95% gate rejects 5% of CORRECT pairs by
-# definition -- that is what the confidence level means -- and in DeepSORT that is
-# affordable because its matching cascade gives a track several chances per frame.
-# Here a veto is unrecoverable: a tentative track is dropped on its first miss, and
-# a confirmed track that loses one frame fragments. Measured on the synthetic
-# fixture, of 170 track-detection pairs that stage 1 would have accepted on IoU,
-# the 95% gate vetoed 11 -- 6.5%, almost exactly the 5% the level promises -- and
-# those 11 cost 4 fragments and 0.037 recall while preventing zero ID switches.
+# The argument, which is a priori and is stated as such. A 95% gate rejects 5% of CORRECT
+# pairs by definition -- that is what the confidence level means -- and in DeepSORT that is
+# affordable because its matching cascade gives a track several chances per frame. Here a
+# veto is unrecoverable: a tentative track is dropped on its first miss, and a confirmed
+# track that loses one frame fragments. Asymmetric costs, so the looser level.
 #
-# 99% keeps the gate doing the job it exists for. The pairs it is meant to stop are
-# nowhere near the threshold: of 1217 vetoes in the same run, 1216 were pairs whose
-# boxes overlapped by less than half, and those sit at squared distances in the
-# hundreds. Moving the line from 7.81 to 11.35 does not let any of them through.
+# **Measured, the choice makes no difference at all**, and an earlier version of this
+# comment claimed otherwise. Swept on the synthetic corpus at the shipped three gating
+# dimensions, 95% and 99% produce identical recall, identical track identities, identical
+# fragment counts and identical veto counts -- 961 vetoes on the perfect fixture and 570 on
+# the degraded one, both levels, both fixtures. The table is at GATING_DIMS in
+# ai/track/bytetrack.py.
+#
+# The reason is visible in the same run and it is what the earlier comment got right: the
+# pairs this gate exists to stop are nowhere near either threshold. Not one veto in either
+# run landed on a pair whose boxes overlapped by IoU >= 0.2 -- they sit at squared
+# distances in the hundreds -- so moving the line from 7.81 to 11.34 lets none of them
+# through and rescues none of the correct pairs either, because at three dimensions there
+# were no correct pairs being vetoed to rescue.
+#
+# What that leaves: 99% is kept on the argument above, it costs nothing, and it is not
+# load-bearing. Anyone who prefers the conventional 95% has the same measurement behind
+# them. The choice that IS load-bearing is len(GATING_DIMS), and it lives next to the
+# table that shows why.
 CHI2_INV99: dict[int, float] = {
     1: 6.6349,
     2: 9.2103,

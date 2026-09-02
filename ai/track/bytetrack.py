@@ -57,14 +57,59 @@ from ai.track.kalman import (
 )
 from ai.track.track import CONFIRMED, LOST, Track
 
-# Which dimensions of (cx, cy, a, h) the motion gate judges, and the matching
-# squared Mahalanobis threshold. The two are written on adjacent lines and the
-# threshold is indexed BY the dimension count, because setting a 4-DOF threshold on
-# a 3-DOF distance loosens the gate by about 18% while looking entirely deliberate.
+# Which dimensions of (cx, cy, a, h) the motion gate judges, and the matching squared
+# Mahalanobis threshold. The threshold is indexed BY the dimension count so the two
+# cannot be mismatched: a 4-DOF threshold on a 3-DOF distance is a looser gate that
+# looks entirely deliberate, and writing it as one expression makes that unreachable.
 #
-# Aspect ratio is excluded and the level is 99% rather than the DeepSORT-conventional
-# 95%; _gate explains the first and ai/track/kalman.py the second, both with the
-# measurements behind them.
+# Both halves were swept on the synthetic corpus -- 200 frames, seed 42, 6 vehicles with
+# known identity, IoU >= 0.5 to count a truth box as matched. Perfect oracle and degraded
+# oracle (15% miss, 4 px jitter, 0.1 FP/frame, size falloff, 25% dip). "veto" is the
+# tracker's own gate_vetoes counter:
+#
+#                                    perfect                     degraded
+#     gate dims / level      recall  ids frag  veto  |  recall  ids frag  veto
+#     (cx, cy, h) 99%  SHIP   0.904    6    0   961  |   0.588    6    0   570
+#     (cx, cy, h) 95%         0.904    6    0   961  |   0.588    6    0   570
+#     (cx, cy, a, h) 95%      0.812   16   10  2201  |   0.442    9    3   828
+#     (cx, cy, a, h) 99%      0.821   15    9  2045  |   0.442    9    3   820
+#     (cx, cy) 95%            0.887    8    2  1213  |   0.508    8    2   731
+#     (cx, cy) 99%            0.904    6    0   961  |   0.588    6    0   570
+#     gate disabled           0.904    6    0     0  |   0.588    6    0     0
+#
+# Read the table for what it says rather than what a reader expects. **Including aspect
+# ratio is the whole finding, and it is a finding about one direction only.** Aspect
+# scatters 6 vehicles across 15 identities with a PERFECT detector -- _gate explains the
+# mechanism -- and no other cell in the table moves a single identity.
+#
+# In particular, height earns nothing here. Rows 1 and 6 are identical on both fixtures
+# down to the veto count, and that is not a coincidence of the summary statistics: over
+# 2201 track/detection pairs across both fixtures, the number vetoed by (cx, cy, h) that
+# (cx, cy) would have passed is **zero**. All 18 disagreements run the other way -- the
+# two-dimensional gate is the *stricter* one, because adding a dimension raises the
+# threshold (9.2103 -> 11.3449) faster than it adds distance on these trajectories. So the
+# shipped gate is three dimensions of which two do the work.
+#
+# It is kept at three anyway, and the argument is the same one as for keeping the gate at
+# all: what height catches is a box that holds its image position while changing size
+# sharply, which is a vehicle emerging from behind an occluder or a detector snapping from
+# a partial box to a full one. Four straight lanes with no crossing traffic contain none of
+# that. An earlier version of this comment claimed dropping height "costs 2 fragments the
+# other way" -- true, but only of row 5, which is at 95%; at the shipped level it costs
+# nothing measurable. The 8 identities in row 5 are the cost of a *tighter* gate, not of a
+# smaller one.
+#
+# The confidence level is immaterial wherever the dimensions are right: 95% and 99% are
+# indistinguishable at three dims and near-identical at four. The one row where the level
+# decides anything is row 5 versus row 6 -- two dimensions, where 95% fragments and 99%
+# does not -- and neither is shipped. The level is kept at 99% for the reason in
+# ai/track/kalman.py, which is an argument rather than a measurement, and that file now
+# says so.
+#
+# The bottom row is the honest one and it is the same finding as the ByteTracker
+# docstring's: correctly configured, this gate changes nothing on either fixture. It is
+# retained because these four lanes contain no crossing trajectories and a real junction
+# does. Anyone removing it should remove it on that argument, not on this table.
 GATING_DIMS = POSITION_SIZE_DIMS
 GATING_THRESHOLD = CHI2_INV99[len(GATING_DIMS)]
 
@@ -118,9 +163,11 @@ class ByteTracker(BaseTracker):
     ablation is identical to the full configuration, so on this fixture it is free but
     unproven. That is a statement about the fixture, not a defence of the gate: four
     well-separated directional lanes with no crossing trajectories do not contain the
-    failure the gate exists to prevent. It is retained because a real junction does,
-    and because at the 99% level it demonstrably costs nothing -- see
-    ai/track/kalman.py for why 99 and not the conventional 95.
+    failure the gate exists to prevent. It is retained because a real junction does, and
+    because as configured it demonstrably costs nothing. What its configuration is *not*
+    free in is the dimension count -- gating on aspect ratio would cost 10 fragments and
+    16 identities for these same 6 vehicles with a perfect detector, which is the largest
+    effect in this module and is tabulated at GATING_DIMS.
 
     *The IoU baseline has higher recall and is still the wrong tracker.* It matches
     more boxes while scattering 6 vehicles over 9 identities with 2 switches. The
@@ -162,6 +209,10 @@ class ByteTracker(BaseTracker):
         self.fuse_score = bool(fuse_score)
 
         self._tracks: list[Track] = []
+        # Reacquisitions earned by tracks that no longer exist. Needed because
+        # BaseTracker.reacquisitions is a cumulative counter and the live tracks are not
+        # a cumulative record: see the note where it is updated in _update.
+        self._retired_reacquisitions = 0
         self.matched_high = 0
         self.matched_low = 0
         self.matched_tentative = 0
@@ -242,20 +293,29 @@ class ByteTracker(BaseTracker):
         # an unproven one, and reversing the order lets a spurious tentative box
         # steal a real vehicle's detection and break its track.
         #
-        # gate=False, and this is not a shortcut. A tentative track has one or two
-        # observations, so its velocity estimate is still converging from the zero it
-        # was initiated at, and the Mahalanobis distance during that convergence
-        # legitimately exceeds chi2(4, 0.95) for a perfectly correct pair. Measured on
-        # a clean synthetic target moving 30 px/frame -- no detector noise at all --
-        # the squared distance for the RIGHT detection runs 7.47, 10.44, 6.37, 3.27,
-        # 1.79 over the first five frames. Only the second one matters: it is above
-        # the 9.4877 threshold, so the gate vetoes the correct detection on frame 2,
-        # the tentative track takes a miss, tentative tracks are dropped on their
-        # first miss, and a fresh track starts on the next frame from the same
-        # vehicle. That loop cost 32 track ids for 6 vehicles with a *perfect*
-        # detector before this argument was passed. The motion model has nothing to
-        # contribute until it has seen motion, and asking it anyway is worse than not
-        # asking.
+        # gate=False, and it is the safe direction rather than a measured win. A tentative
+        # track has one or two observations, so its velocity estimate is still converging
+        # from the zero it was initiated at, and asking a motion model where a vehicle
+        # will be before it has seen the vehicle move is asking a question it cannot
+        # answer. Vetoing on the answer costs a whole track: tentative tracks are dropped
+        # on their first miss, so one veto restarts the track from scratch.
+        #
+        # Measured, and the measurement does not support the strong version of that
+        # story. A clean target moving 30 px/frame with no detector noise gives squared
+        # distances to the CORRECT next box of 4.76, 6.80, 4.17, 2.13, 1.16, 0.69, 0.44
+        # over the first seven frames -- every one of them inside the 11.3449 gate, so
+        # nothing would have been vetoed. Turning the gate on for this stage changes
+        # nothing on either fixture: perfect stays at recall 0.904 / 14 started / 6 ids,
+        # degraded at 0.588 / 24 / 6, identical to the numbers in the class docstring.
+        #
+        # An earlier version of this comment cited 7.47, 10.44, 6.37, 3.27, 1.79 and a
+        # veto on frame 2 against chi2(4, 0.95) = 9.4877, and claimed the loop cost 32
+        # track ids for 6 vehicles. None of that reproduces, and 9.4877 is a threshold
+        # this file has never shipped -- see GATING_THRESHOLD, which is the 3-DOF 99%
+        # value. Those figures describe a gate configuration that was never committed.
+        # What survives is the argument, and at 4 dimensions the same argument is
+        # demonstrably right: the sweep above turns 6 vehicles into 16 identities. So this
+        # stays off here, on the reasoning and not on a number.
         leftover = [high[i] for i in unmatched_high]
         if tentative and leftover:
             tent_matches, unmatched_tent, unmatched_leftover = self._associate(
@@ -282,13 +342,29 @@ class ByteTracker(BaseTracker):
                     detection.confidence,
                     frame_index,
                     pts_ms,
+                    min_hits=self.min_hits,
                 )
             )
 
         removed = [t for t in self._tracks if t.is_removed]
         self.tracks_removed += len(removed)
-        self.reacquisitions = sum(t.reacquisitions for t in self._tracks)
         self._tracks = [t for t in self._tracks if not t.is_removed]
+
+        # Retired tracks keep contributing. This was `sum(t.reacquisitions for t in
+        # self._tracks)` over the live tracks only, which makes a counter that sits
+        # beside tracks_started and tracks_removed in stats() -- both cumulative -- go
+        # DOWN: a vehicle that came back from behind a bus and then left the junction
+        # took its reacquisition with it, and a session change zeroed the total outright.
+        # Measured: 1 while the track lived, 0 on the frame after it was removed.
+        #
+        # It matters because this number is the evidence that the lost buffer is doing
+        # anything at all. A run reporting zero reacquisitions either never occluded a
+        # vehicle or has a broken buffer, and the two look identical from the outside --
+        # so a counter that quietly discards them is worse than no counter.
+        self._retired_reacquisitions += sum(t.reacquisitions for t in removed)
+        self.reacquisitions = self._retired_reacquisitions + sum(
+            t.reacquisitions for t in self._tracks
+        )
 
         return [
             self._emit(
@@ -360,10 +436,15 @@ class ByteTracker(BaseTracker):
         it, and it is the one dimension of a detection box that is routinely wrong.
         A vehicle entering frame is clipped by the frame edge, so its measured
         aspect sweeps from 0.49 to 1.5 over three frames while its position is
-        perfectly predictable. Measured contribution to the squared distance on such
-        a pair: 9.6 of a 9.4877 budget from aspect alone, against 2.3 from position.
-        Gating on it therefore rejects correct pairs at exactly the moment a track is
-        least able to survive one.
+        perfectly predictable. Including it therefore rejects correct pairs at exactly
+        the moment a track is least able to survive one.
+
+        That is not a plausible mechanism offered without evidence -- it is the single
+        largest effect measured anywhere in this module. Adding aspect to the gate, with
+        everything else unchanged and a **perfect** detector, scatters 6 vehicles across
+        16 track identities with 10 fragments and drops recall from 0.904 to 0.812. The
+        full sweep is tabulated at GATING_DIMS. Nothing else in the tracker's
+        configuration space does damage on that scale.
         """
         measurements = np.array(
             [xyxy_to_cxcyah(d.bbox_xyxy) for d in detections], dtype=np.float64
@@ -392,6 +473,13 @@ class ByteTracker(BaseTracker):
         )
 
     def _reset(self) -> None:
+        # A session change drops every live track, so what they earned retires here
+        # rather than vanishing. reset() does not zero the counters BaseTracker keeps --
+        # sessions_seen counts up, tracks_started counts up -- and this one is no
+        # different: "reacquisitions since this tracker was built" is the useful
+        # quantity, and it has to survive the boundary that most often produces them.
+        self._retired_reacquisitions += sum(t.reacquisitions for t in self._tracks)
+        self.reacquisitions = self._retired_reacquisitions
         self._tracks = []
 
     # ----------------------------------------------------------------- metadata

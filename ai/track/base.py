@@ -86,6 +86,12 @@ def check_detector_threshold(
         detector 0.05, stage 2 live      recall 0.588   6 track ids   0 fragments
         detector 0.35, stage 2 starved   recall 0.342   8 track ids   2 fragments
 
+    The second row is bit-identical to running the tracker with use_low_stage=False --
+    same recall, same 8 ids, same 2 fragments, same 35 tracks started. That equivalence
+    is the sharpest way to state the cost: this misconfiguration is not a degradation of
+    ByteTrack, it *is* the ablation that deletes ByteTrack's contribution, arrived at by
+    changing a number in a different stage's config file.
+
     Returns None when the configuration is sound, or the warning text. Called by
     scripts/validate_config.py, so the mistake surfaces at config-load time rather
     than as a tracking quality shortfall nobody attributes to the detector.
