@@ -1,0 +1,72 @@
+{
+  "description": "A watchlist seed and the event whose normalized plate matches it character for character. Written the way an operator would type the plates, with separators, so that loading the seed without normalizing it is a visible failure rather than a silent one.",
+  "proves": "Canonical Contracts 3.3 and 3.4. Only an exact normalized match may produce match_state 'exact' and an alert. The two non-matching entries in the seed are there so a test can prove the matcher is selective: a matcher that alerts on everything passes a one-entry fixture.",
+  "watchlist": [
+    {
+      "plate_normalized": "GJ01AB1234",
+      "as_typed": "GJ-01-AB-1234",
+      "reason": "Stolen vehicle report 2026/AH/4471",
+      "priority": "high",
+      "active": true,
+      "created_by": "control-room"
+    },
+    {
+      "plate_normalized": "MH12DE9812",
+      "as_typed": "MH 12 DE 9812",
+      "reason": "Interstate alert, no local action",
+      "priority": "medium",
+      "active": true,
+      "created_by": "control-room"
+    },
+    {
+      "plate_normalized": "GJ05CK4471",
+      "as_typed": "gj05ck4471",
+      "reason": "Deactivated entry -- must never alert",
+      "priority": "low",
+      "active": false,
+      "created_by": "control-room"
+    }
+  ],
+  "matching_event": {
+    "schema_version": "1.1",
+    "event_id": "2b7e0d94-6c31-4a58-b0f6-9d81e4a7c352",
+    "camera_id": "cam07",
+    "stream_session_id": "6b0d5c31-8a47-4e2f-b93c-1d5e8a2f7c04",
+    "track_id": 77,
+    "observed_at": "2026-09-01T13:44:09.905Z",
+    "source_pts_ms": 267500,
+    "source_mode": "live_rtsp",
+    "vehicle": {"type": "car", "confidence": 0.94, "bbox_xyxy": [560, 300, 862, 552]},
+    "plate": {
+      "raw": "GJ 01 AB 1234",
+      "normalized": "GJ01AB1234",
+      "confidence": 0.93,
+      "match_state": "exact",
+      "plate_width_px": 71,
+      "evidence_count": 4,
+      "bbox_xyxy": [654, 468, 725, 492]
+    },
+    "image_quality": 0.89,
+    "evidence": {"snapshot_uri": "local://artifacts/snapshots/cam07_6b0d5c31_77_267500_2b7e0d94.jpg", "plate_crop_uri": "local://artifacts/snapshots/cam07_6b0d5c31_77_267500_2b7e0d94_plate.jpg"},
+    "model": {"detector": "rfdetr-small", "detector_weights_sha256": null, "plate_detector": "rtdetrv2-justjuu", "ocr": "paddleocr-3.0", "tracker": "bytetrack", "pipeline_version": "0.1.0"}
+  },
+  "non_matching_events": [
+    {
+      "why": "Deactivated watchlist entry. active=false means no alert, even though the plate matches exactly.",
+      "normalized": "GJ05CK4471",
+      "expected_alert": false
+    },
+    {
+      "why": "One character out from GJ01AB1234. Exact search is exact; this may appear as a fuzzy candidate but never as match_state 'exact' and never as an alert. Contracts 4.6.",
+      "normalized": "GJ01AB1284",
+      "expected_alert": false
+    }
+  ],
+  "expected_alert": {
+    "plate": "GJ01AB1234",
+    "camera_id": "cam07",
+    "match_state": "exact",
+    "priority": "high",
+    "acknowledged": false
+  }
+}

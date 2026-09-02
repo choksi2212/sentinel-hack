@@ -1,0 +1,74 @@
+{
+  "description": "One camera whose source timeline jumps backwards: 892300 ms, then 1200 ms on the next sampled frame. The Sentinel feeds loop with hard scene cuts, so this is the ordinary case, not the exotic one.",
+  "proves": "Canonical Contracts 2.1. A PTS regression means the frames on either side are not from the same continuous recording, so the worker MUST close the session and mint a new stream_session_id rather than carry one across the cut. Carrying it across produces tracks whose observations run backwards in time and a journey ordered by a timeline that reversed.",
+  "expected_stream_sessions_rows": 2,
+  "expected_first_session_end_reason": "discontinuity",
+  "events": [
+    {
+      "schema_version": "1.1",
+      "event_id": "4b6e18a2-0c93-4d57-8f24-7a1b3e9c62d0",
+      "camera_id": "cam14",
+      "stream_session_id": "f17d3b52-6e04-4a81-9c5b-2d80e6f39a41",
+      "track_id": 7,
+      "observed_at": "2026-09-01T11:02:44.310Z",
+      "source_pts_ms": 892300,
+      "source_mode": "live_hls",
+      "vehicle": {
+        "type": "car",
+        "confidence": 0.88,
+        "bbox_xyxy": [602, 288, 858, 494]
+      },
+      "plate": {
+        "raw": "GJ 03 MN 5512",
+        "normalized": "GJ03MN5512",
+        "confidence": 0.87,
+        "match_state": "probable",
+        "plate_width_px": 55,
+        "evidence_count": 3,
+        "bbox_xyxy": [688, 428, 743, 447]
+      },
+      "image_quality": 0.81,
+      "evidence": {
+        "snapshot_uri": "local://artifacts/snapshots/cam14_f17d3b52_7_892300_4b6e18a2.jpg",
+        "plate_crop_uri": "local://artifacts/snapshots/cam14_f17d3b52_7_892300_4b6e18a2_plate.jpg"
+      },
+      "model": {
+        "detector": "rfdetr-small",
+        "detector_weights_sha256": null,
+        "plate_detector": "rtdetrv2-justjuu",
+        "ocr": "paddleocr-3.0",
+        "tracker": "bytetrack",
+        "pipeline_version": "0.1.0"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "9a04c7e1-3f85-4b20-a6d9-1c74b58e03f6",
+      "camera_id": "cam14",
+      "stream_session_id": "2d5a90c4-7b16-4e83-b0f7-4a92c1d605e8",
+      "track_id": 1,
+      "observed_at": "2026-09-01T11:02:44.410Z",
+      "source_pts_ms": 1200,
+      "source_mode": "live_hls",
+      "vehicle": {
+        "type": "motorcycle",
+        "confidence": 0.76,
+        "bbox_xyxy": [128, 372, 244, 486]
+      },
+      "plate": null,
+      "image_quality": 0.54,
+      "evidence": {
+        "snapshot_uri": "local://artifacts/snapshots/cam14_2d5a90c4_1_1200_9a04c7e1.jpg",
+        "plate_crop_uri": null
+      },
+      "model": {
+        "detector": "rfdetr-small",
+        "detector_weights_sha256": null,
+        "plate_detector": "rtdetrv2-justjuu",
+        "ocr": "paddleocr-3.0",
+        "tracker": "bytetrack",
+        "pipeline_version": "0.1.0"
+      }
+    }
+  ]
+}

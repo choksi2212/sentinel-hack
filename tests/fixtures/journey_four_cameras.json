@@ -1,0 +1,222 @@
+{
+  "description": "One vehicle, GJ06HH2043, seen on four cameras over 27 minutes at ordinary Ahmedabad traffic speeds. The plate is deliberately not the watchlisted one and the timeline deliberately does not overlap any other fixture, so every fixture in this directory can be loaded into one database at once without two of them claiming the same vehicle was in two places.",
+  "proves": "Canonical Contracts 4.5 and 6.3. Every segment is feasible, so this is the fixture that must NOT raise a flag -- the counterpart to journey_implausible.json. It is also the canonical JourneyResponse for the frontend, including the mandatory disclaimer field.",
+  "cameras": [
+    {"camera_id": "cam04", "name": "Paldi Junction", "lat": 23.012, "lon": 72.558},
+    {"camera_id": "cam07", "name": "Ashram Road Chowk", "lat": 23.0295, "lon": 72.5715},
+    {"camera_id": "cam14", "name": "Ring Road North", "lat": 23.0512, "lon": 72.589},
+    {"camera_id": "cam21", "name": "Sabarmati Bridge East", "lat": 23.073026, "lon": 72.605273}
+  ],
+  "events": [
+    {
+      "schema_version": "1.1",
+      "event_id": "b5e14027-8c36-4a9d-91f2-07d63b8e5a41",
+      "camera_id": "cam04",
+      "stream_session_id": "0f38b71c-4d95-42e6-a83b-6c17e590d24f",
+      "track_id": 19,
+      "observed_at": "2026-09-01T10:03:21.234Z",
+      "source_pts_ms": 120400,
+      "source_mode": "file",
+      "vehicle": {"type": "car", "confidence": 0.92, "bbox_xyxy": [744, 336, 1028, 566]},
+      "plate": {
+        "raw": "GJ 06 HH 2043",
+        "normalized": "GJ06HH2043",
+        "confidence": 0.91,
+        "match_state": "probable",
+        "plate_width_px": 64,
+        "evidence_count": 4,
+        "bbox_xyxy": [830, 482, 894, 504]
+      },
+      "image_quality": 0.86,
+      "evidence": {"snapshot_uri": "local://artifacts/snapshots/cam04_0f38b71c_19_120400_b5e14027.jpg", "plate_crop_uri": "local://artifacts/snapshots/cam04_0f38b71c_19_120400_b5e14027_plate.jpg"},
+      "model": {"detector": "rfdetr-small", "detector_weights_sha256": null, "plate_detector": "rtdetrv2-justjuu", "ocr": "paddleocr-3.0", "tracker": "bytetrack", "pipeline_version": "0.1.0"}
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "cd0796b3-1e52-4f84-b7a0-38e5c92d610b",
+      "camera_id": "cam07",
+      "stream_session_id": "6b0d5c31-8a47-4e2f-b93c-1d5e8a2f7c04",
+      "track_id": 23,
+      "observed_at": "2026-09-01T10:12:04.234Z",
+      "source_pts_ms": 61030,
+      "source_mode": "file",
+      "vehicle": {"type": "car", "confidence": 0.9, "bbox_xyxy": [512, 322, 790, 548]},
+      "plate": {
+        "raw": "GJ 06 HH 2043",
+        "normalized": "GJ06HH2043",
+        "confidence": 0.89,
+        "match_state": "probable",
+        "plate_width_px": 58,
+        "evidence_count": 3,
+        "bbox_xyxy": [596, 466, 654, 487]
+      },
+      "image_quality": 0.83,
+      "evidence": {"snapshot_uri": "local://artifacts/snapshots/cam07_6b0d5c31_23_61030_cd0796b3.jpg", "plate_crop_uri": "local://artifacts/snapshots/cam07_6b0d5c31_23_61030_cd0796b3_plate.jpg"},
+      "model": {"detector": "rfdetr-small", "detector_weights_sha256": null, "plate_detector": "rtdetrv2-justjuu", "ocr": "paddleocr-3.0", "tracker": "bytetrack", "pipeline_version": "0.1.0"}
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "f2a83051-9b47-4c6e-8d15-52b0e7a34c98",
+      "camera_id": "cam14",
+      "stream_session_id": "b28f4a17-3c6e-4d05-9f81-7e2a5c4b0d93",
+      "track_id": 61,
+      "observed_at": "2026-09-01T10:22:16.234Z",
+      "source_pts_ms": 129040,
+      "source_mode": "file",
+      "vehicle": {"type": "car", "confidence": 0.87, "bbox_xyxy": [388, 300, 642, 512]},
+      "plate": {
+        "raw": "GJ06HH 2O43",
+        "normalized": "GJ06HH2043",
+        "confidence": 0.74,
+        "match_state": "probable",
+        "plate_width_px": 44,
+        "evidence_count": 2,
+        "bbox_xyxy": [452, 448, 496, 465]
+      },
+      "image_quality": 0.66,
+      "evidence": {"snapshot_uri": "local://artifacts/snapshots/cam14_b28f4a17_61_129040_f2a83051.jpg", "plate_crop_uri": "local://artifacts/snapshots/cam14_b28f4a17_61_129040_f2a83051_plate.jpg"},
+      "model": {"detector": "rfdetr-small", "detector_weights_sha256": null, "plate_detector": "rtdetrv2-justjuu", "ocr": "paddleocr-3.0", "tracker": "bytetrack", "pipeline_version": "0.1.0"}
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "3e91d5c7-0a64-4b38-97e2-8f5c14a0b6d3",
+      "camera_id": "cam21",
+      "stream_session_id": "97c2e408-5b31-4d7f-a094-6e83b2c519da",
+      "track_id": 4,
+      "observed_at": "2026-09-01T10:30:34.234Z",
+      "source_pts_ms": 18720,
+      "source_mode": "file",
+      "vehicle": {"type": "car", "confidence": 0.94, "bbox_xyxy": [900, 352, 1216, 604]},
+      "plate": {
+        "raw": "GJ 06 HH 2043",
+        "normalized": "GJ06HH2043",
+        "confidence": 0.95,
+        "match_state": "probable",
+        "plate_width_px": 78,
+        "evidence_count": 5,
+        "bbox_xyxy": [996, 520, 1074, 546]
+      },
+      "image_quality": 0.91,
+      "evidence": {"snapshot_uri": "local://artifacts/snapshots/cam21_97c2e408_4_18720_3e91d5c7.jpg", "plate_crop_uri": "local://artifacts/snapshots/cam21_97c2e408_4_18720_3e91d5c7_plate.jpg"},
+      "model": {"detector": "rfdetr-small", "detector_weights_sha256": null, "plate_detector": "rtdetrv2-justjuu", "ocr": "paddleocr-3.0", "tracker": "bytetrack", "pipeline_version": "0.1.0"}
+    }
+  ],
+  "expected_response": {
+    "plate": "GJ06HH2043",
+    "disclaimer": "Observed movement sequence. Not a confirmed route.",
+    "sighting_count": 4,
+    "sightings": [
+      {
+        "sighting_id": "7a1c58e0-3d92-4b46-8f07-21e5c9b4d38a",
+        "camera_id": "cam04",
+        "camera_name": "Paldi Junction",
+        "lat": 23.012,
+        "lon": 72.558,
+        "first_seen_at": "2026-09-01T10:03:21.234Z",
+        "last_seen_at": "2026-09-01T10:03:24.634Z",
+        "source_pts_ms": 120400,
+        "source_mode": "file",
+        "plate": "GJ06HH2043",
+        "plate_raw": "GJ 06 HH 2043",
+        "confidence": 0.91,
+        "match_state": "probable",
+        "evidence_count": 4,
+        "plate_width_px": 64,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam04_0f38b71c_19_120400_b5e14027.jpg"
+      },
+      {
+        "sighting_id": "0b64f397-8e15-4a72-93cd-5f27a1e084b6",
+        "camera_id": "cam07",
+        "camera_name": "Ashram Road Chowk",
+        "lat": 23.0295,
+        "lon": 72.5715,
+        "first_seen_at": "2026-09-01T10:12:04.234Z",
+        "last_seen_at": "2026-09-01T10:12:06.834Z",
+        "source_pts_ms": 61030,
+        "source_mode": "file",
+        "plate": "GJ06HH2043",
+        "plate_raw": "GJ 06 HH 2043",
+        "confidence": 0.89,
+        "match_state": "probable",
+        "evidence_count": 3,
+        "plate_width_px": 58,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam07_6b0d5c31_23_61030_cd0796b3.jpg"
+      },
+      {
+        "sighting_id": "c9e07b25-4f18-4d60-a3b7-86d1f5029e47",
+        "camera_id": "cam14",
+        "camera_name": "Ring Road North",
+        "lat": 23.0512,
+        "lon": 72.589,
+        "first_seen_at": "2026-09-01T10:22:16.234Z",
+        "last_seen_at": "2026-09-01T10:22:18.134Z",
+        "source_pts_ms": 129040,
+        "source_mode": "file",
+        "plate": "GJ06HH2043",
+        "plate_raw": "GJ06HH 2O43",
+        "confidence": 0.74,
+        "match_state": "probable",
+        "evidence_count": 2,
+        "plate_width_px": 44,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam14_b28f4a17_61_129040_f2a83051.jpg"
+      },
+      {
+        "sighting_id": "5f2b8a41-6c07-4e93-b18d-40a927e5c6f2",
+        "camera_id": "cam21",
+        "camera_name": "Sabarmati Bridge East",
+        "lat": 23.073026,
+        "lon": 72.605273,
+        "first_seen_at": "2026-09-01T10:30:34.234Z",
+        "last_seen_at": "2026-09-01T10:30:37.834Z",
+        "source_pts_ms": 18720,
+        "source_mode": "file",
+        "plate": "GJ06HH2043",
+        "plate_raw": "GJ 06 HH 2043",
+        "confidence": 0.95,
+        "match_state": "probable",
+        "evidence_count": 5,
+        "plate_width_px": 78,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam21_97c2e408_4_18720_3e91d5c7.jpg"
+      }
+    ],
+    "segments": [
+      {
+        "from_camera_id": "cam04",
+        "to_camera_id": "cam07",
+        "from_time": "2026-09-01T10:03:21.234Z",
+        "to_time": "2026-09-01T10:12:04.234Z",
+        "straight_line_km": 2.386,
+        "elapsed_seconds": 523,
+        "required_speed_kmh": 16.4,
+        "feasible": true,
+        "note": null
+      },
+      {
+        "from_camera_id": "cam07",
+        "to_camera_id": "cam14",
+        "from_time": "2026-09-01T10:12:04.234Z",
+        "to_time": "2026-09-01T10:22:16.234Z",
+        "straight_line_km": 3.005,
+        "elapsed_seconds": 612,
+        "required_speed_kmh": 17.7,
+        "feasible": true,
+        "note": null
+      },
+      {
+        "from_camera_id": "cam14",
+        "to_camera_id": "cam21",
+        "from_time": "2026-09-01T10:22:16.234Z",
+        "to_time": "2026-09-01T10:30:34.234Z",
+        "straight_line_km": 2.943,
+        "elapsed_seconds": 498,
+        "required_speed_kmh": 21.3,
+        "feasible": true,
+        "note": null
+      }
+    ]
+  }
+}

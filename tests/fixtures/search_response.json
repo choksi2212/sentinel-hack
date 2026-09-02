@@ -1,0 +1,131 @@
+{
+  "description": "The canonical GET /api/v1/search/vehicles response body, for the frontend's mocks and for a contract test on the wire shape. Both variants are here because Contracts 6.2 requires exact and fuzzy results to be rendered as two separate lists, and a mock that only covers the exact case leaves the harder half of that requirement unbuilt.",
+  "proves": "Canonical Contracts 6.2 and 6.5. Field names are the ones the frontend generates types from -- first_seen_at, never timestamp. The three exact results are the same three sightings of GJ01AB1234 that ai_event_high_confidence.json, camera_reconnect.json and watchlist_match.json put into the database, so this file is consistent with the rest of the directory rather than a standalone invention.",
+  "request": "GET /api/v1/search/vehicles?plate=GJ%2001%20AB%201234&fuzzy=false&limit=50",
+  "response": {
+    "query": {
+      "plate": "GJ 01 AB 1234",
+      "normalized": "GJ01AB1234",
+      "fuzzy": false
+    },
+    "count": 3,
+    "results": [
+      {
+        "sighting_id": "e4a72c18-5b93-4d06-8f21-7c6e05a9b3d4",
+        "camera_id": "cam07",
+        "camera_name": "Ashram Road Chowk",
+        "lat": 23.0295,
+        "lon": 72.5715,
+        "first_seen_at": "2026-09-01T13:44:09.905Z",
+        "last_seen_at": "2026-09-01T13:44:13.205Z",
+        "source_pts_ms": 267500,
+        "source_mode": "live_rtsp",
+        "plate": "GJ01AB1234",
+        "plate_raw": "GJ 01 AB 1234",
+        "confidence": 0.93,
+        "match_state": "exact",
+        "evidence_count": 4,
+        "plate_width_px": 71,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam07_6b0d5c31_77_267500_2b7e0d94.jpg"
+      },
+      {
+        "sighting_id": "9c31be07-2f48-4a65-b7d9-04e18a6c5f20",
+        "camera_id": "cam04",
+        "camera_name": "Paldi Junction",
+        "lat": 23.012,
+        "lon": 72.558,
+        "first_seen_at": "2026-09-01T10:41:07.120Z",
+        "last_seen_at": "2026-09-01T10:41:10.020Z",
+        "source_pts_ms": 604800,
+        "source_mode": "live_rtsp",
+        "plate": "GJ01AB1234",
+        "plate_raw": "GJ 01 AB 1234",
+        "confidence": 0.92,
+        "match_state": "exact",
+        "evidence_count": 3,
+        "plate_width_px": 60,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam04_3a7f1e02_42_604800_a3f61c05.jpg"
+      },
+      {
+        "sighting_id": "6d8054fa-1c72-4b39-90e6-5a2f7c81d4b3",
+        "camera_id": "cam04",
+        "camera_name": "Paldi Junction",
+        "lat": 23.012,
+        "lon": 72.558,
+        "first_seen_at": "2026-09-01T10:03:21.234Z",
+        "last_seen_at": "2026-09-01T10:03:24.634Z",
+        "source_pts_ms": 343100,
+        "source_mode": "file",
+        "plate": "GJ01AB1234",
+        "plate_raw": "GJ 01 AB 1234",
+        "confidence": 0.94,
+        "match_state": "exact",
+        "evidence_count": 4,
+        "plate_width_px": 62,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam04_3a7f1e02_42_343100_9f2c1d84.jpg"
+      }
+    ]
+  },
+  "fuzzy_request": "GET /api/v1/search/vehicles?plate=GJ%2001%20A8%201234&fuzzy=true&limit=50",
+  "fuzzy_response": {
+    "query": {
+      "plate": "GJ 01 A8 1234",
+      "normalized": "GJ01A81234",
+      "fuzzy": true
+    },
+    "count": 0,
+    "results": [],
+    "candidates": [
+      {
+        "sighting_id": "e4a72c18-5b93-4d06-8f21-7c6e05a9b3d4",
+        "camera_id": "cam07",
+        "camera_name": "Ashram Road Chowk",
+        "lat": 23.0295,
+        "lon": 72.5715,
+        "first_seen_at": "2026-09-01T13:44:09.905Z",
+        "last_seen_at": "2026-09-01T13:44:13.205Z",
+        "source_pts_ms": 267500,
+        "source_mode": "live_rtsp",
+        "plate": "GJ01AB1234",
+        "plate_raw": "GJ 01 AB 1234",
+        "confidence": 0.93,
+        "match_state": "probable",
+        "evidence_count": 4,
+        "plate_width_px": 71,
+        "vehicle_type": "car",
+        "snapshot_uri": "local://artifacts/snapshots/cam07_6b0d5c31_77_267500_2b7e0d94.jpg",
+        "distance": 1
+      },
+      {
+        "sighting_id": "b07f2c95-8d41-4e73-a26b-1f5904c8e7a3",
+        "camera_id": "cam23",
+        "camera_name": "Naroda Patiya",
+        "lat": null,
+        "lon": null,
+        "first_seen_at": "2026-09-01T09:18:52.700Z",
+        "last_seen_at": "2026-09-01T09:18:54.100Z",
+        "source_pts_ms": null,
+        "source_mode": "frames",
+        "plate": "GJ01AB1284",
+        "plate_raw": "GJ01AB1284",
+        "confidence": 0.66,
+        "match_state": "low_confidence",
+        "evidence_count": 1,
+        "plate_width_px": 33,
+        "vehicle_type": "car",
+        "snapshot_uri": null,
+        "distance": 2
+      }
+    ]
+  },
+  "frontend_notes": [
+    "match_state in candidates is never 'exact'. Contracts 4.6: fuzzy matching generates candidates only.",
+    "results and candidates are rendered as two separate lists. Merging them presents a guess as a match.",
+    "cam23 has lat and lon null because it has not been surveyed. The map must skip the marker and the list row must still render.",
+    "cam23 has snapshot_uri null. Render a placeholder, do not render a broken image.",
+    "source_mode drives the LIVE/REPLAY badge. Two of these rows are live_rtsp and two are not, in one list."
+  ]
+}

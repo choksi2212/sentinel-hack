@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.1",
+  "event_id": "9f2c1d84-7b3e-4a51-9c02-6d8e1f4a7b90",
+  "camera_id": "cam04",
+  "stream_session_id": "3a7f1e02-5c9b-4d18-8e63-2b4a9c7d1f05",
+  "track_id": 42,
+  "observed_at": "2026-09-01T10:03:21.234Z",
+  "source_pts_ms": 343100,
+  "source_mode": "file",
+  "vehicle": {
+    "type": "car",
+    "confidence": 0.93,
+    "bbox_xyxy": [812, 344, 1102, 587]
+  },
+  "plate": {
+    "raw": "GJ 01 AB 1234",
+    "normalized": "GJ01AB1234",
+    "confidence": 0.94,
+    "match_state": "exact",
+    "plate_width_px": 62,
+    "evidence_count": 4,
+    "bbox_xyxy": [901, 502, 963, 523]
+  },
+  "image_quality": 0.88,
+  "evidence": {
+    "snapshot_uri": "local://artifacts/snapshots/cam04_3a7f1e02_42_343100_9f2c1d84.jpg",
+    "plate_crop_uri": "local://artifacts/snapshots/cam04_3a7f1e02_42_343100_9f2c1d84_plate.jpg"
+  },
+  "model": {
+    "detector": "rfdetr-small",
+    "detector_weights_sha256": null,
+    "plate_detector": "rtdetrv2-justjuu",
+    "ocr": "paddleocr-3.0",
+    "tracker": "bytetrack",
+    "pipeline_version": "0.1.0"
+  }
+}

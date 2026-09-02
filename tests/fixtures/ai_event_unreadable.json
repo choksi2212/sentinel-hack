@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.1",
+  "event_id": "1e7a3f52-9d04-4b86-8c17-4a6f2b90d3e8",
+  "camera_id": "cam14",
+  "stream_session_id": "b28f4a17-3c6e-4d05-9f81-7e2a5c4b0d93",
+  "track_id": 117,
+  "observed_at": "2026-09-01T10:22:16.088Z",
+  "source_pts_ms": 128900,
+  "source_mode": "file",
+  "vehicle": {
+    "type": "truck",
+    "confidence": 0.89,
+    "bbox_xyxy": [140, 210, 604, 640]
+  },
+  "plate": null,
+  "image_quality": 0.61,
+  "evidence": {
+    "snapshot_uri": "local://artifacts/snapshots/cam14_b28f4a17_117_128900_1e7a3f52.jpg",
+    "plate_crop_uri": null
+  },
+  "model": {
+    "detector": "rfdetr-small",
+    "detector_weights_sha256": null,
+    "plate_detector": "rtdetrv2-justjuu",
+    "ocr": "paddleocr-3.0",
+    "tracker": "bytetrack",
+    "pipeline_version": "0.1.0"
+  }
+}

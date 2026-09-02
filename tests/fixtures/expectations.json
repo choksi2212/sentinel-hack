@@ -1,0 +1,115 @@
+{
+  "note": "Machine-readable expected outcome per fixture. Not one of the twelve files Contracts section 9 locks -- scaffolding, so that the AI lane's tests and the backend lane's ingest tests assert the same table instead of two drifting copies of it. Read this, do not retype it.",
+  "ingest_path_disagreement": {
+    "problem": "Contracts 6.1 says POST /api/v1/events/vehicle-sighting and returns 200 for a new event. The backend manual section 5.1 says POST /api/v1/ingest/events and returns 201 for a new event. Both documents are in docs/. They cannot both be right and nobody noticed until the fixtures needed an expected status code.",
+    "resolution_pending": "Needs one decision from the team, recorded in Contracts 6.1. Until then the AI worker defaults to /api/v1/ingest/events, because that is what the person implementing the endpoint is reading, and ai/emit/http_sink.py treats 200-with-status-accepted and 201 as the same outcome so either backend is accepted without a code change.",
+    "status_new": [200, 201],
+    "status_duplicate": [200],
+    "status_rejected": [422],
+    "status_unavailable": [503]
+  },
+  "fixtures": {
+    "ai_event_high_confidence.json": {
+      "kind": "event",
+      "locally_valid": true,
+      "expect": "new",
+      "expect_error_code": null,
+      "expect_alert": true,
+      "why": "Exact watchlist match on GJ01AB1234, four agreeing observations. The only fixture that may raise a confirmed alert."
+    },
+    "ai_event_low_confidence.json": {
+      "kind": "event",
+      "locally_valid": true,
+      "expect": "new",
+      "expect_error_code": null,
+      "expect_alert": false,
+      "why": "One observation at 0.51. Contracts 3.4: a weak observation must not reach ALERTED."
+    },
+    "ai_event_unreadable.json": {
+      "kind": "event",
+      "locally_valid": true,
+      "expect": "new",
+      "expect_error_code": null,
+      "expect_alert": false,
+      "why": "plate is null: no plate was located. Contracts 3.2 -- a valid, expected, correct event. Rejecting it would make the pipeline hide vehicles it could not identify, which is the opposite of what a police system needs."
+    },
+    "ai_event_duplicate.json": {
+      "kind": "event",
+      "locally_valid": true,
+      "expect": "duplicate",
+      "expect_error_code": null,
+      "expect_alert": false,
+      "why": "Byte-identical to ai_event_high_confidence.json, which is what a retry after an ambiguous timeout looks like. Must not create a second sighting and must not raise a second alert. Order matters: POST high_confidence first.",
+      "depends_on": "ai_event_high_confidence.json"
+    },
+    "ai_event_bad_timestamp.json": {
+      "kind": "event",
+      "locally_valid": false,
+      "expect": "rejected",
+      "expect_error_code": "VALIDATION_FAILED",
+      "expect_field": "observed_at",
+      "expect_alert": false,
+      "why": "observed_at is naive. Ambiguous by up to a day, and the ambiguity surfaces as a journey with its events out of order. Never coerce."
+    },
+    "ai_event_unknown_camera.json": {
+      "kind": "event",
+      "locally_valid": true,
+      "expect": "rejected",
+      "expect_error_code": "UNKNOWN_CAMERA",
+      "expect_field": "camera_id",
+      "expect_alert": false,
+      "why": "locally_valid is true on purpose. cam99 is a well-formed Sentinel ID, so the AI lane's validator passes it -- existence is the catalogue's business, not the envelope's. This is the one fixture that separates shape validation from the database lookup, and a backend that rejects it with VALIDATION_FAILED instead of UNKNOWN_CAMERA has collapsed the two."
+    },
+    "camera_reconnect.json": {
+      "kind": "event_sequence",
+      "event_count": 2,
+      "locally_valid": true,
+      "expect": "new",
+      "expect_vehicle_tracks_rows": 2,
+      "expect_stream_sessions_rows": 2,
+      "why": "Contracts 1.2. Same camera, same track_id 42, different stream_session_id. One row means uq_trackkey is keyed on (camera_id, track_id) and every journey built from that data merges two vehicles."
+    },
+    "scene_discontinuity.json": {
+      "kind": "event_sequence",
+      "event_count": 2,
+      "locally_valid": true,
+      "expect": "new",
+      "expect_stream_sessions_rows": 2,
+      "expect_first_session_end_reason": "discontinuity",
+      "why": "source_pts_ms goes 892300 then 1200. A backwards timeline means the frames are not from one continuous recording, so the session must rotate."
+    },
+    "journey_four_cameras.json": {
+      "kind": "journey",
+      "event_count": 4,
+      "locally_valid": true,
+      "expect": "new",
+      "expect_segments": 3,
+      "expect_all_feasible": true,
+      "why": "The negative control for the feasibility check. Three segments at 16 to 22 km/h, all under the 150 km/h ceiling. A check that flags these is useless."
+    },
+    "journey_implausible.json": {
+      "kind": "journey",
+      "event_count": 2,
+      "locally_valid": true,
+      "expect": "new",
+      "expect_segments": 1,
+      "expect_all_feasible": false,
+      "expect_sightings_retained": 2,
+      "why": "8.333 km in 2 seconds is 15000 km/h. The segment is flagged and BOTH sightings stay in the response. Contracts 4.5 forbids deleting the implausible one."
+    },
+    "watchlist_match.json": {
+      "kind": "watchlist",
+      "locally_valid": true,
+      "expect": "new",
+      "expect_alert": true,
+      "expect_alert_match_state": "exact",
+      "why": "Three seeded entries, one active exact match. The deactivated entry and the one-character-off plate are both in the file so a test can prove the matcher is selective rather than permissive."
+    },
+    "search_response.json": {
+      "kind": "response_shape",
+      "locally_valid": null,
+      "expect": null,
+      "why": "Not POSTable. The canonical GET /api/v1/search/vehicles body, exact and fuzzy variants, for the frontend's generated types and its mocks."
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "description": "Two unrelated vehicles that ByteTrack both numbered track_id 42, because the stream reconnected between them and track numbering restarts at 1 on every new session.",
+  "proves": "Canonical Contracts 1.2 and the uq_trackkey unique index in 5.3. These two events MUST produce two rows in vehicle_tracks. If they produce one, the index is keyed on (camera_id, track_id) instead of (camera_id, stream_session_id, track_id), and every journey built from that data silently merges two vehicles into one.",
+  "expected_vehicle_tracks_rows": 2,
+  "expected_stream_sessions_rows": 2,
+  "events": [
+    {
+      "schema_version": "1.1",
+      "event_id": "a3f61c05-7e28-4b94-8d13-06c5a9f2e478",
+      "camera_id": "cam04",
+      "stream_session_id": "3a7f1e02-5c9b-4d18-8e63-2b4a9c7d1f05",
+      "track_id": 42,
+      "observed_at": "2026-09-01T10:41:07.120Z",
+      "source_pts_ms": 604800,
+      "source_mode": "live_rtsp",
+      "vehicle": {
+        "type": "car",
+        "confidence": 0.91,
+        "bbox_xyxy": [788, 351, 1064, 578]
+      },
+      "plate": {
+        "raw": "GJ 01 AB 1234",
+        "normalized": "GJ01AB1234",
+        "confidence": 0.92,
+        "match_state": "exact",
+        "plate_width_px": 60,
+        "evidence_count": 3,
+        "bbox_xyxy": [874, 494, 934, 515]
+      },
+      "image_quality": 0.85,
+      "evidence": {
+        "snapshot_uri": "local://artifacts/snapshots/cam04_3a7f1e02_42_604800_a3f61c05.jpg",
+        "plate_crop_uri": "local://artifacts/snapshots/cam04_3a7f1e02_42_604800_a3f61c05_plate.jpg"
+      },
+      "model": {
+        "detector": "rfdetr-small",
+        "detector_weights_sha256": null,
+        "plate_detector": "rtdetrv2-justjuu",
+        "ocr": "paddleocr-3.0",
+        "tracker": "bytetrack",
+        "pipeline_version": "0.1.0"
+      }
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "e0927d43-5b81-4f6a-92c7-3d1e8b40a5f9",
+      "camera_id": "cam04",
+      "stream_session_id": "8c4b91d6-2a70-4e35-b8f1-59d3c6e04a27",
+      "track_id": 42,
+      "observed_at": "2026-09-01T10:41:23.640Z",
+      "source_pts_ms": 400,
+      "source_mode": "live_rtsp",
+      "vehicle": {
+        "type": "bus",
+        "confidence": 0.95,
+        "bbox_xyxy": [214, 188, 902, 651]
+      },
+      "plate": {
+        "raw": "GJ 18 GS 6620",
+        "normalized": "GJ18GS6620",
+        "confidence": 0.9,
+        "match_state": "probable",
+        "plate_width_px": 96,
+        "evidence_count": 5,
+        "bbox_xyxy": [498, 570, 594, 601]
+      },
+      "image_quality": 0.9,
+      "evidence": {
+        "snapshot_uri": "local://artifacts/snapshots/cam04_8c4b91d6_42_400_e0927d43.jpg",
+        "plate_crop_uri": "local://artifacts/snapshots/cam04_8c4b91d6_42_400_e0927d43_plate.jpg"
+      },
+      "model": {
+        "detector": "rfdetr-small",
+        "detector_weights_sha256": null,
+        "plate_detector": "rtdetrv2-justjuu",
+        "ocr": "paddleocr-3.0",
+        "tracker": "bytetrack",
+        "pipeline_version": "0.1.0"
+      }
+    }
+  ]
+}

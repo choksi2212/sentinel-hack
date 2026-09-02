@@ -1,0 +1,76 @@
+{
+  "description": "The same plate on cam04 and cam21 two seconds apart. The cameras are 8.333 km apart, so the segment requires 15,000 km/h.",
+  "proves": "Canonical Contracts 4.5. The segment must come back feasible:false with a note, and BOTH sightings must still be present in the response. Silently dropping the second one is the failure this fixture exists to catch: an implausible pair is evidence of an OCR error or of something genuinely unusual, and deleting it destroys the only signal that either happened.",
+  "geometry_note": "straight_line_km is haversine on WGS84 with R=6371.0088 km, per 4.5. 8.333333 km over 2.0 s is 15000.0 km/h exactly, which is where the number in the error envelope example in 6.6 comes from. Road-network distance would be larger, so the straight line under-estimates and the check is conservative in the right direction.",
+  "cameras": [
+    {"camera_id": "cam04", "name": "Paldi Junction", "lat": 23.012, "lon": 72.558},
+    {"camera_id": "cam21", "name": "Sabarmati Bridge East", "lat": 23.073026, "lon": 72.605273}
+  ],
+  "events": [
+    {
+      "schema_version": "1.1",
+      "event_id": "6c2f84b0-7e13-4a95-8d26-3f0b17e94c58",
+      "camera_id": "cam04",
+      "stream_session_id": "0f38b71c-4d95-42e6-a83b-6c17e590d24f",
+      "track_id": 88,
+      "observed_at": "2026-09-01T12:15:00.000Z",
+      "source_pts_ms": 851600,
+      "source_mode": "file",
+      "vehicle": {"type": "car", "confidence": 0.9, "bbox_xyxy": [640, 320, 916, 552]},
+      "plate": {
+        "raw": "GJ 11 KP 8890",
+        "normalized": "GJ11KP8890",
+        "confidence": 0.88,
+        "match_state": "probable",
+        "plate_width_px": 61,
+        "evidence_count": 3,
+        "bbox_xyxy": [724, 470, 785, 491]
+      },
+      "image_quality": 0.84,
+      "evidence": {"snapshot_uri": "local://artifacts/snapshots/cam04_0f38b71c_88_851600_6c2f84b0.jpg", "plate_crop_uri": "local://artifacts/snapshots/cam04_0f38b71c_88_851600_6c2f84b0_plate.jpg"},
+      "model": {"detector": "rfdetr-small", "detector_weights_sha256": null, "plate_detector": "rtdetrv2-justjuu", "ocr": "paddleocr-3.0", "tracker": "bytetrack", "pipeline_version": "0.1.0"}
+    },
+    {
+      "schema_version": "1.1",
+      "event_id": "18d5a3f7-2c60-4b81-9e47-5a0c73b26fd9",
+      "camera_id": "cam21",
+      "stream_session_id": "97c2e408-5b31-4d7f-a094-6e83b2c519da",
+      "track_id": 12,
+      "observed_at": "2026-09-01T12:15:02.000Z",
+      "source_pts_ms": 74300,
+      "source_mode": "file",
+      "vehicle": {"type": "car", "confidence": 0.79, "bbox_xyxy": [1004, 366, 1252, 578]},
+      "plate": {
+        "raw": "GJ11KP889O",
+        "normalized": "GJ11KP8890",
+        "confidence": 0.62,
+        "match_state": "low_confidence",
+        "plate_width_px": 38,
+        "evidence_count": 1,
+        "bbox_xyxy": [1062, 508, 1100, 524]
+      },
+      "image_quality": 0.49,
+      "evidence": {"snapshot_uri": "local://artifacts/snapshots/cam21_97c2e408_12_74300_18d5a3f7.jpg", "plate_crop_uri": "local://artifacts/snapshots/cam21_97c2e408_12_74300_18d5a3f7_plate.jpg"},
+      "model": {"detector": "rfdetr-small", "detector_weights_sha256": null, "plate_detector": "rtdetrv2-justjuu", "ocr": "paddleocr-3.0", "tracker": "bytetrack", "pipeline_version": "0.1.0"}
+    }
+  ],
+  "expected_response": {
+    "plate": "GJ11KP8890",
+    "disclaimer": "Observed movement sequence. Not a confirmed route.",
+    "sighting_count": 2,
+    "segments": [
+      {
+        "from_camera_id": "cam04",
+        "to_camera_id": "cam21",
+        "from_time": "2026-09-01T12:15:00.000Z",
+        "to_time": "2026-09-01T12:15:02.000Z",
+        "straight_line_km": 8.333,
+        "elapsed_seconds": 2,
+        "required_speed_kmh": 15000.0,
+        "feasible": false,
+        "note": "required speed 15000 km/h exceeds plausibility ceiling"
+      }
+    ]
+  },
+  "plausibility_ceiling_kmh": 150
+}

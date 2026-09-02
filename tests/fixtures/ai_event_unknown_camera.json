@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.1",
+  "event_id": "5c8f0a37-4b21-4de6-9a83-2f7c6b1e05d4",
+  "camera_id": "cam99",
+  "stream_session_id": "d94c7e08-1f53-4a29-8b60-3c5d9e2a7f16",
+  "track_id": 3,
+  "observed_at": "2026-09-01T10:31:02.500Z",
+  "source_pts_ms": 44200,
+  "source_mode": "file",
+  "vehicle": {
+    "type": "auto_rickshaw",
+    "confidence": 0.82,
+    "bbox_xyxy": [320, 402, 528, 596]
+  },
+  "plate": {
+    "raw": "GJ 27 TB 0091",
+    "normalized": "GJ27TB0091",
+    "confidence": 0.83,
+    "match_state": "probable",
+    "plate_width_px": 47,
+    "evidence_count": 2,
+    "bbox_xyxy": [388, 556, 435, 575]
+  },
+  "image_quality": 0.68,
+  "evidence": {
+    "snapshot_uri": "local://artifacts/snapshots/cam99_d94c7e08_3_44200_5c8f0a37.jpg",
+    "plate_crop_uri": "local://artifacts/snapshots/cam99_d94c7e08_3_44200_5c8f0a37_plate.jpg"
+  },
+  "model": {
+    "detector": "rfdetr-small",
+    "detector_weights_sha256": null,
+    "plate_detector": "rtdetrv2-justjuu",
+    "ocr": "paddleocr-3.0",
+    "tracker": "bytetrack",
+    "pipeline_version": "0.1.0"
+  }
+}
