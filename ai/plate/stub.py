@@ -179,10 +179,19 @@ EDGE_GRADIENT_THRESHOLD = 50      # per-pixel |d/dx| counted as a stroke edge
 #
 # Absolute rather than relative to the peak row, which is what the first version used.
 # Peak-relative made gradient_threshold inert: lowering it raises every row's count
-# including the peak's, so the ratio between them barely moves. Measured directly --
-# rows clearing 80% of peak was 5, 5, 5 at gradient thresholds 34, 20 and 10, and all
-# four parameter configurations of the first version returned byte-identical results
-# because of it. A fixed bar gives the gradient threshold something to move against.
+# including the peak's, so the ratio between them barely moves. Measured directly on the
+# fixture the class docstring describes -- the median number of rows clearing 80% of the
+# peak row is 6 at gradient threshold 34, 6 at 20 and 6 at 10 (means 7.3, 7.3, 7.4), so
+# a three-fold change in the threshold moves the row band not at all, and every
+# parameter configuration of the first version returned the same boxes because of it.
+#
+# The absolute bar is flat across those same three thresholds too (median 12 rows at
+# each), for the mundane reason that 34, 20 and 10 all sit far below the stroke gradient
+# on a clean synthetic glyph. Its responsiveness shows up across the full threshold
+# range and under reduced contrast, which is what the table in the class docstring
+# measures: 0.637 to 0.726 to 0.000 as threshold and contrast move against each other.
+# A fixed bar gives the gradient threshold something to move against; a peak-relative
+# one gives it nothing anywhere.
 EDGE_ROW_MIN_FILL = 0.06
 EDGE_MIN_ROWS = 3                 # a 40 px plate is 10 rows tall; 3 is the noise floor
 
@@ -193,12 +202,20 @@ EDGE_MIN_ROWS = 3                 # a 40 px plate is 10 rows tall; 3 is the nois
 # columns, which is the one thing a plate does not have -- hence the running maximum
 # below, which merges the teeth into the plateau the band logic is looking for.
 #
-# 0.45 rather than the 0.60 that scores 0.022 higher recall, because 0.60 returns 20
-# boxes that overlap no plate at all against 0.45's one, and drops mean IoU from 0.734
-# to 0.570. Those are not equivalent trades: a loose box around a plate feeds the OCR
-# stage a clipped first character and yields a confident wrong string, which Contracts
-# section 12 names as the worst outcome the pipeline can produce -- worse than the
-# plate: null that a missing box produces.
+# 0.45 rather than the 0.60 that scores 0.022 higher recall (0.664 -> 0.686), because
+# 0.60 returns 20 boxes that fail the IoU >= 0.3 bar against 0.45's one, and drops mean
+# IoU over all returned boxes from 0.736 to 0.577.
+#
+# Those 20 are not spurious detections somewhere else in the crop. Every one of them
+# overlaps a real plate -- the lowest scores 0.187 and none score zero -- so what 0.60
+# buys is not extra plates found but the same plates found with looser boxes, some of
+# them loose enough to fall under the bar. An earlier version of this comment described
+# them as boxes that "overlap no plate at all", which is both false and a weaker
+# argument than the truth: a box that has drifted off the plate entirely is a
+# false positive the OCR stage will fail to read and report as unreadable, whereas a box
+# that is on the plate but bounded 20% too wide feeds OCR a clipped first character and
+# yields a confident wrong string. Contracts section 12 names that as the worst outcome
+# the pipeline can produce -- worse than the plate: null a missing box produces.
 EDGE_COL_QUANTILE = 0.45
 EDGE_MIN_COLS = 8                 # narrower than this is one character, not a plate
 
@@ -227,21 +244,34 @@ class EdgePlateDetector(BasePlateDetector):
     kinds of threshold and different pre-processing, and getting either wrong makes the
     detector return nothing at all -- see the notes on each constant above.
 
-    **Measured** on the synthetic road scenes: seed 42, 200 emitted frames at 120 ms,
-    226 legible plate-frames, oracle vehicle detector so the numbers describe this
-    stage rather than the detector's, a hit counted when the returned box overlaps the
-    true plate box by IoU >= 0.3. Compared against OraclePlateDetector, which reads the
-    truth boxes and therefore fixes the ceiling this can be measured against:
+    **Measured** on the synthetic road scenes, and re-runnable: source mode synthetic,
+    camera cam01, seed 42, total_frames 200, target_interval_ms 120. That fixture emits
+    67 frames at 1280x720 -- 200 is the *raw* frame count, and an earlier version of
+    this docstring reported it as "200 emitted frames", which sent anyone reproducing
+    the table to a fixture three times the size with 894 legible plate-frames instead
+    of 226. The clip contains 6 distinct vehicles across 240 truth vehicle-frames, of
+    which 226 have a legible plate; around 3.2 vehicles are on screen per emitted frame.
+    The vehicle detector is the oracle at miss_rate 0, so the numbers describe this
+    stage rather than the detector's. A hit is a returned box overlapping the true plate
+    box by IoU >= 0.3, and the precision column applies the same 0.3 bar to each
+    returned box. Compared against OraclePlateDetector, which reads the truth boxes and
+    therefore fixes the ceiling this can be measured against:
 
         oracle    recall 0.956    mean IoU 1.000    216/216 boxes correct
         edge      recall 0.664    mean IoU 0.736    150/151 boxes correct
+
+    Mean IoU is over every returned box, not over the hits alone. The distinction is
+    small here and worth stating because it is not always -- edge scores 0.740 over its
+    150 hits and 0.736 once its one sub-threshold box is included, and a setting that
+    trades tight boxes for more of them moves the two figures in opposite directions
+    (see EDGE_COL_QUANTILE above, where 0.60 raises recall and drops mean IoU to 0.577).
 
     The oracle's own 0.956 is not a bug: 10 of the 226 sit in the 40-60 px bucket where
     the tracker's box match fails, which is loss before this stage rather than in it.
 
     By plate width, which is the only breakdown that means anything here:
 
-        40-60 px     17/ 77   0.221      (oracle 0.870)
+        40-60 px     17/ 77   0.221      (oracle 67/77  0.870)
         60-80 px     71/ 86   0.826      (oracle 1.000)
         80-100 px    54/ 54   1.000      (oracle 1.000)
         >100 px       8/  9   0.889      (oracle 1.000)
@@ -250,36 +280,43 @@ class EdgePlateDetector(BasePlateDetector):
     real junction plates mostly live. That single row is the argument for the trained
     model, and it is a stronger argument than any average would have been.
 
-    0.74 ms median per frame, 1.05 ms p95, at around six vehicles a frame on 1280x720.
-    Three orders of magnitude cheaper than the vehicle detector, so on the edge-device
-    fallback path this stage is free.
+    0.70 ms median per frame, 1.00 ms p95, at 3.2 vehicles a frame on 1280x720. Three
+    orders of magnitude cheaper than the vehicle detector, so on the edge-device
+    fallback path this stage is free. These two are the only numbers here that are
+    machine-dependent, and no test pins them.
 
     **gradient_threshold: the effective parameter is threshold/contrast, and both
-    failure directions are measured.** Sweeping the threshold against injected crop
-    grain and against reduced crop contrast produces one table with a diagonal in it --
-    recall 0.726 / IoU 0.742 appears at (120, 100%), (80, 60%), (50, 40%), (34, 25%)
-    and (20, 15%). That is the expected shape: the threshold is compared against
-    gradients that scale linearly with contrast.
+    failure directions are measured.** Sweeping the threshold against reduced crop
+    contrast produces one table with a diagonal in it. Every cell below is measured, and
+    the diagonal is the finding:
 
-        threshold   works down to   dies at   recall across its range
-             34        25% contrast     15%     0.637 -> 0.726
-             50        25% contrast     15%     0.664 -> 0.726
-             80        40% contrast     25%     0.717 -> 0.726
-            120        60% contrast     40%     0.726
+        recall        100%     60%     40%     25%     15%     10%
+          th= 20     0.637   0.637   0.664   0.717   0.726   0.726
+          th= 34     0.637   0.664   0.717   0.726   0.000   0.000
+          th= 50     0.664   0.717   0.726   0.726   0.000   0.000
+          th= 80     0.717   0.726   0.726   0.000   0.000   0.000
+          th=120     0.726   0.726   0.000   0.000   0.000   0.000
 
-    50 is the default because it has the same working contrast range as 34 and strictly
-    higher recall at every point inside it, and because grain moves it almost not at all
-    (0.664 at +/-0 through 0.655 at +/-24).
+    0.726 appears at (120, 100%), (80, 60%), (50, 40%), (34, 25%) and (20, 15%) -- five
+    cells along one diagonal, exactly, and 0.000 immediately past each one. That is the
+    expected shape: the threshold is compared against gradients that scale linearly with
+    contrast, so halving the contrast and halving the threshold is the same detector.
+
+    50 is the default because it has the same working contrast range as 34 and higher
+    recall at every point inside it except the bottom, where the two meet at 0.726 --
+    and because grain moves it almost not at all (0.664 at +/-0, 0.664 at +/-6, 0.659 at
+    +/-10, 0.650 at +/-24).
 
     **Two settings scored better on the fixture and are not the default.** Threshold 5
-    gives recall 0.863 and IoU 0.780 with perfect precision -- the best numbers in this
-    file -- and collapses to 0.018 under +/-6 grain and to 0.000 under +/-10. The
-    generator flat-shades vehicle bodywork, so a threshold of 5/255 is measuring a
-    vehicle with no texture, which no real camera can promise. Threshold 120 is the
-    fixture optimum at full contrast and fails outright below 40%, because synthetic
-    glyphs are rendered black-on-white at maximum contrast and a dirty plate under
-    sodium light is not. Both are the same mistake in opposite directions, and neither
-    was visible until the fixture was perturbed in the axis each one depends on.
+    gives recall 0.779 and IoU 0.754 with perfect precision -- 176 boxes, all 176 above
+    the 0.3 bar, the best recall in this file -- and collapses to 0.058 under +/-6 grain
+    and to 0.000 under +/-10. The generator flat-shades vehicle bodywork, so a threshold
+    of 5/255 is measuring a vehicle with no texture, which no real camera can promise.
+    Threshold 120 is the fixture optimum at full contrast and fails outright below 40%,
+    because synthetic glyphs are rendered black-on-white at maximum contrast and a dirty
+    plate under sodium light is not. Both are the same mistake in opposite directions,
+    and neither was visible until the fixture was perturbed in the axis each one
+    depends on.
     """
 
     def __init__(
@@ -357,9 +394,16 @@ class EdgePlateDetector(BasePlateDetector):
         # span by radius on each side, so a correctly located plate of aspect 4.17 comes
         # back at 4.17h + 2*(h/2) = 5.17h, and one whose row band under-measures the
         # height by a third arrives above 6.0 and is thrown out by the aspect gate in
-        # geometry.py. Measured, with the dilation but without this erosion: 117 of 216
-        # proposals rejected for shape, *all* of them for being too wide, and the 63
-        # that survived piled up in the 4.2-6.0 bucket immediately below the ceiling.
+        # geometry.py.
+        #
+        # Measured on the fixture in the class docstring, with the dilation but without
+        # this erosion: 198 of 216 proposals rejected for shape, all 198 of them for
+        # being too wide, leaving 18 -- of which 13 sit in the 4.2-6.0 bucket pressed up
+        # against the ceiling. Shipped, the same run rejects 65 (64 too wide, 1 too tall)
+        # and emits 151. So the erosion is worth 133 plates out of 216, and an earlier
+        # version of this comment put the damage at "117 rejected ... and the 63 that
+        # survived", which understated it by a factor of three and made the line look
+        # like a refinement rather than the thing holding the detector up.
         # The dilation is a device for finding the extent, not part of the answer.
         span = _contiguous_band(
             col_counts, col_peak * self.col_quantile, EDGE_MIN_COLS + 2 * radius

@@ -27,10 +27,32 @@ from ai.contracts.stages import BBox
 
 # Padding added around the vehicle box before cropping, as a fraction of box size.
 #
-# Not zero, because the box being cropped is a tracker output. When a track is
-# coasting through a missed detection the box is the Kalman estimate, which lags --
-# measured at IoU 0.98 against truth while coasting, so about 2% of the box is in the
-# wrong place, and a rear plate sits exactly at the trailing edge that lag moves off.
+# Not zero, because the box being cropped is a *detector's* box, not truth. Under the
+# oracle detector it is truth exactly -- ai/track/track.py records IoU 1.000 for every
+# emitted box, since report_bbox_xyxy returns the observation whenever the track matched
+# this frame -- but RF-DETR's box is not, and a vehicle box that clips the bumper clips
+# the plate bolted to it. A rear plate sits at the trailing edge, so error at that edge
+# costs plate pixels specifically rather than a proportionate share of the vehicle.
+#
+# It is *not* here to cover the Kalman estimate's lag while a track coasts through a
+# missed detection, which is what an earlier version of this comment claimed at "IoU
+# 0.98 against truth while coasting, so about 2% of the box is in the wrong place". Two
+# things were wrong with that. The number: measured on the seed-42 synthetic fixture
+# with the oracle detector's miss_rate raised to force coasting, the estimate scores
+# mean IoU 0.776 against truth over 37 coasting track-frames at miss_rate 0.25 and
+# 0.819 over 66 at 0.50, with a worst case of 0.129 -- an order of magnitude more error
+# than claimed, and 8% of padding could not rescue the tail of that distribution
+# anyway. And the premise: BaseTracker.update returns only tracks where is_active
+# holds, which is CONFIRMED *and* time_since_update == 0, so a coasting box is never
+# handed to this stage at all. The justification was for a case the shipped path cannot
+# produce, sized by a measurement that did not hold.
+#
+# Recorded rather than deleted because it is a live trap for anyone who widens
+# is_active, or who reaches past update() into the tracker's live track list to get
+# "more" vehicles to crop. That change silently starts feeding this function boxes that
+# can be 87% wrong, and the failure it produces -- a plate crop of empty road -- looks
+# like a plate detector problem.
+#
 # Not large either: every padded pixel is a pixel of road that can hold a false
 # positive, and the crop's whole value is that it excludes them.
 CROP_PAD_FRACTION = 0.08
