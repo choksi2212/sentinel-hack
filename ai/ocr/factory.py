@@ -366,10 +366,11 @@ def check_ocr_width_floor(
     MIN_OCR_PLATE_WIDTH_PX (24 px), which is lower. Plates in the 24-29 px band are
     therefore handed to the engine by default.
 
-    This is not hypothetical, and it is what set TemplateOCR's min_score. At 24 px
-    plate width the grid matcher returned "ZZZZ" at confidence 0.604 for all five test
-    plates -- one fabricated string, identical across five different vehicles, scoring
-    higher than several correct reads at 80 px. That is precisely the failure Contracts
+    This is not hypothetical, and it is what set TemplateOCR's min_score. Rendering the
+    corpus's seven plate strings standalone and reading them with that floor removed gives
+    seven fabricated strings at every width from 24 px up: 0.216-0.244 at 24 px, which the
+    floor catches, but 0.419-0.522 at 26 px and 0.409-0.505 at 28 px, where five and then
+    six of the seven survive it. None correct. That is precisely the failure Contracts
     section 12 names as the worst this pipeline can produce.
 
     The floors are deliberately different rather than reconciled: 24 px is the point
@@ -395,8 +396,9 @@ def check_ocr_width_floor(
         f"floor of {MIN_LEGIBLE_PLATE_WIDTH_PX} px, so plates in the "
         f"[{floor}, {MIN_LEGIBLE_PLATE_WIDTH_PX}) band are handed to the engine after "
         f"truth has already marked them illegible. Any string read there is fabricated "
-        f"rather than recovered. Set min_plate_width_px to "
-        f"{MIN_LEGIBLE_PLATE_WIDTH_PX}, or keep it and check the engine's own refusal "
-        f"counters -- for TemplateOCR, score_too_low and ink_not_found should account "
-        f"for every plate in that band."
+        f"rather than recovered, and the engines do not reliably refuse it: TemplateOCR "
+        f"returns a string for every plate in that band and its score floor rejects only "
+        f"the narrowest of them. Set min_plate_width_px to "
+        f"{MIN_LEGIBLE_PLATE_WIDTH_PX} unless measuring the fabrication rate is the "
+        f"point, and read the width buckets rather than the average either way."
     )

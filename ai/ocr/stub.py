@@ -245,20 +245,34 @@ TEMPLATE_MAX_CHARS = 12
 # Best-fit score below which the read is refused outright.
 #
 # Necessary because the grid always produces *something*: it fits the best available
-# character to every cell whether or not there is a character there. At 24 px plate
-# width all five test plates came back as "ZZZZ" at confidence 0.604 -- one fabricated
-# string, identical across five different vehicles, scoring higher than several correct
-# reads at 80 px. That is precisely the failure Contracts section 12 names as the worst
-# this pipeline can produce, and it is not fixable by tuning the matcher, because the
-# matcher is doing its job: 0.604 really is the best fit available to a plate with no
-# legible characters in it.
+# character to every cell whether or not there is a character there. Measured directly,
+# by rendering all seven of the corpus's plate strings standalone with the generator's
+# own _draw_plate and reading them with this floor removed:
+#
+#      24 px    7 reads    0 correct    0.216 - 0.244    all 7 refused by this floor
+#      26 px    7 reads    0 correct    0.419 - 0.522    5 of 7 survive it
+#      28 px    7 reads    0 correct    0.409 - 0.505    6 of 7 survive it
+#
+# So the floor removes the 24 px band outright and does *not* cover 26-29 px, where
+# fabrications land squarely inside the correct-read range below. The corpus corroborates
+# it: both of the two crops it offers in the 24-29 px band came back with a string, at
+# 0.478 and 0.437, neither correct.
+#
+# An earlier version of this comment claimed all five test plates returned the same
+# string "ZZZZ" at confidence 0.604 at 24 px. That measurement was real but it was of the
+# *deleted* ring-stripping implementation recorded in _ink_mask's docstring, not of this
+# one, and it does not describe this one: the seven fabrications are all different from
+# each other, none reaches 0.604, and the band this floor fails to cover is one step
+# higher than 24 px. The conclusion it was quoted for survives -- the matcher fabricates
+# confidently on plates with no legible characters, and that is not fixable by tuning it,
+# because the matcher is doing its job. Only the numbers belonged to other code.
 #
 # 0.42 is set from the measured distribution rather than guessed, and it does not
-# separate the two populations. Measured on 521 reads of the synthetic road scenes in the
+# separate the two populations. Measured on 514 reads of the synthetic road scenes in the
 # default configuration:
 #
 #     correct   n=122   min 0.469   p10 0.506   median 0.602   max 0.772
-#     wrong     n=399   min 0.420   p10 0.433   median 0.510   max 0.717
+#     wrong     n=392   min 0.420   p10 0.436   median 0.511   max 0.717
 #
 # The distributions overlap across almost their whole range, so no value of this constant
 # separates them; the overlap is a property of the matcher, not of where the line is
@@ -272,7 +286,7 @@ TEMPLATE_MAX_CHARS = 12
 # constant fitted to the old minimum would now be discarding correct reads, silently, and
 # the width-bucket table would have quietly lost accuracy with no code change to blame.
 # The constant is deliberately looser than any observed minimum for exactly that reason:
-# 119 samples of five plate strings in one bitmap font do not locate a distribution's
+# 122 samples of seven plate strings in one bitmap font do not locate a distribution's
 # floor to three decimal places.
 #
 # So confident-looking garbage in the 0.42-0.60 band gets through -- measured at 9 of 19
@@ -280,7 +294,7 @@ TEMPLATE_MAX_CHARS = 12
 # all. That band is what ai/normalize/plate.py's grammar check and ai/fusion's cross-frame
 # agreement exist to catch, and stacking three weak filters is the honest design here.
 # Cross-frame agreement is the one that carries it: per-frame precision at this floor is
-# 0.234, and taking each track's best read lifts it to 12 of 12 vehicles.
+# 0.237, and taking each track's best read lifts it to 12 of 12 vehicles.
 MIN_TEMPLATE_SCORE = 0.42
 
 # Source pixels per character below which a length hypothesis is refused. See _fit_grid
@@ -297,8 +311,9 @@ MIN_PX_PER_CHAR = 2
 PLATE_BORDER_PX = 1
 
 # The variants this backend runs when a config does not say otherwise -- one, not the
-# six in preprocess.py. Measured: the other five win 0 plates of 544 between them except
-# raw, and adding raw *loses* a track to max-of-N selection bias while costing 2x the
+# six in preprocess.py. Measured: of the 537 reads the six-variant configuration returns,
+# upscale_2x wins 276 and raw wins 261, and the other four win nothing at all. Adding raw
+# to upscale_2x then *loses* a track to max-of-N selection bias while roughly doubling the
 # time. See TemplateOCR's docstring for the full table. Narrowed only for this backend,
 # which exists to make CI cheap and is fixture-only anyway; DEFAULT_VARIANTS stays at
 # six for ai/ocr/paddle.py, where there is no measurement yet and real-world glare is a
@@ -349,47 +364,67 @@ class TemplateOCR(BaseOCR):
     **Measured on the synthetic road scenes**, in the configuration below -- one variant,
     which is what TEMPLATE_DEFAULT_VARIANTS selects, so these figures reproduce from a
     plain build_ocr_engine({"name": "template"}). 400 generated frames of cam04 at seed
-    42, 134 sampled, 12 vehicles, 564 plate crops from the oracle plate detector so that
-    localisation is exact and every figure is about OCR alone. Exact means the whole
-    string matched.
+    42 and target_interval_ms 120, which emits 134 sampled frames carrying 12 vehicles;
+    the shipped tracker config; and plate boxes from the oracle plate detector, so that
+    localisation is exact and every figure here is about OCR alone. 550 plate crops reach
+    this stage. Exact means the whole string matched.
 
         plate width    crops    exact    rate     char acc    refused
-        > 100 px          28       17    0.607       0.907          0
-        80 - 100         110       42    0.382       0.690          2
-        60 - 80          210       40    0.190       0.585          7
-        40 - 60          186       23    0.124       0.511         17
-        30 - 40           12        0    0.000       0.000          4
-        < 30              18        0    0.000       0.000         13
-        all              564      122    0.216       0.587         43
+        > 100 px          27       17    0.630       0.911          0
+        80 - 100         111       42    0.378       0.711          2
+        60 - 80          210       40    0.190       0.582          7
+        40 - 60          184       23    0.125       0.505         17
+        30 - 40           10        0    0.000       0.080          4
+        < 30               8        0    0.000       0.051          6
+        all              550      122    0.222       0.583         36
 
-    Reported per bucket and never as the single 0.216, which is a statement about this
-    corpus's width distribution rather than about the matcher. Monotonic in width, which
-    is the only shape this table is allowed to have -- it came out non-monotonic twice
-    during development and both times that was a bug in _ink_mask, not a small sample.
+    Buckets are ai/metrics.py's, so the boundary is the metrics module's: the one crop of
+    exactly 100 px sits in 80-100, not in the row above it. Char acc is positional against
+    truth -- matching characters in matching positions, over the truth string's length,
+    with a refused crop contributing zero matches -- which is why it is not simply a
+    softer version of the exact column. Positional scoring gives a truncation almost
+    nothing: "J3C4567" for GJ3C4567 matches in no position at all. The edit-distance
+    version of the same column reads 0.911 / 0.731 / 0.602 / 0.526 / 0.130 / 0.051, and
+    the gap between the two is truncation specifically.
+
+    Reported per bucket and never as the single 0.222, which is a statement about this
+    corpus's width distribution rather than about the matcher. Monotonic in width in both
+    columns, which is the only shape this table is allowed to have -- it came out
+    non-monotonic twice during development and both times that was a bug in _ink_mask, not
+    a small sample.
+
+    The two smallest rows carry the tracker's warm-up as well as their own difficulty, in
+    the same way ai/plate/stub.py's oracle row does, and the size of that effect is
+    measured: with ByteTrack's min_hits dropped to 1 this stage is offered 564 crops
+    instead of 550, and all 14 extra crops land in the three smallest buckets. They
+    produce 7 more reads, 7 more refusals, and **zero** more correct reads. A track's
+    warm-up frames are the frames where the vehicle is furthest away, so they are worth
+    nothing to OCR -- which is the useful half of that measurement.
 
     **The number that matters is not in that table.** Per-frame precision at the score
-    floor is 0.234 -- of 521 reads, 122 correct and 399 wrong. Taking each track's
+    floor is 0.237 -- of 514 reads, 122 correct and 392 wrong. Taking each track's
     highest-confidence read instead gives the right plate for 12 of 12 vehicles. Frame
-    accuracy 23%, track accuracy 100%, from the same reads. That gap is the entire
+    accuracy 24%, track accuracy 100%, from the same reads. That gap is the entire
     empirical case for temporal fusion existing, and it works because confidence *ranks*
     without *separating*:
 
         correct reads   n=122   min 0.469   p10 0.506   median 0.602   max 0.772
-        wrong reads     n=399   min 0.420   p10 0.433   median 0.510   max 0.717
+        wrong reads     n=392   min 0.420   p10 0.436   median 0.511   max 0.717
 
     The two overlap across almost their whole range, but precision climbs monotonically
-    with the threshold -- 0.234 at 0.42, 0.348 at 0.50, 0.458 at 0.55, 0.525 at 0.60,
+    with the threshold -- 0.237 at 0.42, 0.351 at 0.50, 0.460 at 0.55, 0.529 at 0.60,
     0.844 at 0.70 -- which is all a weighted vote needs. ai/fusion therefore weights by
     this number and does not threshold on it.
 
-    The 12/12 and the non-crossing maxima both deserve a caveat. 12 vehicles is 5 plate
-    strings drawn twice each; it is a sanity check that fusion is possible, not a
-    measurement of how well it works. And above 0.75 there are 6 reads in total, all
-    correct -- too few to claim a clean region. Under the *six*-variant configuration the
-    maxima did cross (correct max 0.862, wrong max 0.895), and that crossing was not a
-    property of the matcher: taking the best of six reads means a variant that scores a
-    wrong string unusually high gets selected. Max-of-N inflates the tail of the wrong
-    distribution specifically. Second independent reason to narrow the default.
+    The 12/12 and the non-crossing maxima both deserve a caveat. 12 vehicles is seven
+    distinct plate strings, five of them drawn twice; it is a sanity check that fusion is
+    possible, not a measurement of how well it works. And above 0.75 there are 6 reads in
+    total, all correct -- too few to claim a clean region. Under the *six*-variant
+    configuration the maxima did cross (correct max 0.862, wrong max 0.895), and that
+    crossing was not a property of the matcher: taking the best of six reads means a
+    variant that scores a wrong string unusually high gets selected. Max-of-N inflates the
+    tail of the wrong distribution specifically. Second independent reason to narrow the
+    default.
 
     **Fabrication rate, measured directly.** Re-run with the plate detector's
     require_legible off, so plates truth marks unreadable are handed over anyway: 19 such
@@ -404,29 +439,41 @@ class TemplateOCR(BaseOCR):
 
     The truncations read the visible characters correctly and stopped; cross-frame
     agreement recovers those, because a substring agrees with the full string on every
-    character it has. The four inventions are at plate_visible_fraction 0.00 -- nothing
-    of the plate was drawn and a string came back anyway. That is the failure Contracts
-    section 12 names as the worst this pipeline can produce, and the honest position is
-    that this stage does not prevent it: 4 in 564 crops survive the score floor. It is
-    caught downstream, by grammar (RWJT5T9T fits no Indian plate format) and by
-    agreement (an invention agrees with nothing, so it never accumulates weight).
-    Three weak filters, each documented as weak.
+    character it has. The four inventions are 4 of the 10 crops at
+    plate_visible_fraction 0.00 -- nothing of the plate was drawn and a string came back
+    anyway. That is the failure Contracts section 12 names as the worst this pipeline can
+    produce, and the honest position is that this stage does not prevent it: 4 of the 569
+    crops this run offers survive the score floor with an invented plate. It is caught
+    downstream, by grammar (RWJT5T9T fits no Indian plate format) and by agreement (an
+    invention agrees with nothing, so it never accumulates weight). Three weak filters,
+    each documented as weak.
 
-    **Cost, and why the default is one variant.** Measured per plate on this corpus:
+    **Cost, and why the default is one variant.** Measured per plate on this corpus,
+    550 crops in each row:
 
-        6 default variants        0.211 exact   11/12 tracks    85.2 ms   p95 93.9
-        raw + upscale_2x          0.211 exact   11/12 tracks    29.0 ms   p95 32.3
-        upscale_2x alone          0.216 exact   12/12 tracks    14.9 ms   p95 16.5
-        raw alone                 0.167 exact   11/12 tracks    14.1 ms   p95 15.9
+        6 default variants        119 exact   11/12 tracks    95.0 ms   p95 103.3
+        raw + upscale_2x          119 exact   11/12 tracks    32.2 ms   p95  34.9
+        upscale_2x alone          122 exact   12/12 tracks    16.8 ms   p95  19.1
+        raw alone                  94 exact   11/12 tracks    15.7 ms   p95  17.3
 
-    Across all six, only raw and upscale_2x ever win a plate -- grayscale,
-    contrast_stretch, adaptive_threshold and sharpen won zero of 544 between them, so
-    they cost two thirds of the stage's time for nothing. Worse, adding raw to
-    upscale_2x *loses* a track: raw occasionally returns a higher-confidence wrong
-    string than upscale_2x's correct one, which is max-of-N selection bias behaving
-    exactly as OCRRead.agreement was written to expose. The accuracy difference is 3
-    crops in 564 and should not be read as significant; the 5.7x latency difference
-    should. Hence TEMPLATE_DEFAULT_VARIANTS.
+    The millisecond figures are this machine under this load and are the two columns no
+    test pins; the 5.7x ratio between the first and third rows is the number the decision
+    rests on, and it is stable.
+
+    Across all six, only raw and upscale_2x ever win a plate -- of the 537 reads the
+    six-variant configuration returns, upscale_2x wins 276 and raw 261, so grayscale,
+    contrast_stretch, adaptive_threshold and sharpen won nothing at all while costing two
+    thirds of the stage's time. Worse, adding raw to upscale_2x *loses* a track: raw
+    occasionally returns a higher-confidence wrong string than upscale_2x's correct one,
+    which is max-of-N selection bias behaving exactly as OCRRead.agreement was written to
+    expose. The accuracy difference is 3 crops in 550 and should not be read as
+    significant; the latency difference should. Hence TEMPLATE_DEFAULT_VARIANTS.
+
+    One more thing that table hides, and it is the reason agreement is worth reporting at
+    all: under six variants variants_agreeing is 1 in 178 reads, 5 in 250, and 6 in 109 --
+    never 2, 3 or 4. The four greyscale-derived variants always agree with each other, so
+    the vote is really raw against upscale_2x with four abstentions attached to whichever
+    of them wins. An agreement of 5/6 therefore means much less than it looks like.
 
     That upscale_2x dominates is the diagnostic ai/ocr/preprocess.py predicted: this
     stage is resolution-starved, not model-starved. It says nothing about PaddleOCR on
@@ -552,6 +599,14 @@ class TemplateOCR(BaseOCR):
         grid fitted them, and all five test plates returned "ZZZZ" at confidence 0.604 --
         one fabricated string, identical across five different vehicles. No fractional cap
         fixes that, because the quantity being capped is not fractional.
+
+        That "ZZZZ" figure is of *this deleted implementation*, and it escaped: it was
+        quoted in MIN_TEMPLATE_SCORE's comment and in ai/ocr/factory.py's
+        check_ocr_width_floor as though it described the shipped matcher, which it never
+        did. The shipped one fabricates seven different strings at 24 px, at 0.216-0.244.
+        Both sites now carry the measured figures. Worth naming the mechanism, because it
+        is the cheapest error in this file to make: a number measured against code that
+        no longer exists reads exactly like a number measured against code that does.
 
         *Locating the brightest connected region and calling it the face* has no depth
         parameter, passed every isolated-plate test, and then failed on the road scenes
