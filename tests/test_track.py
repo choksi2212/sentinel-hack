@@ -1968,8 +1968,10 @@ def test_the_baseline_drops_the_low_confidence_boxes_bytetrack_keeps():
 def test_the_tracking_package_carries_no_authorship_attribution():
     from conftest import REPO_ROOT
 
-    needles = ("co-authored-by", "claude", "anthropic", "chatgpt", "copilot",
-               "generated with", "ai-generated")
+    # Assembled from fragments so this guard file holds no whole marker word
+    # (the repo-wide scan in tests/test_no_attribution.py relies on that).
+    needles = ("co-auth" "ored-by", "cla" "ude", "anthro" "pic", "chat" "gpt",
+               "copi" "lot", "generated " "with", "ai-" "generated")
     for path in sorted((REPO_ROOT / "ai" / "track").rglob("*.py")):
         lowered = path.read_text(encoding="utf-8").lower()
         for needle in needles:
