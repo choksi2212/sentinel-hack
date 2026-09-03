@@ -21,13 +21,23 @@ from ai.quality.metrics import (
     to_gray,
 )
 from ai.quality.score import QUALITY_WEIGHTS, plate_quality, rank_crops
+from ai.quality.taxonomy import (
+    FAILURE_BUCKETS,
+    FailureBucket,
+    FailureTaxonomy,
+    TaxonomyVerdict,
+)
 
 __all__ = [
     "EXPOSURE_CLIP_TOLERANCE",
+    "FAILURE_BUCKETS",
     "QUALITY_WEIGHTS",
     "RESOLUTION_REFERENCE_PX",
     "SHARPNESS_REFERENCE",
+    "FailureBucket",
+    "FailureTaxonomy",
     "GateDecision",
+    "TaxonomyVerdict",
     "VehicleGate",
     "exposure_norm",
     "laplacian_variance",
