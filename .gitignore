@@ -27,7 +27,11 @@ models/
 # Recorded footage, frame dumps and crops. tests/fixtures/ is committed on
 # purpose and is the exception -- it is small JSON, not video.
 data/
-datasets/
+datasets/raw/
+datasets/**/images/
+datasets/**/labels/
+datasets/**/*.zip
+datasets/**/*.tar*
 clips/
 *.mp4
 *.mkv
