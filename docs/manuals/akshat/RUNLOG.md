@@ -8,6 +8,19 @@
 - Split is by clip_id (never frame) per CLAUDE.md — safe to start training on
   TRAIN_SAFE list now.
 
+## 2026-09-05 — Phase 1+2: Recon + Licenses
+**STATUS: OK, with 1 finding for human sign-off (docs/manuals/akshat/RECON.md)**
+
+- indian_road clip identity: recoverable, `{clip_id}_{frame}.ext` filename UUID
+  prefix, 0 regex failures. Only 5/646 shards local (62 clips, 5000 frames).
+- Plate-bbox datasets: gujarat_plates, indian_plates_yolo, kedarsai_plates,
+  justjuu_plates. Vehicle-only: indian_road, traffic_vehicle.
+- LICENSES.md: 4 verified rows (indian_road, justjuu_plates, cctv_accident,
+  synthetic_plates), 5 flagged incl. gujarat_plates + indian_plates_yolo — no
+  embedded license evidence found for those 2, contra TASKS.md's "6 rows"
+  expectation. Reported, not guessed.
+- `check_licenses.py` passes (no manifests reference an unverified asset yet).
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
