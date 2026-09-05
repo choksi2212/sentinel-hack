@@ -29,10 +29,21 @@
       "type": "string", "enum": [">100", "80-100", "60-80", "40-60", "30-40", "<30"],
       "description": "derived from plate_width_px, never hand-entered"
     },
-    "eligible": {"type": "boolean", "description": "true only if a human can read the plate"},
+    "eligible": {"type": "boolean", "description": "true only if the plate is actually readable in this rendering/frame"},
     "plate_text": {"type": ["string", "null"]},
-    "label_source": {"type": "string", "enum": ["human", "ocr_candidate"]},
-    "label_confidence": {"type": "string", "enum": ["certain", "probable"]}
+    "label_source": {
+      "type": "string", "enum": ["human", "ocr_candidate", "synthetic_truth"],
+      "description": "synthetic_truth: text is known because it was the generator's own input, not guessed by OCR or a human. Only human and synthetic_truth are scoreable."
+    },
+    "label_confidence": {"type": "string", "enum": ["certain", "probable"]},
+    "degradation_params": {
+      "type": ["object", "null"],
+      "description": "synthetic_truth rows only: the per-frame degradation actually applied (seed, blur kernel, gamma, warp, etc.)"
+    },
+    "plate_bbox_source": {
+      "type": "string", "enum": ["annotated", "estimated_from_vehicle_bbox", "whole_image", "rendered"],
+      "description": "annotated = real plate-region ground truth; estimated_from_vehicle_bbox = no plate annotation exists, bbox is a heuristic sub-region of a real vehicle box (indian_road); whole_image = pre-cropped source; rendered = synthetic frame, bbox is exact by construction"
+    }
   },
   "additionalProperties": false
 }
