@@ -21,6 +21,18 @@
   expectation. Reported, not guessed.
 - `check_licenses.py` passes (no manifests reference an unverified asset yet).
 
+## 2026-09-05 — Phase 3: Manifests + leakage checker
+**STATUS: OK**
+
+- `freeze_manifest.py`, `check_split_leakage.py` written, both pass `--demo`
+  (leakage checker proven on a deliberately-broken fixture).
+- Manifests generated for the 4 license-verified datasets only: indian_road
+  (17 files), justjuu_plates (11), cctv_accident (13), synthetic_plates (18,000).
+  Flagged datasets (gujarat_plates, indian_plates_yolo, kedarsai_plates,
+  traffic_vehicle, fanvid) intentionally have no manifest — no LICENSES.md row.
+- `check_split_leakage.py` on `CLIP_RESERVATION.md`: OK, 0 leaks, 62 clip_ids.
+- `check_licenses.py`: OK, no manifest references an unverified asset.
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
