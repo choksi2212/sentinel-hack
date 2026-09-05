@@ -50,6 +50,18 @@
   perspective/tiny variety), or accept 196/300 and rebalance targets in
   FREEZE.md (Phase 7, human).
 
+## 2026-09-05 — Phase 5: Verification UI
+**STATUS: OK**
+
+- `scripts/verify_ui.py` — one file, stdlib `http.server` + inline HTML/JS,
+  no framework. Enter accepts/corrects, `x` marks ineligible, `?` marks
+  probable, arrows navigate. Writes `label_source: human` back to
+  `index.jsonl` after every single action (atomic tmp-file replace).
+- Smoke-tested end to end: server up, `/api/rows` (196 rows), `/api/image/`
+  (real PNG crop, 18,659 bytes), `/api/label/` POST round-tripped correctly.
+  Test write reverted afterward — index.jsonl is back to Phase 4's output.
+- Not yet run for real (that's Phase 7, human, Monday AM).
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
