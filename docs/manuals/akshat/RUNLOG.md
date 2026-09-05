@@ -1,3 +1,38 @@
+## 2026-09-05 — Fixed the untight plate crop -- width buckets did NOT move
+**STATUS: fixed, with an important correction to the original premise**
+
+- `compute_tight_plate_bbox()` added to `build_sequences.py`: crops each
+  source plate image tight to the plate body (excludes the sky background
+  the renderer places around the tilted plate) using a top-strip median
+  colour as the sky reference (robust to a foreign object touching one
+  bottom corner in one sample, which broke an earlier all-4-corners
+  attempt). `load_tight_plate()` applies this once per plate before any
+  resize/degrade step, so every subsequent frame (both track types) is
+  built from the tight crop, not the full 512x128 canvas. Aspect ratio is
+  now the tight crop's own measured ratio, not the fixed 512:128 assumption.
+- **Correction: the width_bucket distribution is IDENTICAL before and after**
+  (verified: `>100` 1083/1083, `80-100` 551/551, `60-80` 554/554, `40-60`
+  555/555, `30-40` 304/304, `<30` 390/390 for approach; matching for
+  fixed_distance). This contradicts the original premise that "every row is
+  in the wrong width bucket" -- **horizontally**, the tight-crop measurement
+  showed the plate already spans ~94-100% of the canvas width in every
+  sample checked (the tilted render fits the plate to the frame width by
+  construction). The real defect was **vertical**: canvas height was fixed
+  at a 4:1 aspect ratio regardless of the plate's true ~5:1-7:1 ratio,
+  wasting 17-49% of every frame's height on sky. `plate_width_px` (and
+  therefore `width_bucket`) was correct; **effective detail per labeled
+  width was not** -- every frame now has a shorter, fully-plate height at
+  the same labeled width, which should measurably help detection without
+  moving any row between buckets.
+- Cleared `benchmarks/cache/frames/` and `ocr_readings.json` (gitignored,
+  stale -- keyed by `frame_path`, which is unchanged by this fix, so old
+  un-cropped PNGs would silently survive a re-materialize otherwise).
+- All checks re-run clean: `scorer.py` (6+2 fixtures), `check_split_leakage.py`
+  (0 leaks), `build_sequences.py --demo` (new assertions for
+  `compute_tight_plate_bbox`, including the no-plate-found fallback).
+- Committing this now, before the OCR rebuild (~70+ min) — per correction,
+  code and verified-correct data go in on their own, not held for a long job.
+
 ## 2026-09-05 — Stopped OCR job, committed item-2 code, wrote OCR findings doc
 **STATUS: OK — job killed cleanly, no data corruption**
 
