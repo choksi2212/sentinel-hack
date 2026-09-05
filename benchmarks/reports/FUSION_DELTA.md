@@ -1,9 +1,11 @@
+**Predictor: `stub`** (`benchmarks/stub_predictor.py`, canned/illustrative — not a real model. Replace before citing this table as a measurement.)
+
 Ground truth below is synthetic-generated (`label_source: synthetic_truth`), not human- or OCR-labeled; the real-footage (indian_road) figure is a stability diagnostic only, reported separately in `STABILITY.md` — it is NOT an accuracy number and must never be presented as one.
 
 # FUSION_DELTA
 
-Before: `e2e_fusion_off_003.json` (manifest `abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a`, commit `573f0303561f9567eeef782d271c90c13dbad741`)
-After: `e2e_fusion_on_003.json` (manifest `abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a`, commit `573f0303561f9567eeef782d271c90c13dbad741`)
+Before: `e2e_fusion_off_004.json` (manifest `abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a`, commit `d57843c454005c3714d72992b3b2cea3eb178172`)
+After: `e2e_fusion_on_004.json` (manifest `abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a`, commit `d57843c454005c3714d72992b3b2cea3eb178172`)
 
 | Bucket | n | fusion OFF | fusion ON | delta |
 |---|---|---|---|---|

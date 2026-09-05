@@ -49,7 +49,11 @@ def build_table(before: dict, after: dict) -> str:
 def build_report(before_path: Path, after_path: Path) -> str:
     before = json.loads(before_path.read_text(encoding="utf-8"))
     after = json.loads(after_path.read_text(encoding="utf-8"))
+    predictor = before.get("predictor", "unknown")
     parts = [
+        f"**Predictor: `{predictor}`** (`benchmarks/stub_predictor.py`, canned/illustrative — "
+        "not a real model. Replace before citing this table as a measurement.)",
+        "",
         "Ground truth below is synthetic-generated (`label_source: synthetic_truth`), not human- "
         "or OCR-labeled; the real-footage (indian_road) figure is a stability diagnostic only, "
         "reported separately in `STABILITY.md` — it is NOT an accuracy number and must never be "

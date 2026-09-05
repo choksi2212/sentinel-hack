@@ -1,5 +1,18 @@
 # RUNLOG — Akshat's lane
 
+## 2026-09-05 — Cleanup + MONDAY.md
+**STATUS: OK**
+
+- Deleted `scripts/build_hard_candidates.py` — dead code since Phase 4R,
+  unused by `run_all.sh`.
+- `run.py`/`delta.py`/`stability.py`: report + JSON now carry an explicit
+  `predictor` field/first-line label so stub output can never be mistaken
+  for a real measurement. Reports regenerated (run 004).
+- `docs/manuals/akshat/MONDAY.md` written: the two-line swap in `run.py` to
+  replace `stub_predictor` with the real pipeline, the exact
+  `predict(row, fusion_enabled) -> str | None` contract, and a 6-point
+  checklist for prediction/ground-truth misalignment.
+
 ## 2026-09-05 — Phase 1B: Clip reservation
 **FOR MANAS — clip reservation published, see datasets/trinetra-hard/CLIP_RESERVATION.md**
 
