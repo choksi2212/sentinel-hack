@@ -1,0 +1,17 @@
+684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1  1  .cache/huggingface/.gitignore
+983e3f21ff25d2b86d346f02da81a2542e59143215f8d187c2699a046cccdf26  104  .cache/huggingface/download/README.md.metadata
+a74035324fda0a7277f34175f7e6ae20c3a4e4ea12c2d9f8091dd4c252b36939  128  .cache/huggingface/download/annotations/detection.json.metadata
+081f8a2a539328ab9164875d3fc5c8f4e63bf20bd4e859dc57e09b5b2727d3a0  104  .cache/huggingface/download/annotations/scene_attributes.json.metadata
+3fc31d0243ca3d804af644e6dd4833e332ec29146cfea490422a6d022936883a  128  .cache/huggingface/download/data/train-00000-of-00646.tar.metadata
+ebb652275e4c9a3b4ffa1126346128dbddc2f0c178452c3b250936f31c971e82  128  .cache/huggingface/download/data/train-00001-of-00646.tar.metadata
+1a9ea4c81554135e824f0965642f2ffdd91d20b21bf043b81b864cd97bd8657b  127  .cache/huggingface/download/data/train-00002-of-00646.tar.metadata
+c83f964e6457ace36a769e9516e8ccd3ee33bd070ef89ee633e0e390d5eeab71  128  .cache/huggingface/download/data/train-00003-of-00646.tar.metadata
+9fd0e951fdf343ff4461e0061f807cf85d241d169f7814e1057d9f4be10c566f  128  .cache/huggingface/download/data/train-00004-of-00646.tar.metadata
+57e66384bfd93fc46525f1ba20edf0c271d1984715d1f73985107cb2e2a47167  4996  README.md
+585213e4c2669eff7aa67f42f124431daeb9b462567a660e8c7c8459d67d00dc  1306074924  annotations/detection.json
+b4da410f54b87bbbf0ddc181c1b7d775a960542742ae54a36b54b3a32a7a5948  1079479  annotations/scene_attributes.json
+f446b888e263138f497d4adb9423d066b35f5d157fbd56234803617c3efb319d  298506240  data/train-00000-of-00646.tar
+8d36814acd43c4842a25be2b204d1f9e908061d65362cc2f9bace51047ba6a0f  296171520  data/train-00001-of-00646.tar
+4e3fdad30576bf4e0e93c9548a0d5376889c4aa3a6c335cbf5c9c4f7727b1585  326553600  data/train-00002-of-00646.tar
+1f462f33d51b1a88f3194b23a32dca64f84be45eecb9f333abf3ad24ec94dbef  306872320  data/train-00003-of-00646.tar
+af9e4a0b0d0b586e65b551af3e98c83f85d6fbccd18568dad1fa11ace5901092  326615040  data/train-00004-of-00646.tar
