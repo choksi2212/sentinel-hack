@@ -33,6 +33,23 @@
 - `check_split_leakage.py` on `CLIP_RESERVATION.md`: OK, 0 leaks, 62 clip_ids.
 - `check_licenses.py`: OK, no manifest references an unverified asset.
 
+## 2026-09-05 — Phase 4: Candidate labels
+**STATUS: OK, badly under target (196/300) — reported honestly, not padded**
+
+- `schema.json` written per SPEC_TRINETRA_HARD §4. `build_hard_candidates.py`
+  samples only from license-verified sources (justjuu_plates, synthetic_plates)
+  — the flagged datasets (gujarat_plates, indian_plates_yolo, kedarsai_plates)
+  hold most of the real plate-bbox data but are excluded per LICENSES.md.
+- Counts: easy 60/60, night 60/60, glare 45/45, tiny 30/30, **motion_blur 1/60**
+  (real blur is rare in static photos), **perspective 0/45** (no source has
+  plate pose/rotation data — not guessed).
+- No OCR engine in this environment (no tesseract binary). justjuu_plates rows
+  have `plate_text: null`; synthetic_plates rows use the filename (the
+  generator's own ground truth). Every row is `label_source: ocr_candidate`.
+- Next: either get the 3 flagged datasets license-cleared (unlocks
+  perspective/tiny variety), or accept 196/300 and rebalance targets in
+  FREEZE.md (Phase 7, human).
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
