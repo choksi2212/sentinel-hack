@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRINETRA-HARD row",
+  "description": "One JSONL row per observation in datasets/trinetra-hard/index.jsonl. Per SPEC_TRINETRA_HARD.md §4.",
+  "type": "object",
+  "required": [
+    "obs_id", "slice", "slice_reason", "source_dataset", "clip_id",
+    "frame_path", "source_pts_ms", "camera_id", "stream_session_id",
+    "track_id", "plate_bbox", "plate_width_px", "width_bucket",
+    "eligible", "plate_text", "label_source", "label_confidence"
+  ],
+  "properties": {
+    "obs_id": {"type": "string", "pattern": "^th_[0-9]{4,}$"},
+    "slice": {"type": "string", "enum": ["easy", "motion_blur", "night", "glare", "perspective", "tiny"]},
+    "slice_reason": {"type": "string", "description": "why this slice was chosen when conditions overlap"},
+    "source_dataset": {"type": "string"},
+    "clip_id": {"type": "string", "description": "synthesised per-image for single-frame sources"},
+    "frame_path": {"type": "string"},
+    "source_pts_ms": {"type": "integer", "minimum": 0, "description": "never observed_at"},
+    "camera_id": {"type": "string"},
+    "stream_session_id": {"type": "string"},
+    "track_id": {"type": "integer"},
+    "plate_bbox": {
+      "type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4,
+      "description": "[x, y, w, h] in pixels"
+    },
+    "plate_width_px": {"type": "number", "minimum": 0},
+    "width_bucket": {
+      "type": "string", "enum": [">100", "80-100", "60-80", "40-60", "30-40", "<30"],
+      "description": "derived from plate_width_px, never hand-entered"
+    },
+    "eligible": {"type": "boolean", "description": "true only if a human can read the plate"},
+    "plate_text": {"type": ["string", "null"]},
+    "label_source": {"type": "string", "enum": ["human", "ocr_candidate"]},
+    "label_confidence": {"type": "string", "enum": ["certain", "probable"]}
+  },
+  "additionalProperties": false
+}

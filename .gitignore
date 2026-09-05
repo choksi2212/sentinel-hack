@@ -56,6 +56,7 @@ logs/
 *.log
 *.jsonl
 !tests/fixtures/*.jsonl
+!datasets/trinetra-hard/*.jsonl
 
 # --- python ------------------------------------------------------------------
 __pycache__/
