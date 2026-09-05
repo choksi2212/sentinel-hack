@@ -1,3 +1,22 @@
+## 2026-09-05 — Stopped OCR job, committed item-2 code, wrote OCR findings doc
+**STATUS: OK — job killed cleanly, no data corruption**
+
+- Killed the running full-corpus OCR cache rebuild (PIDs for
+  `benchmarks.paddle_predictor` + 2 `ocr_worker.py` subprocesses) — its
+  output would have been unusable: `plate_bbox`/`plate_width_px` use the
+  full render canvas, not a tight plate crop, so every width bucket is
+  mislabelled (see next entry for the fix).
+- Committed item 2's code (fixed-distance builder, `track_type` schema
+  field, `run.py --track-type` filter, `run_all.sh` stages) **separately**
+  from the tainted `index.jsonl` — corrected per explicit instruction not to
+  hold code hostage to a long-running job again.
+- `docs/manuals/akshat/OCR_BASELINE_FINDINGS.md` written: condition
+  breakdown at the (mislabelled, but condition-grouping is independent of
+  the width bug) `>100` bucket — easy 64%, glare 49%, perspective 52%,
+  night 26%, **motion_blur 0.5%**. Motion blur defeats PP-OCRv4-mobile
+  almost completely regardless of plate size — a real, actionable finding
+  for Manas's model selection, flagged as provisional pending the crop fix.
+
 ## 2026-09-05 — DIAGNOSIS: why >100px detection is 39.5%, not near-total
 **STATUS: root cause found — real renderer, wrong crop box, not "bare text on a plain background"**
 
