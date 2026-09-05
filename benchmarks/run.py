@@ -18,6 +18,7 @@ from pathlib import Path
 
 from benchmarks.scorer import score
 from benchmarks import stub_predictor
+from benchmarks import paddle_predictor
 
 ROOT = Path(__file__).resolve().parent.parent
 MACHINE = "RTX 4060 8GB"
@@ -72,7 +73,12 @@ def build_report(rows: list[dict], predictions: dict, args) -> dict:
             f"{unverified_real_n} unverified_real rows present (real footage, no known plate "
             "text) -- excluded from every number above; see STABILITY.md for that data."
         )
-    notes.append("weights_sha256: n/a -- stub predictor has no weights file to hash.")
+    if args.predictor == "stub":
+        weights_sha256 = None
+        notes.append("weights_sha256: n/a -- stub predictor has no weights file to hash.")
+    else:
+        weights_sha256, weights_note = paddle_predictor.weights_info()
+        notes.append(weights_note)
 
     return {
         "run_id": args.run_id,
@@ -80,7 +86,7 @@ def build_report(rows: list[dict], predictions: dict, args) -> dict:
         "predictor": args.predictor,
         "dataset_manifest_sha256": sha256_file(ROOT / "datasets" / args.dataset / "index.jsonl"),
         "git_commit": git_commit(),
-        "weights_sha256": None,
+        "weights_sha256": weights_sha256,
         "machine": MACHINE,
         "runtime": RUNTIME,
         "source_mode": "file",
@@ -108,19 +114,22 @@ def main(argv: list[str]) -> int:
     p.add_argument("--dataset", default="trinetra-hard")
     p.add_argument("--fusion", choices=["on", "off"], required=True)
     p.add_argument("--out", default="benchmarks/reports/")
-    p.add_argument("--predictor", default="stub", choices=["stub"])
+    p.add_argument("--predictor", default="stub", choices=["stub", "paddle"])
     p.add_argument("--run-id", default=None)
     args = p.parse_args(argv)
 
     out_dir = ROOT / args.out
     out_dir.mkdir(parents=True, exist_ok=True)
-    task_name = f"{args.suite}_fusion_{args.fusion}"
+    task_name = f"{args.suite}_fusion_{args.fusion}_{args.predictor}" if args.predictor != "stub" else f"{args.suite}_fusion_{args.fusion}"
     if args.run_id is None:
         args.run_id = next_run_id(out_dir, task_name)
 
     rows = load_rows(args.dataset)
     fusion_enabled = args.fusion == "on"
-    predictions = {r["obs_id"]: stub_predictor.predict(r, fusion_enabled) for r in rows}
+    predictor_module = stub_predictor if args.predictor == "stub" else paddle_predictor
+    if args.predictor == "paddle":
+        paddle_predictor.set_track_index(rows)
+    predictions = {r["obs_id"]: predictor_module.predict(r, fusion_enabled) for r in rows}
 
     report = build_report(rows, predictions, args)
     out_path = out_dir / f"{args.run_id}.json"

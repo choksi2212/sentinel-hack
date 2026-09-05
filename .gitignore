@@ -46,6 +46,7 @@ clips/
 # nobody can reproduce; the script that produces it is committed instead.
 runs/
 benchmarks/out/
+benchmarks/cache/
 spool/
 snapshots/
 # The SnapshotWriter's default root. Evidence stills are per-run output and are also the
@@ -70,6 +71,7 @@ dist/
 .venv/
 venv/
 env/
+.venv-ocr/
 .python-version
 .pytest_cache/
 .mypy_cache/
