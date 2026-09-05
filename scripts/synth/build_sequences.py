@@ -49,7 +49,6 @@ SEED_FIXED = 20260906  # independent sample from SEED, avoids reusing the same p
 N_TRACKS = 300
 N_FIXED_PER_BUCKET = 50
 FPS = 25
-BASE_W, BASE_H = 512, 128  # synthetic_plates native size
 
 # Track-level condition weights, chosen to roughly land near the original
 # per-slice targets (60/60/45/45 for the four non-tiny, non-easy slices;
@@ -66,6 +65,38 @@ BUCKET_WIDTH_RANGES = {
     ">100": (100, 160), "80-100": (80, 99), "60-80": (60, 79),
     "40-60": (40, 59), "30-40": (30, 39), "<30": (15, 29),
 }
+
+
+def compute_tight_plate_bbox(base_bgr: np.ndarray, threshold: float = 40.0, pad_frac: float = 0.03) -> tuple[int, int, int, int]:
+    """Tight (x0, y0, x1, y1) around the rendered plate body, excluding the
+    sky background the renderer places around the (tilted) plate.
+
+    The renderer's sky is a near-uniform pale colour; the plate body/text is
+    a large, high-contrast departure from it. Sampling the reference colour
+    from a thin strip along the TOP edge (not all four corners) avoids
+    corrupting the reference when a foreign object -- seen in one sample, a
+    dark shape at a bottom corner -- happens to touch a different corner;
+    the top edge was sky in every sample checked. Falls back to the full
+    frame if no pixel clears the threshold (better an untight box than a
+    crash or an empty crop).
+    """
+    h, w = base_bgr.shape[:2]
+    top_strip = base_bgr[:4, :, :].reshape(-1, 3).astype(np.float64)
+    sky_color = np.median(top_strip, axis=0)
+    diff = np.linalg.norm(base_bgr.astype(np.float64) - sky_color, axis=2)
+    mask = diff > threshold
+    ys, xs = np.where(mask)
+    if len(xs) == 0:
+        return 0, 0, w, h
+    x0, x1 = int(xs.min()), int(xs.max())
+    y0, y1 = int(ys.min()), int(ys.max())
+    pad_x = round((x1 - x0) * pad_frac)
+    pad_y = round((y1 - y0) * pad_frac)
+    x0 = max(0, x0 - pad_x)
+    x1 = min(w - 1, x1 + pad_x)
+    y0 = max(0, y0 - pad_y)
+    y1 = min(h - 1, y1 + pad_y)
+    return x0, y0, x1 + 1, y1 + 1
 
 
 def width_bucket(w: float) -> str:
@@ -135,10 +166,20 @@ def width_trajectory(n_frames: int, rng: random.Random) -> list[int]:
     return [round(w_start + (w_end - w_start) * i / (n_frames - 1)) for i in range(n_frames)]
 
 
-def build_track(track_idx: int, plate_path: Path, rng: random.Random, frame_sink=None) -> list[dict]:
-    plate_text = plate_path.stem
+def load_tight_plate(plate_path: Path) -> np.ndarray:
+    """Load a synthetic_plates source image and crop it tight to the plate
+    body (see compute_tight_plate_bbox docstring for why this is needed --
+    the raw render includes sky background above/below the tilted plate)."""
     with Image.open(plate_path) as im:
         base = cv2.cvtColor(np.array(im.convert("RGB")), cv2.COLOR_RGB2BGR)
+    x0, y0, x1, y1 = compute_tight_plate_bbox(base)
+    return base[y0:y1, x0:x1]
+
+
+def build_track(track_idx: int, plate_path: Path, rng: random.Random, frame_sink=None) -> list[dict]:
+    plate_text = plate_path.stem
+    base = load_tight_plate(plate_path)
+    base_h, base_w = base.shape[:2]
 
     n_frames = rng.randint(8, 15)
     widths = width_trajectory(n_frames, rng)
@@ -149,7 +190,7 @@ def build_track(track_idx: int, plate_path: Path, rng: random.Random, frame_sink
 
     rows = []
     for frame_idx, w in enumerate(widths):
-        h = max(1, round(w * BASE_H / BASE_W))
+        h = max(1, round(w * base_h / base_w))
         resized = cv2.resize(base, (w, h), interpolation=cv2.INTER_AREA)
         degraded, params = apply_condition(resized, condition, rng)
 
@@ -211,12 +252,12 @@ def build_track_fixed_distance(
     per-bucket question: at this one distance, does temporal consensus
     recover the plate."""
     plate_text = plate_path.stem
-    with Image.open(plate_path) as im:
-        base = cv2.cvtColor(np.array(im.convert("RGB")), cv2.COLOR_RGB2BGR)
+    base = load_tight_plate(plate_path)
+    base_h, base_w = base.shape[:2]
 
     lo, hi = BUCKET_WIDTH_RANGES[bucket]
     w = rng.randint(lo, hi)
-    h = max(1, round(w * BASE_H / BASE_W))
+    h = max(1, round(w * base_h / base_w))
     n_frames = rng.randint(8, 15)
     camera_id = f"th_synth_fixed_cam_{bucket}_{track_idx:04d}"
     session_id = f"th_synth_fixed_sess_{bucket}_{track_idx:04d}"
@@ -348,6 +389,18 @@ def demo():
     assert blurred.shape == img.shape and "kernel_size" in params
     dark, params2 = apply_condition(img, "night", random.Random(3))
     assert dark.mean() < img.mean()
+
+    # compute_tight_plate_bbox: a synthetic "sky + colored plate" canvas
+    canvas = np.full((128, 512, 3), (220, 195, 175), dtype=np.uint8)  # pale "sky"
+    canvas[40:90, 10:500] = (0, 10, 0)  # dark green "plate" block, sky above/below
+    x0, y0, x1, y1 = compute_tight_plate_bbox(canvas)
+    assert 35 <= y0 <= 45 and 85 <= y1 <= 95, (y0, y1)  # tight to the plate rows, not the sky
+    assert (x1 - x0) > 400  # tight to the plate's width
+
+    # a canvas with nothing but sky falls back to the full frame, not a crash/empty box
+    flat = np.full((128, 512, 3), (220, 195, 175), dtype=np.uint8)
+    assert compute_tight_plate_bbox(flat) == (0, 0, 512, 128)
+
     print("demo: all assertions passed")
 
 
