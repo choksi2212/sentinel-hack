@@ -66,7 +66,7 @@ def materialize_synthetic_frames() -> None:
         if not out_path.exists():
             cv2.imwrite(str(out_path), image_bgr)
 
-    build_sequences.build(frame_sink=sink)
+    build_sequences.build_all(frame_sink=sink)
 
 
 def run_ocr_batch(frame_paths: list[str]) -> dict[str, dict]:

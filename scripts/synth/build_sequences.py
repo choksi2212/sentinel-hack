@@ -5,13 +5,27 @@ Ground truth comes from generation, never OCR: the true plate string is the
 synthetic_plates filename (the generator's own output), known exactly, never
 guessed. Every row is label_source: "synthetic_truth".
 
-For each of ~300 sampled plates, render one track of 8-15 frames simulating a
-vehicle crossing the camera's field of view: plate width sweeps continuously
-from <30px to >100px (or the reverse), so every width bucket gets real data
-in every track, and one degradation (motion_blur / night / glare /
-perspective / none="easy") is baked into every frame of that track. Frames
-narrower than 40px are always slice "tiny" regardless of the track's
-condition (SPEC_TRINETRA_HARD: tiny overrides). ~10% of frames per track are
+Two track types, reported separately (a flat fusion-on rate across every
+width bucket turned out to be a corpus artifact of only having one track
+type -- see docs/manuals/akshat/RUNLOG.md):
+
+- APPROACH tracks (track_type: "approach", build_track/build()): one track
+  of 8-15 frames simulating a vehicle crossing the camera's field of view --
+  plate width sweeps continuously from <30px to >100px (or the reverse), one
+  degradation (motion_blur/night/glare/perspective/easy) baked into every
+  frame of the track. Models a real scenario (approaching/receding vehicle)
+  but every track touches every width bucket, so a track's single easy frame
+  can carry its tiny frames under a naive "best reading in the track" fusion
+  consensus -- this is NOT a per-bucket fusion measurement.
+- FIXED-DISTANCE tracks (track_type: "fixed_distance",
+  build_track_fixed_distance/build_fixed_distance()): width is constant
+  within the track (sampled once, within one width bucket), and the
+  degradation varies per FRAME instead of per track. This is the honest
+  per-bucket question: when a plate is (say) 35px in every frame, does
+  temporal consensus recover it. ~50 tracks per bucket.
+
+Frames narrower than 40px are always slice "tiny" regardless of condition
+(SPEC_TRINETRA_HARD: tiny overrides). ~10% of frames per track are
 deliberately rendered unreadable (extreme blur or <15px) with eligible:
 false -- kept, never dropped, to measure fabrication.
 
@@ -31,7 +45,9 @@ SYNTH_DIR = ROOT / "datasets" / "raw" / "synthetic_plates" / "generated"
 OUT = ROOT / "datasets" / "trinetra-hard" / "index.jsonl"
 
 SEED = 20260905
+SEED_FIXED = 20260906  # independent sample from SEED, avoids reusing the same plates/order
 N_TRACKS = 300
+N_FIXED_PER_BUCKET = 50
 FPS = 25
 BASE_W, BASE_H = 512, 128  # synthetic_plates native size
 
@@ -43,6 +59,13 @@ CONDITIONS = ["easy", "motion_blur", "night", "glare", "perspective"]
 CONDITION_WEIGHTS = [90, 60, 60, 45, 45]  # sums to 300 tracks
 
 UNREADABLE_FRAME_PROB = 0.10
+
+# (min_w, max_w) sampled once per fixed-distance track -- same overall span
+# as the approach tracks' width_trajectory() endpoints.
+BUCKET_WIDTH_RANGES = {
+    ">100": (100, 160), "80-100": (80, 99), "60-80": (60, 79),
+    "40-60": (40, 59), "30-40": (30, 39), "<30": (15, 29),
+}
 
 
 def width_bucket(w: float) -> str:
@@ -175,36 +198,137 @@ def build_track(track_idx: int, plate_path: Path, rng: random.Random, frame_sink
             "slice_reason": slice_reason,
             "degradation_params": params,
             "plate_bbox_source": "rendered",
+            "track_type": "approach",
+        })
+    return rows
+
+
+def build_track_fixed_distance(
+    track_idx: int, plate_path: Path, rng: random.Random, bucket: str, frame_sink=None
+) -> list[dict]:
+    """Width constant within the track (one draw from the bucket's range);
+    degradation varies per FRAME instead of per track -- the honest
+    per-bucket question: at this one distance, does temporal consensus
+    recover the plate."""
+    plate_text = plate_path.stem
+    with Image.open(plate_path) as im:
+        base = cv2.cvtColor(np.array(im.convert("RGB")), cv2.COLOR_RGB2BGR)
+
+    lo, hi = BUCKET_WIDTH_RANGES[bucket]
+    w = rng.randint(lo, hi)
+    h = max(1, round(w * BASE_H / BASE_W))
+    n_frames = rng.randint(8, 15)
+    camera_id = f"th_synth_fixed_cam_{bucket}_{track_idx:04d}"
+    session_id = f"th_synth_fixed_sess_{bucket}_{track_idx:04d}"
+    track_id = 1
+
+    rows = []
+    for frame_idx in range(n_frames):
+        condition = rng.choice(CONDITIONS)
+        resized = cv2.resize(base, (w, h), interpolation=cv2.INTER_AREA)
+        degraded, params = apply_condition(resized, condition, rng)
+
+        forced_unreadable = rng.random() < UNREADABLE_FRAME_PROB
+        if forced_unreadable:
+            extreme_k = rng.choice([15, 19, 23])
+            kernel = np.zeros((extreme_k, extreme_k))
+            kernel[extreme_k // 2, :] = np.ones(extreme_k)
+            kernel /= extreme_k
+            degraded = cv2.filter2D(degraded, -1, kernel)
+            params["forced_unreadable_blur_kernel"] = extreme_k
+
+        quality = rng.randint(55, 90)
+        degraded = jpeg_roundtrip(degraded, quality)
+        params["jpeg_quality"] = quality
+
+        frame_path = (
+            f"datasets/raw/synthetic_plates/generated/"
+            f"{plate_path.relative_to(SYNTH_DIR).as_posix()}#fixed_{bucket}_{track_idx:04d}_frame{frame_idx}"
+        )
+        if frame_sink is not None:
+            frame_sink(frame_path, degraded)
+
+        eligible = not forced_unreadable
+        slice_name = "tiny" if w < 40 else condition
+        slice_reason = (
+            f"forced unreadable frame (extreme blur), width {w}px"
+            if forced_unreadable
+            else (f"width {w}px < 40 -> tiny (spec: overrides other conditions)"
+                  if w < 40 else f"fixed-distance track, per-frame condition: {condition}, width {w}px")
+        )
+
+        rows.append({
+            "source_dataset": "synthetic_plates",
+            "clip_id": f"synth_fixed_track_{bucket}_{track_idx:04d}",
+            "frame_path": frame_path,
+            "source_pts_ms": round(frame_idx * (1000 / FPS)),
+            "camera_id": camera_id,
+            "stream_session_id": session_id,
+            "track_id": track_id,
+            "plate_bbox": [0, 0, w, h],
+            "plate_width_px": float(w),
+            "width_bucket": width_bucket(w),
+            "eligible": eligible,
+            "plate_text": plate_text,
+            "label_source": "synthetic_truth",
+            "label_confidence": "certain",
+            "slice": slice_name,
+            "slice_reason": slice_reason,
+            "degradation_params": params,
+            "plate_bbox_source": "rendered",
+            "track_type": "fixed_distance",
         })
     return rows
 
 
 def build(n_tracks: int = N_TRACKS, seed: int = SEED, frame_sink=None) -> list[dict]:
+    """Approach tracks (width varies within track)."""
     rng = random.Random(seed)
     all_plates = sorted(SYNTH_DIR.rglob("*.png"))
     sampled = rng.sample(all_plates, n_tracks)
     rows = []
-    obs_n = 0
     for track_idx, plate_path in enumerate(sampled):
         track_rng = random.Random(f"{seed}:{track_idx}")
-        for row in build_track(track_idx, plate_path, track_rng, frame_sink=frame_sink):
-            obs_n += 1
-            row["obs_id"] = f"th_{obs_n:05d}"
-            rows.append(row)
+        rows.extend(build_track(track_idx, plate_path, track_rng, frame_sink=frame_sink))
+    return rows
+
+
+def build_fixed_distance(
+    n_per_bucket: int = N_FIXED_PER_BUCKET, seed: int = SEED_FIXED, frame_sink=None
+) -> list[dict]:
+    """Fixed-distance tracks (width constant within track), ~n_per_bucket per bucket."""
+    rng = random.Random(seed)
+    all_plates = sorted(SYNTH_DIR.rglob("*.png"))
+    rows = []
+    for bucket in BUCKET_WIDTH_RANGES:
+        sampled = rng.sample(all_plates, n_per_bucket)
+        for track_idx, plate_path in enumerate(sampled):
+            track_rng = random.Random(f"{seed}:{bucket}:{track_idx}")
+            rows.extend(build_track_fixed_distance(track_idx, plate_path, track_rng, bucket, frame_sink=frame_sink))
+    return rows
+
+
+def build_all(frame_sink=None) -> list[dict]:
+    """Both track types combined, with continuous obs_id numbering."""
+    rows = build(frame_sink=frame_sink) + build_fixed_distance(frame_sink=frame_sink)
+    for i, row in enumerate(rows, start=1):
+        row["obs_id"] = f"th_{i:05d}"
     return rows
 
 
 def main() -> int:
-    rows = build()
+    rows = build_all()
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with OUT.open("w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r) + "\n")
 
     import collections
+    by_type = collections.Counter(r["track_type"] for r in rows)
     slice_counts = collections.Counter(r["slice"] for r in rows)
     n_ineligible = sum(1 for r in rows if not r["eligible"])
-    print(f"wrote {len(rows)} rows across {N_TRACKS} tracks -> {OUT}")
+    print(f"wrote {len(rows)} rows -> {OUT}")
+    print(f"  by track_type: {dict(by_type)}")
     for s, n in sorted(slice_counts.items()):
         print(f"  {s:12s} {n}")
     print(f"  ineligible (forced unreadable) {n_ineligible} ({n_ineligible / len(rows):.1%})")
