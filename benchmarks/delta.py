@@ -50,6 +50,11 @@ def build_report(before_path: Path, after_path: Path) -> str:
     before = json.loads(before_path.read_text(encoding="utf-8"))
     after = json.loads(after_path.read_text(encoding="utf-8"))
     parts = [
+        "Ground truth below is synthetic-generated (`label_source: synthetic_truth`), not human- "
+        "or OCR-labeled; the real-footage (indian_road) figure is a stability diagnostic only, "
+        "reported separately in `STABILITY.md` — it is NOT an accuracy number and must never be "
+        "presented as one.",
+        "",
         "# FUSION_DELTA",
         "",
         f"Before: `{before_path.name}` (manifest `{before.get('dataset_manifest_sha256')}`, "

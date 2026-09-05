@@ -130,6 +130,27 @@ OCR. The pipeline runs end to end unattended. See Phase 4R/4S/6R entries below.
 - `check_split_leakage.py` still OK (62 clip_ids, 0 leaks) — the reservation
   itself is untouched.
 
+## 2026-09-05 — Phase 6R: single-command unattended flow
+**STATUS: OK — full pipeline runs clean, no prompts**
+
+- `scripts/run_all.sh`: sequences -> real tracks -> freeze manifests (6
+  datasets) -> leakage check -> license check -> scorer self-check -> fusion
+  OFF -> fusion ON -> delta -> stability. One command, exits non-zero on any
+  step failure (`set -euo pipefail`), no interaction required.
+- Fixed a real bug found while running it: `run.py`'s notes wrongly said "0
+  human-verified rows" even when 3,102 `synthetic_truth` rows were scored —
+  it only checked for `label_source == "human"`. Fixed to check both
+  scoreable sources; notes now correctly report the 4,816 `unverified_real`
+  rows excluded instead.
+- `FUSION_DELTA.md` first line now states ground truth is synthetic-generated
+  and indian_road is stability-only, per instruction. Fusion delta on the
+  synthetic corpus: ALL 0.47 (1465/3102) OFF -> 1.00 (3102/3102) ON — this is
+  the stub predictor's designed behavior (illustrative, not a real result).
+  Fabrication count OFF 169 / ON 335 (stub always emits ground truth on
+  fusion, including for ineligible frames — an intentional illustrative
+  worst-case, not a real model property).
+- All 9 steps verified green end to end.
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
