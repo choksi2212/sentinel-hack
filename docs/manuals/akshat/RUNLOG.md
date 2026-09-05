@@ -62,6 +62,22 @@
   Test write reverted afterward — index.jsonl is back to Phase 4's output.
 - Not yet run for real (that's Phase 7, human, Monday AM).
 
+## 2026-09-05 — Phase 6: Scorer and harness
+**STATUS: OK — gate passed, all six fixtures green**
+
+- `benchmarks/scorer.py`: all 6 SPEC_BENCHMARK §5 fixtures pass (exact match,
+  case/space, 0/O fuzzy-not-correct, missing prediction, fabrication on
+  ineligible, ocr_candidate fully excluded).
+- `stub_predictor.py`, `run.py` (`-m benchmarks.run`), `delta.py`
+  (`-m benchmarks.delta`) written and run end-to-end on the real 196-row
+  `index.jsonl` — no crash, correctly degrades to `n_eligible: 0` /
+  `rate: null` everywhere because 0 rows are `label_source: human` yet
+  (expected — that's Phase 7, human). Reports + `FUSION_DELTA.md` committed
+  as proof the harness runs clean; re-run for real after Phase 7.
+- Every report cites `dataset_manifest_sha256` + `git_commit`;
+  `weights_sha256: null` with reason in `notes` (stub has no weights).
+- Gate cleared — downstream numbers, once real labels exist, can be trusted.
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
