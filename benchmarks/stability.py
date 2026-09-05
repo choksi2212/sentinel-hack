@@ -86,6 +86,9 @@ def build_report(rows: list[dict], seed: int) -> dict:
 
 def render_markdown(report: dict) -> str:
     lines = [
+        "**Predictor: `stub_stability_predict`** (`benchmarks/stability.py`, canned/illustrative "
+        "— not a real fusion model. Replace before citing this table as a measurement.)",
+        "",
         "# STABILITY — real-footage diagnostic",
         "",
         "**This is a stability diagnostic, not an accuracy measurement.** "

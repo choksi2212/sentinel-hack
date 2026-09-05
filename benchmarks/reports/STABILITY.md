@@ -1,3 +1,5 @@
+**Predictor: `stub_stability_predict`** (`benchmarks/stability.py`, canned/illustrative — not a real fusion model. Replace before citing this table as a measurement.)
+
 # STABILITY — real-footage diagnostic
 
 **This is a stability diagnostic, not an accuracy measurement.** indian_road's `unverified_real` rows have no known true plate string (`eligible: false` always) -- correctness is undefined here. This table only asks whether fusion makes predictions more self-consistent across frames of the same TrackKey. It carries no accuracy claim; see `FUSION_DELTA.md` for that (synthetic_truth only).

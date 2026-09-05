@@ -77,6 +77,7 @@ def build_report(rows: list[dict], predictions: dict, args) -> dict:
     return {
         "run_id": args.run_id,
         "task": args.suite,
+        "predictor": args.predictor,
         "dataset_manifest_sha256": sha256_file(ROOT / "datasets" / args.dataset / "index.jsonl"),
         "git_commit": git_commit(),
         "weights_sha256": None,
