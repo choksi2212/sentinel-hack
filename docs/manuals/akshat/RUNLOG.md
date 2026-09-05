@@ -1,5 +1,30 @@
 # RUNLOG — Akshat's lane
 
+## 2026-09-05 — BLOCKED: PaddleOCR install fails on import (DLL conflict with torch)
+**STATUS: BLOCKED — stopped per instruction, did not substitute another engine**
+
+- `pip install paddleocr paddlepaddle` succeeded (paddleocr 3.7.0, paddlepaddle
+  3.3.1, both report "Successfully installed").
+- `import paddleocr` (and even bare `import paddle` followed by `import torch`)
+  fails: `OSError: [WinError 127] The specified procedure could not be found.
+  Error loading ".../torch/lib/shm.dll" or one of its dependencies.`
+  Reproduced twice. Plain `import torch` alone (no paddle) succeeds — importing
+  `paddle` first corrupts the DLL search state so `torch`'s own `shm.dll`
+  cannot resolve afterward. `paddleocr` unconditionally imports `modelscope`,
+  which unconditionally imports `torch`, so any use of PaddleOCR in this
+  process hits this conflict.
+- No `PaddleOCR()` instantiation attempted — the import itself never
+  completes. `benchmarks/paddle_predictor.py`, `--predictor paddle`, and the
+  real-predictor run (2b-2e) are **not implemented** — there is nothing
+  working to wire in yet.
+- Not worked around: no alternate OCR engine substituted, no DLL/env hack
+  attempted, per instruction ("report the error and stop").
+- Likely fix (human, next session): a clean venv for paddleocr separate from
+  the torch install already in this environment, or resolving the torch/MKL
+  DLL conflict directly (this doesn't look paddleocr-specific — it's a
+  Windows DLL search-order collision between paddle's and torch's native
+  libraries in the same process).
+
 ## 2026-09-05 — Probabilistic stub + empty-bucket fixture
 **STATUS: OK**
 
