@@ -115,16 +115,23 @@ def main(argv: list[str]) -> int:
     p.add_argument("--fusion", choices=["on", "off"], required=True)
     p.add_argument("--out", default="benchmarks/reports/")
     p.add_argument("--predictor", default="stub", choices=["stub", "paddle"])
+    p.add_argument("--track-type", default="all", choices=["all", "approach", "fixed_distance", "real_footage"])
     p.add_argument("--run-id", default=None)
     args = p.parse_args(argv)
 
     out_dir = ROOT / args.out
     out_dir.mkdir(parents=True, exist_ok=True)
-    task_name = f"{args.suite}_fusion_{args.fusion}_{args.predictor}" if args.predictor != "stub" else f"{args.suite}_fusion_{args.fusion}"
+    task_name = f"{args.suite}_fusion_{args.fusion}"
+    if args.predictor != "stub":
+        task_name += f"_{args.predictor}"
+    if args.track_type != "all":
+        task_name += f"_{args.track_type}"
     if args.run_id is None:
         args.run_id = next_run_id(out_dir, task_name)
 
     rows = load_rows(args.dataset)
+    if args.track_type != "all":
+        rows = [r for r in rows if r.get("track_type") == args.track_type]
     fusion_enabled = args.fusion == "on"
     predictor_module = stub_predictor if args.predictor == "stub" else paddle_predictor
     if args.predictor == "paddle":

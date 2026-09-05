@@ -43,6 +43,10 @@
     "plate_bbox_source": {
       "type": "string", "enum": ["annotated", "estimated_from_vehicle_bbox", "whole_image", "rendered"],
       "description": "annotated = real plate-region ground truth; estimated_from_vehicle_bbox = no plate annotation exists, bbox is a heuristic sub-region of a real vehicle box (indian_road); whole_image = pre-cropped source; rendered = synthetic frame, bbox is exact by construction"
+    },
+    "track_type": {
+      "type": "string", "enum": ["approach", "fixed_distance", "real_footage"],
+      "description": "approach: width varies within the track (vehicle crossing frame). fixed_distance: width constant within the track, degradation varies per frame -- the honest per-bucket fusion question. real_footage: indian_road, diagnostic only."
     }
   },
   "additionalProperties": false

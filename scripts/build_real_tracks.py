@@ -144,6 +144,7 @@ def build() -> list[dict]:
                     ),
                     "degradation_params": None,
                     "plate_bbox_source": "estimated_from_vehicle_bbox",
+                    "track_type": "real_footage",
                 })
     return rows
 
