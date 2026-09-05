@@ -1,5 +1,18 @@
 # RUNLOG — Akshat's lane
 
+## 2026-09-05 — Fixed: stale "canned/illustrative" disclaimer on real PaddleOCR output
+**STATUS: OK**
+
+- `delta.py` hardcoded the stub's disclaimer text regardless of which
+  predictor actually ran — `FUSION_DELTA_paddle.md` was telling readers real
+  PaddleOCR output was "canned/illustrative, not a real model," the opposite
+  of true. Fixed: `PREDICTOR_DISCLAIMERS` dict keyed by `predictor`, `stub`
+  and `paddle` each get accurate text; an unregistered predictor name now
+  gets an explicit "no disclaimer registered" warning instead of silently
+  reusing the wrong one.
+- Both `FUSION_DELTA.md` (stub) and `FUSION_DELTA_paddle.md` regenerated;
+  confirmed correct labels on both.
+
 ## 2026-09-05 — PaddleOCR real predictor: first genuine number
 **STATUS: OK — process-level isolation fixed the DLL conflict**
 
