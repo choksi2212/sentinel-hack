@@ -32,8 +32,8 @@
     "eligible": {"type": "boolean", "description": "true only if the plate is actually readable in this rendering/frame"},
     "plate_text": {"type": ["string", "null"]},
     "label_source": {
-      "type": "string", "enum": ["human", "ocr_candidate", "synthetic_truth"],
-      "description": "synthetic_truth: text is known because it was the generator's own input, not guessed by OCR or a human. Only human and synthetic_truth are scoreable."
+      "type": "string", "enum": ["human", "ocr_candidate", "synthetic_truth", "unverified_real"],
+      "description": "synthetic_truth: text is known because it was the generator's own input, not guessed by OCR or a human. unverified_real: real footage, true plate string is unknown -- always eligible:false, plate_text:null, used only for stability diagnostics, never scored for accuracy. Only human and synthetic_truth are scoreable."
     },
     "label_confidence": {"type": "string", "enum": ["certain", "probable"]},
     "degradation_params": {
