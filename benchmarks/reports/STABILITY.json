@@ -1,0 +1,6389 @@
+{
+  "n_tracks": 580,
+  "n_frames_total": 4812,
+  "mean_agreement_off": 0.4546241379310348,
+  "mean_agreement_on": 1.0,
+  "n_tracks_improved": 550,
+  "per_track": [
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        2
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        9
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        15
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        17
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.364,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        36
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        38
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        64
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        69
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        80
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        86
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        88
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        94
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        96
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.444,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        99
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.571,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        114
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        121
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        143
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        154
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        158
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        163
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        168
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        176
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.385,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        201
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        248
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        256
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        275
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        280
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        310
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        314
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        315
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        331
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        365
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        377
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.2,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        417
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        426
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        441
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        448
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        485
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        499
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        545
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        546
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        547
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        552
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        565
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        595
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        640
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        643
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        707
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        708
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        709
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        714
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000db725-8180-4770-8b6a-4eb74aeda9f9",
+        720
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        1
+      ],
+      "n_frames": 18,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        2
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        3
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.455,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        4
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        23
+      ],
+      "n_frames": 4,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        27
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        35
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        47
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        48
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        71
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        74
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.2,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        83
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        88
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        92
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        106
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        109
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        122
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        163
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        166
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        169
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        176
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        181
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        217
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        253
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        270
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        271
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        310
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        313
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "000ebc57-d7e6-4e62-97a6-2cbc399724a1",
+        333
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        1
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        2
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        3
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        4
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        5
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.571,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        6
+      ],
+      "n_frames": 3,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        7
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        8
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        10
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.167,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        11
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        12
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        13
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        14
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        17
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        18
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        127
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        132
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        139
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        192
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.364,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        226
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        270
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        308
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        318
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        323
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        327
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        375
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        421
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        433
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        463
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        470
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        489
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        510
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        513
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        547
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        554
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        559
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        562
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        572
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        587
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        618
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        630
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        657
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0016b97d-ddc3-4d5f-8e7f-414fd7240399",
+        659
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0019389a-f7aa-4696-bc89-5f8762fc4c77",
+        1
+      ],
+      "n_frames": 26,
+      "agreement_off": 0.423,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0019389a-f7aa-4696-bc89-5f8762fc4c77",
+        11
+      ],
+      "n_frames": 25,
+      "agreement_off": 0.28,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0019389a-f7aa-4696-bc89-5f8762fc4c77",
+        24
+      ],
+      "n_frames": 27,
+      "agreement_off": 0.407,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0019389a-f7aa-4696-bc89-5f8762fc4c77",
+        25
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0019389a-f7aa-4696-bc89-5f8762fc4c77",
+        27
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0019389a-f7aa-4696-bc89-5f8762fc4c77",
+        50
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        1
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        2
+      ],
+      "n_frames": 34,
+      "agreement_off": 0.324,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        3
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        4
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        5
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        6
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        7
+      ],
+      "n_frames": 20,
+      "agreement_off": 0.35,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        9
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        15
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        17
+      ],
+      "n_frames": 20,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        18
+      ],
+      "n_frames": 14,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        22
+      ],
+      "n_frames": 28,
+      "agreement_off": 0.321,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        26
+      ],
+      "n_frames": 38,
+      "agreement_off": 0.368,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        29
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        54
+      ],
+      "n_frames": 25,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        92
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        93
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        96
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        116
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        126
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        139
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.556,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        145
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001c0d67-590e-479b-86b9-c521fe884139",
+        151
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        1
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        2
+      ],
+      "n_frames": 50,
+      "agreement_off": 0.28,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        3
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        4
+      ],
+      "n_frames": 24,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        5
+      ],
+      "n_frames": 17,
+      "agreement_off": 0.353,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        21
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        29
+      ],
+      "n_frames": 20,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        35
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        39
+      ],
+      "n_frames": 16,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        82
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        88
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        98
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        99
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        104
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "001fd88e-ce16-4f22-b005-34f7791fb996",
+        120
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        5
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        6
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        7
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        8
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        9
+      ],
+      "n_frames": 35,
+      "agreement_off": 0.371,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        10
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        23
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        27
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        39
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        42
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        51
+      ],
+      "n_frames": 28,
+      "agreement_off": 0.393,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        85
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        102
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        103
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        112
+      ],
+      "n_frames": 3,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        113
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        115
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        123
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        124
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        125
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        142
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        165
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        173
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        196
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        213
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        225
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        229
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00263864-d94b-44c5-8eb9-4e51093e59f4",
+        265
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        1
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        2
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        3
+      ],
+      "n_frames": 14,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        12
+      ],
+      "n_frames": 12,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        14
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        15
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        19
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.625,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        28
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        54
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        68
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        75
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        109
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        132
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        149
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        152
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        154
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        155
+      ],
+      "n_frames": 3,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        168
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0031e84e-43d4-4457-b85b-d90163c7267e",
+        205
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        1
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.2,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        2
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        3
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        5
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.385,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        9
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        24
+      ],
+      "n_frames": 4,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        27
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.571,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        57
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        71
+      ],
+      "n_frames": 19,
+      "agreement_off": 0.263,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        81
+      ],
+      "n_frames": 31,
+      "agreement_off": 0.323,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        85
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.556,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        91
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003666c8-18f8-46c3-96a7-a536ab0d25c4",
+        97
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        1
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        2
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        5
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        22
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        23
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        27
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        38
+      ],
+      "n_frames": 30,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        39
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.571,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        40
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        41
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        44
+      ],
+      "n_frames": 30,
+      "agreement_off": 0.267,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        50
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        53
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        61
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        66
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        80
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        82
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        84
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        85
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        87
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "003bf0b5-6eb4-4359-bffa-3debea8e6e5e",
+        90
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        1
+      ],
+      "n_frames": 22,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        2
+      ],
+      "n_frames": 20,
+      "agreement_off": 0.35,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        3
+      ],
+      "n_frames": 25,
+      "agreement_off": 0.32,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        7
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        10
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.545,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        14
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        18
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0041845c-79d8-49b6-a7df-1f2cbbd79f9e",
+        40
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        1
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        2
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        4
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        5
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        6
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        7
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        8
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        10
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        37
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.636,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        38
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        39
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        40
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        92
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        110
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        124
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        129
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        134
+      ],
+      "n_frames": 12,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        138
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        139
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        146
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        147
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        155
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        179
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        206
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        219
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        265
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        275
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        276
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        279
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        291
+      ],
+      "n_frames": 18,
+      "agreement_off": 0.278,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        315
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        349
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        352
+      ],
+      "n_frames": 21,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        373
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        386
+      ],
+      "n_frames": 23,
+      "agreement_off": 0.348,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        389
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        390
+      ],
+      "n_frames": 16,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        397
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        399
+      ],
+      "n_frames": 23,
+      "agreement_off": 0.348,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        402
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        409
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        417
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        418
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        425
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        454
+      ],
+      "n_frames": 19,
+      "agreement_off": 0.316,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        462
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        480
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        487
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.8,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0049d23b-5aaf-4bc4-9f9c-a9c2c03dbc9e",
+        489
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        1
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        90
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        108
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        118
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        130
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        131
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        138
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        143
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        158
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        160
+      ],
+      "n_frames": 12,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        243
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        260
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        317
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004c8b8d-11af-44a9-9e61-a4e34e643006",
+        337
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        1
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        2
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.385,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        3
+      ],
+      "n_frames": 27,
+      "agreement_off": 0.296,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        4
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        6
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        9
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        13
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.571,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        16
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        18
+      ],
+      "n_frames": 21,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        23
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        30
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.2,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        37
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        49
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        51
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        52
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        54
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        58
+      ],
+      "n_frames": 18,
+      "agreement_off": 0.278,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        78
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        90
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "004d1e7c-4dbe-405d-8782-598ca0da1bea",
+        93
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.2,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00539b87-f629-4661-9793-01ab7905383e",
+        1
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00539b87-f629-4661-9793-01ab7905383e",
+        2
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00539b87-f629-4661-9793-01ab7905383e",
+        5
+      ],
+      "n_frames": 23,
+      "agreement_off": 0.304,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00539b87-f629-4661-9793-01ab7905383e",
+        8
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00539b87-f629-4661-9793-01ab7905383e",
+        9
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00539b87-f629-4661-9793-01ab7905383e",
+        11
+      ],
+      "n_frames": 18,
+      "agreement_off": 0.389,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00539b87-f629-4661-9793-01ab7905383e",
+        15
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        1
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        3
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        4
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        6
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        7
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        8
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        10
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        11
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        21
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        26
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        33
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        40
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        41
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        43
+      ],
+      "n_frames": 3,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        55
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        86
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        96
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        97
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        113
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        117
+      ],
+      "n_frames": 19,
+      "agreement_off": 0.316,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        130
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        137
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        141
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.444,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        151
+      ],
+      "n_frames": 19,
+      "agreement_off": 0.421,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        165
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        178
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        185
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        192
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        194
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.222,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        195
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        199
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        206
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.571,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        208
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        211
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0054a12a-f4f0-41de-aa26-566097787891",
+        215
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        3
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        4
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        6
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        19
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        31
+      ],
+      "n_frames": 31,
+      "agreement_off": 0.29,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        49
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        55
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        63
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        64
+      ],
+      "n_frames": 11,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        100
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0076d1e2-ef37-4445-9fa9-7d3bdf25bd8f",
+        119
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        1
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        2
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        3
+      ],
+      "n_frames": 18,
+      "agreement_off": 0.444,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        4
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        5
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        6
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        7
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        8
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        19
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.385,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        31
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        45
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        46
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.462,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        52
+      ],
+      "n_frames": 23,
+      "agreement_off": 0.304,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        55
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        56
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        58
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        59
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        65
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        66
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        71
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.444,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        83
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        103
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        113
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        121
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        128
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.444,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        133
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        137
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        149
+      ],
+      "n_frames": 68,
+      "agreement_off": 0.338,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        151
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        152
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        154
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        168
+      ],
+      "n_frames": 15,
+      "agreement_off": 0.267,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        169
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.2,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        174
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        181
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        183
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        193
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.571,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        207
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        209
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        211
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        213
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        214
+      ],
+      "n_frames": 0,
+      "agreement_off": 0.0,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        218
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        219
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        222
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        225
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        265
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        266
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        271
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0078bb37-7ca2-4bdd-8563-626117130fb7",
+        292
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        1
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.317,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        3
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        4
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        5
+      ],
+      "n_frames": 19,
+      "agreement_off": 0.474,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        6
+      ],
+      "n_frames": 12,
+      "agreement_off": 0.417,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        17
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        37
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.308,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        77
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        80
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        83
+      ],
+      "n_frames": 0,
+      "agreement_off": 0.0,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        137
+      ],
+      "n_frames": 23,
+      "agreement_off": 0.261,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        143
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.231,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        150
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        153
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        154
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        159
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.444,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        167
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00797c49-b024-47d9-85e7-e7391d1498f7",
+        179
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        1
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        2
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        3
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        4
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        8
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        9
+      ],
+      "n_frames": 13,
+      "agreement_off": 0.154,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        12
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        13
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        14
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        36
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        49
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        51
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        52
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        57
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        64
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.167,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        66
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        70
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        106
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        109
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        148
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        154
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        166
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        190
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        200
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007cedf1-aefd-4129-b852-7695829a4cec",
+        218
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        2
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        3
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        4
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        5
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        6
+      ],
+      "n_frames": 55,
+      "agreement_off": 0.236,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        31
+      ],
+      "n_frames": 16,
+      "agreement_off": 0.312,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        58
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        179
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        200
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        224
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        233
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        247
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.429,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        260
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        277
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.222,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        377
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.8,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        452
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        510
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        511
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "007e2cdb-abe0-4fe7-89ea-79569159ad14",
+        546
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        1
+      ],
+      "n_frames": 12,
+      "agreement_off": 0.417,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        2
+      ],
+      "n_frames": 32,
+      "agreement_off": 0.281,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        3
+      ],
+      "n_frames": 51,
+      "agreement_off": 0.314,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        4
+      ],
+      "n_frames": 58,
+      "agreement_off": 0.293,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        5
+      ],
+      "n_frames": 28,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        9
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        18
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "008062ff-e7f8-458b-80bd-1f909551011c",
+        21
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        1
+      ],
+      "n_frames": 50,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        2
+      ],
+      "n_frames": 43,
+      "agreement_off": 0.326,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        3
+      ],
+      "n_frames": 45,
+      "agreement_off": 0.311,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        4
+      ],
+      "n_frames": 47,
+      "agreement_off": 0.319,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        13
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        15
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        16
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        27
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.75,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        29
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "0088ab0e-9098-4ec5-8f36-a47aef7ae54e",
+        43
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00c87e36-15a5-4ca8-9f01-5ebbaadf11b4",
+        1
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.3,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00c87e36-15a5-4ca8-9f01-5ebbaadf11b4",
+        2
+      ],
+      "n_frames": 59,
+      "agreement_off": 0.305,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00c87e36-15a5-4ca8-9f01-5ebbaadf11b4",
+        3
+      ],
+      "n_frames": 44,
+      "agreement_off": 0.273,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00c87e36-15a5-4ca8-9f01-5ebbaadf11b4",
+        5
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        1
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        3
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.556,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        8
+      ],
+      "n_frames": 12,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        13
+      ],
+      "n_frames": 10,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        23
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        30
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.556,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        37
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        39
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        45
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.444,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        122
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        126
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        144
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00ca74e0-be2b-4b3e-ab4b-46da5a9f4279",
+        165
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        1
+      ],
+      "n_frames": 7,
+      "agreement_off": 0.286,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        2
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.25,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        3
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        27
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        34
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        59
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        62
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        63
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        70
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        78
+      ],
+      "n_frames": 18,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        81
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        98
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        111
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00cca8c2-9bcf-4c11-a245-fdc3d5ee2769",
+        136
+      ],
+      "n_frames": 2,
+      "agreement_off": 1.0,
+      "agreement_on": 1.0,
+      "improved": false
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00d5614c-7cd1-4263-8db4-bf89c75c34bf",
+        1
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00d5614c-7cd1-4263-8db4-bf89c75c34bf",
+        2
+      ],
+      "n_frames": 17,
+      "agreement_off": 0.294,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00d5614c-7cd1-4263-8db4-bf89c75c34bf",
+        7
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00f7ff41-16c5-45fe-a970-f05542e39b56",
+        2
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00f7ff41-16c5-45fe-a970-f05542e39b56",
+        3
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00f7ff41-16c5-45fe-a970-f05542e39b56",
+        13
+      ],
+      "n_frames": 23,
+      "agreement_off": 0.348,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "00f7ff41-16c5-45fe-a970-f05542e39b56",
+        21
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01074748-cb68-43b9-a3f1-86ce2bdc0bed",
+        1
+      ],
+      "n_frames": 12,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01074748-cb68-43b9-a3f1-86ce2bdc0bed",
+        2
+      ],
+      "n_frames": 15,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01074748-cb68-43b9-a3f1-86ce2bdc0bed",
+        3
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.667,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01074748-cb68-43b9-a3f1-86ce2bdc0bed",
+        12
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        2
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.283,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        3
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.367,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        6
+      ],
+      "n_frames": 51,
+      "agreement_off": 0.353,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        7
+      ],
+      "n_frames": 51,
+      "agreement_off": 0.275,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        8
+      ],
+      "n_frames": 2,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        11
+      ],
+      "n_frames": 20,
+      "agreement_off": 0.35,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        12
+      ],
+      "n_frames": 9,
+      "agreement_off": 0.222,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        17
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.6,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        19
+      ],
+      "n_frames": 5,
+      "agreement_off": 0.4,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        26
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        27
+      ],
+      "n_frames": 4,
+      "agreement_off": 0.5,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01143ada-8e82-4812-bfc6-63842c9f4dc6",
+        29
+      ],
+      "n_frames": 3,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01178f2d-4186-4c7f-a284-de99f4ebdbe4",
+        1
+      ],
+      "n_frames": 60,
+      "agreement_off": 0.283,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01178f2d-4186-4c7f-a284-de99f4ebdbe4",
+        23
+      ],
+      "n_frames": 6,
+      "agreement_off": 0.333,
+      "agreement_on": 1.0,
+      "improved": true
+    },
+    {
+      "track_key": [
+        "th_cam_cpplus_dashcam_fleet",
+        "01178f2d-4186-4c7f-a284-de99f4ebdbe4",
+        25
+      ],
+      "n_frames": 8,
+      "agreement_off": 0.375,
+      "agreement_on": 1.0,
+      "improved": true
+    }
+  ]
+}

@@ -108,6 +108,28 @@ OCR. The pipeline runs end to end unattended. See Phase 4R/4S/6R entries below.
 - Smoke-tested `benchmarks.run` against the new corpus end-to-end: real
   non-null rates per width bucket, no crash.
 
+## 2026-09-05 — Phase 4S: real-footage tracks + stability (diagnostic only)
+**STATUS: OK — 4,816 indian_road rows added, never scored for accuracy**
+
+- `scripts/build_real_tracks.py`: **4,816 rows / 580 tracks / all 31 RESERVED
+  indian_road clips** (only, never TRAIN_SAFE). Real clip_id, real track_id
+  (ByteTrack annotation), real frame index -> `source_pts_ms` (1fps per the
+  dataset's own README). `eligible: false`, `plate_text: null`, always —
+  indian_road has **no plate-region annotation**, only vehicle-level BDD100K
+  boxes, so true plate text is genuinely unknown here. `plate_bbox` is a
+  documented heuristic estimate from the real vehicle box
+  (`plate_bbox_source: estimated_from_vehicle_bbox`), not a measurement.
+- New `label_source: unverified_real` — excluded from `scorer.py`'s accuracy
+  path by construction (only `human`/`synthetic_truth` are scored); confirmed
+  `n_eligible` unchanged (3,102) after adding these rows.
+- `benchmarks/stability.py`: agreement-across-frames-of-a-TrackKey diagnostic,
+  written to `STABILITY.md`/`.json`, clearly headed as non-accuracy. 580
+  tracks, 4,812 frames, 550/580 tracks show higher agreement with the stub's
+  simulated fusion. This is a plumbing validation (illustrative stub
+  predictor), not a real fusion measurement.
+- `check_split_leakage.py` still OK (62 clip_ids, 0 leaks) — the reservation
+  itself is untouched.
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
