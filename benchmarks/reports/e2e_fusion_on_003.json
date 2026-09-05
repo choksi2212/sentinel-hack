@@ -1,0 +1,72 @@
+{
+  "run_id": "e2e_fusion_on_003",
+  "task": "e2e",
+  "dataset_manifest_sha256": "abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a",
+  "git_commit": "573f0303561f9567eeef782d271c90c13dbad741",
+  "weights_sha256": null,
+  "machine": "RTX 4060 8GB",
+  "runtime": "torch 2.x + CUDA 12.x",
+  "source_mode": "file",
+  "fusion_enabled": true,
+  "n_eligible": 3102,
+  "n_correct": 3102,
+  "e2e_correct_plate_event_rate": 1.0,
+  "fabrication_count": 335,
+  "by_plate_width": {
+    ">100": {
+      "n": 984,
+      "correct": 984,
+      "rate": 1.0
+    },
+    "80-100": {
+      "n": 481,
+      "correct": 481,
+      "rate": 1.0
+    },
+    "60-80": {
+      "n": 504,
+      "correct": 504,
+      "rate": 1.0
+    },
+    "40-60": {
+      "n": 499,
+      "correct": 499,
+      "rate": 1.0
+    },
+    "30-40": {
+      "n": 273,
+      "correct": 273,
+      "rate": 1.0
+    },
+    "<30": {
+      "n": 361,
+      "correct": 361,
+      "rate": 1.0
+    }
+  },
+  "by_slice": {
+    "easy": 1.0,
+    "motion_blur": 1.0,
+    "night": 1.0,
+    "glare": 1.0,
+    "perspective": 1.0,
+    "tiny": 1.0
+  },
+  "diagnostics": {
+    "precision": null,
+    "recall": null,
+    "map50": null,
+    "ocr_exact_accuracy": null,
+    "cer": null,
+    "fuzzy_match_rate": 0.0,
+    "fps": null,
+    "latency_p50_ms": null,
+    "latency_p95_ms": null,
+    "vram_peak_mb": null,
+    "real_time_factor": null
+  },
+  "notes": [
+    "4816 unverified_real rows present (real footage, no known plate text) -- excluded from every number above; see STABILITY.md for that data.",
+    "weights_sha256: n/a -- stub predictor has no weights file to hash."
+  ]
+}

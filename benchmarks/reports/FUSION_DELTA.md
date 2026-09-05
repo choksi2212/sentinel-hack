@@ -1,22 +1,24 @@
+Ground truth below is synthetic-generated (`label_source: synthetic_truth`), not human- or OCR-labeled; the real-footage (indian_road) figure is a stability diagnostic only, reported separately in `STABILITY.md` — it is NOT an accuracy number and must never be presented as one.
+
 # FUSION_DELTA
 
-Before: `e2e_fusion_off_001.json` (manifest `62946cf4d9c9d48bde49ee2cd14635fe3f988cb6bb4d93fd52991c998e3257a2`, commit `cbea09b82214b5954cf4af18d4b57ce8475dac09`)
-After: `e2e_fusion_on_001.json` (manifest `62946cf4d9c9d48bde49ee2cd14635fe3f988cb6bb4d93fd52991c998e3257a2`, commit `cbea09b82214b5954cf4af18d4b57ce8475dac09`)
+Before: `e2e_fusion_off_003.json` (manifest `abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a`, commit `573f0303561f9567eeef782d271c90c13dbad741`)
+After: `e2e_fusion_on_003.json` (manifest `abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a`, commit `573f0303561f9567eeef782d271c90c13dbad741`)
 
 | Bucket | n | fusion OFF | fusion ON | delta |
 |---|---|---|---|---|
-| >100 | 0 | n/a (0/0) | n/a (0/0) | n/a |
-| 80-100 | 0 | n/a (0/0) | n/a (0/0) | n/a |
-| 60-80 | 0 | n/a (0/0) | n/a (0/0) | n/a |
-| 40-60 | 0 | n/a (0/0) | n/a (0/0) | n/a |
-| 30-40 | 0 | n/a (0/0) | n/a (0/0) | n/a |
-| <30 | 0 | n/a (0/0) | n/a (0/0) | n/a |
-| ALL | 0 | n/a (0/0) | n/a (0/0) | n/a |
+| >100 | 984 | 1.00 (984/984) | 1.00 (984/984) | +0.00 |
+| 80-100 | 481 | 1.00 (481/481) | 1.00 (481/481) | +0.00 |
+| 60-80 | 504 | 0.00 (0/504) | 1.00 (504/504) | +1.00 |
+| 40-60 | 499 | 0.00 (0/499) | 1.00 (499/499) | +1.00 |
+| 30-40 | 273 | 0.00 (0/273) | 1.00 (273/273) | +1.00 |
+| <30 | 361 | 0.00 (0/361) | 1.00 (361/361) | +1.00 |
+| ALL | 3102 | 0.47 (1465/3102) | 1.00 (3102/3102) | +0.53 |
 
-Fabrication count -- OFF: 0, ON: 0 (never folded into the rate above).
+Fabrication count -- OFF: 169, ON: 335 (never folded into the rate above).
 
 **Notes:**
-- (before) 0 human-verified rows in this dataset -- all rows are label_source: ocr_candidate and are excluded from scoring per SPEC_BENCHMARK §2. This report reflects an empty ground-truth set, not model performance.
+- (before) 4816 unverified_real rows present (real footage, no known plate text) -- excluded from every number above; see STABILITY.md for that data.
 - (before) weights_sha256: n/a -- stub predictor has no weights file to hash.
-- (after) 0 human-verified rows in this dataset -- all rows are label_source: ocr_candidate and are excluded from scoring per SPEC_BENCHMARK §2. This report reflects an empty ground-truth set, not model performance.
+- (after) 4816 unverified_real rows present (real footage, no known plate text) -- excluded from every number above; see STABILITY.md for that data.
 - (after) weights_sha256: n/a -- stub predictor has no weights file to hash.

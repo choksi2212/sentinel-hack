@@ -59,12 +59,18 @@ def next_run_id(out_dir: Path, task: str) -> str:
 def build_report(rows: list[dict], predictions: dict, args) -> dict:
     scored = score(rows, predictions)
     notes = []
-    human_rows = [r for r in rows if r.get("label_source") == "human"]
-    if not human_rows:
+    scoreable_rows = [r for r in rows if r.get("label_source") in ("human", "synthetic_truth")]
+    if not scoreable_rows:
         notes.append(
-            "0 human-verified rows in this dataset -- all rows are label_source: "
-            "ocr_candidate and are excluded from scoring per SPEC_BENCHMARK §2. "
-            "This report reflects an empty ground-truth set, not model performance."
+            "0 scoreable rows (label_source human or synthetic_truth) in this dataset -- "
+            "ocr_candidate/unverified_real rows are excluded from scoring per SPEC_BENCHMARK "
+            "§2. This report reflects an empty ground-truth set, not model performance."
+        )
+    unverified_real_n = sum(1 for r in rows if r.get("label_source") == "unverified_real")
+    if unverified_real_n:
+        notes.append(
+            f"{unverified_real_n} unverified_real rows present (real footage, no known plate "
+            "text) -- excluded from every number above; see STABILITY.md for that data."
         )
     notes.append("weights_sha256: n/a -- stub predictor has no weights file to hash.")
 
