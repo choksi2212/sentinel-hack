@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """E2E correct-plate event rate. Per SPEC_BENCHMARK.md §2.
 
-Only label_source == "human" rows are scored at all -- ocr_candidate rows are
-excluded from every reported number, full stop. Within human rows:
+Only label_source in ("human", "synthetic_truth") rows are scored at all --
+ocr_candidate rows are excluded from every reported number, full stop (an
+OCR-produced label scored against an OCR-produced prediction would measure
+the system against itself). Within scoreable rows:
   - eligible == False: fabrication_count += 1 if a prediction was emitted,
     excluded from n_eligible/n_correct entirely.
   - eligible == True: counted in n_eligible; correct iff normalised strings
@@ -54,7 +56,7 @@ def score(rows: list[dict], predictions: dict[str, str | None]) -> dict:
     by_slice_n = defaultdict(int)
 
     for row in rows:
-        if row.get("label_source") != "human":
+        if row.get("label_source") not in ("human", "synthetic_truth"):
             continue  # ocr_candidate: excluded from every reported number
         pred = predictions.get(row["obs_id"])
         if not row["eligible"]:
@@ -134,7 +136,12 @@ def demo():
     r = score(rows, {"f": "WRONG"})
     assert r["n_eligible"] == 0 and r["fabrication_count"] == 0 and r["n_correct"] == 0
 
-    print("demo: all six SPEC_BENCHMARK §5 fixtures pass")
+    # synthetic_truth is scoreable exactly like human (Phase 4R)
+    rows = [{**base, "obs_id": "g", "plate_text": "GJ01AB1234", "label_source": "synthetic_truth"}]
+    r = score(rows, {"g": "GJ01AB1234"})
+    assert r["n_correct"] == 1 and r["n_eligible"] == 1
+
+    print("demo: all six SPEC_BENCHMARK §5 fixtures pass, plus synthetic_truth scoreable")
 
 
 if __name__ == "__main__":

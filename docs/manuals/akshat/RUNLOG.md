@@ -86,6 +86,28 @@ OCR. The pipeline runs end to end unattended. See Phase 4R/4S/6R entries below.
 - `check_licenses.py`: still OK.
 - Both are now usable for TRINETRA-HARD candidate sourcing.
 
+## 2026-09-05 — Phase 4R: synthetic sequence corpus (new headline)
+**STATUS: OK**
+
+- `scripts/synth/build_sequences.py` — 300 tracks sampled from `synthetic_plates`
+  (seed 20260905), 8-15 frames each, **3,437 total rows**. Every row
+  `label_source: synthetic_truth` — text is the generator's own filename,
+  never OCR, never human. Width sweeps every bucket per track (real fusion
+  test data at every width). Per-frame degradation baked in and recorded in
+  `degradation_params`: motion_blur/night/glare/perspective/easy, plus ~10%
+  (9.7% actual) deliberately-unreadable frames, `eligible: false`, kept.
+- Row counts by slice: easy 742, motion_blur 552, night 582, glare 407,
+  perspective 460, tiny 694 — **note this is a structural change from
+  SPEC_TRINETRA_HARD's original ~300-single-observation design**: it's now
+  ~300 multi-frame *tracks* (3,437 rows), per the plan-change instruction.
+- `schema.json` extended: `label_source` enum +`synthetic_truth`, new optional
+  `degradation_params`, `plate_bbox_source`.
+- `scorer.py` updated to treat `synthetic_truth` as scoreable (same as
+  `human`); `ocr_candidate` still fully excluded. All 6 SPEC_BENCHMARK §5
+  fixtures re-run and pass, plus 1 new assertion for `synthetic_truth`.
+- Smoke-tested `benchmarks.run` against the new corpus end-to-end: real
+  non-null rates per width bucket, no crash.
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
