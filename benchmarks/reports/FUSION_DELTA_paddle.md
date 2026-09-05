@@ -1,4 +1,4 @@
-**Predictor: `paddle`** (`benchmarks/stub_predictor.py`, canned/illustrative — not a real model. Replace before citing this table as a measurement.)
+**Predictor: `paddle`** (`benchmarks/paddle_predictor.py`, PaddleOCR (see `weights_sha256`/notes below for the exact model files) — a real OCR baseline, not the final production pipeline. Ground truth is synthetic-generated (see below), so this is a real, non-circular measurement of this specific OCR engine.)
 
 Ground truth below is synthetic-generated (`label_source: synthetic_truth`), not human- or OCR-labeled; the real-footage (indian_road) figure is a stability diagnostic only, reported separately in `STABILITY.md` — it is NOT an accuracy number and must never be presented as one.
 
