@@ -112,7 +112,7 @@ def width_trajectory(n_frames: int, rng: random.Random) -> list[int]:
     return [round(w_start + (w_end - w_start) * i / (n_frames - 1)) for i in range(n_frames)]
 
 
-def build_track(track_idx: int, plate_path: Path, rng: random.Random) -> list[dict]:
+def build_track(track_idx: int, plate_path: Path, rng: random.Random, frame_sink=None) -> list[dict]:
     plate_text = plate_path.stem
     with Image.open(plate_path) as im:
         base = cv2.cvtColor(np.array(im.convert("RGB")), cv2.COLOR_RGB2BGR)
@@ -143,6 +143,10 @@ def build_track(track_idx: int, plate_path: Path, rng: random.Random) -> list[di
         degraded = jpeg_roundtrip(degraded, quality)
         params["jpeg_quality"] = quality
 
+        frame_path = f"datasets/raw/synthetic_plates/generated/{plate_path.relative_to(SYNTH_DIR).as_posix()}#frame{frame_idx}"
+        if frame_sink is not None:
+            frame_sink(frame_path, degraded)
+
         eligible = not forced_unreadable
         slice_name = "tiny" if w < 40 else condition
         slice_reason = (
@@ -155,7 +159,7 @@ def build_track(track_idx: int, plate_path: Path, rng: random.Random) -> list[di
         rows.append({
             "source_dataset": "synthetic_plates",
             "clip_id": f"synth_track_{track_idx:04d}",
-            "frame_path": f"datasets/raw/synthetic_plates/generated/{plate_path.relative_to(SYNTH_DIR).as_posix()}#frame{frame_idx}",
+            "frame_path": frame_path,
             "source_pts_ms": round(frame_idx * (1000 / FPS)),
             "camera_id": camera_id,
             "stream_session_id": session_id,
@@ -175,7 +179,7 @@ def build_track(track_idx: int, plate_path: Path, rng: random.Random) -> list[di
     return rows
 
 
-def build(n_tracks: int = N_TRACKS, seed: int = SEED) -> list[dict]:
+def build(n_tracks: int = N_TRACKS, seed: int = SEED, frame_sink=None) -> list[dict]:
     rng = random.Random(seed)
     all_plates = sorted(SYNTH_DIR.rglob("*.png"))
     sampled = rng.sample(all_plates, n_tracks)
@@ -183,7 +187,7 @@ def build(n_tracks: int = N_TRACKS, seed: int = SEED) -> list[dict]:
     obs_n = 0
     for track_idx, plate_path in enumerate(sampled):
         track_rng = random.Random(f"{seed}:{track_idx}")
-        for row in build_track(track_idx, plate_path, track_rng):
+        for row in build_track(track_idx, plate_path, track_rng, frame_sink=frame_sink):
             obs_n += 1
             row["obs_id"] = f"th_{obs_n:05d}"
             rows.append(row)

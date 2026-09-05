@@ -1,5 +1,50 @@
 # RUNLOG — Akshat's lane
 
+## 2026-09-05 — PaddleOCR real predictor: first genuine number
+**STATUS: OK — process-level isolation fixed the DLL conflict**
+
+- Fix: `.venv-ocr` (isolated venv, no torch) resolves the earlier DLL collision.
+  `paddleocr` import still hit a second, unrelated bug inside that venv —
+  PP-OCRv6 crashes on this CPU's oneDNN backend
+  (`NotImplementedError: ConvertPirAttribute2RuntimeAttribute`); fixed by
+  forcing `ocr_version="PP-OCRv4"` + `PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT=False`
+  in `scripts/ocr_worker.py`. Reported here since it's a real deviation from
+  "just works," not silently patched over.
+- `scripts/ocr_worker.py` (runs only in `.venv-ocr`): one PaddleOCR() load,
+  reads `[{"path","box"}]` JSON on stdin, writes `{path: {"text","confidence"}}`
+  on stdout. Multiple detected text regions per plate are joined
+  left-to-right by x-coordinate into one string (a single-line plate is
+  usually detected as several fragments, not one box).
+- `benchmarks/paddle_predictor.py` (main env): materializes every
+  `synthetic_truth` frame to a real PNG (reusing `build_sequences.py`'s own
+  renderer via a new `frame_sink` hook — same pixels ground truth was
+  generated from), runs OCR **once** over all 3,437 frames in one subprocess
+  (~35 min), caches to `benchmarks/cache/ocr_readings.json` keyed by
+  `frame_path` (gitignored). Fusion ON consensus: **highest-confidence whole
+  reading across the TrackKey**, not per-character majority vote — OCR
+  readings vary in length/fragment count frame to frame, so position voting
+  isn't well-defined; picking the single most confident whole string is and
+  mirrors a real fusion pipeline surfacing its best detection.
+- `--predictor paddle` added to `run.py`; report's `predictor` field records
+  which was used; `weights_sha256` is a real combined hash of the 30
+  PP-OCRv4 det+rec model files on disk (path: `~/.paddlex/official_models/`).
+- **Detection rate correlates with difficulty exactly as expected** (genuine
+  signal, not a bug): >100px 39.5% (428/1083) down to 30-40px and <30px 0%
+  (0/304, 0/390); easy slice 46%, motion_blur ~0%, tiny 0%.
+- **Fusion-on side effect worth flagging**: because consensus propagates one
+  track's best reading to every frame in that track, a track's fusion-on
+  outcome is close to binary (right or wrong for the whole track), which is
+  why every width bucket lands near the same ~0.21-0.23 rate under fusion ON
+  — an emergent property of this consensus rule, not a bug (verified: no
+  cross-track key collisions). It also **increases fabrication** (0 -> 164):
+  a genuinely-unreadable frame can inherit a confident reading from elsewhere
+  in its track. A real fusion design would need a per-frame eligibility gate
+  before propagating a track consensus, not just the confidence score.
+- All 6 scorer fixtures + regression-checked stub report still pass after
+  wiring `--predictor paddle` in.
+- Reports use distinct run ids (`*_paddle_001.json`, `FUSION_DELTA_paddle.md`)
+  — the stub reports (`FUSION_DELTA.md`, run `_005`) are untouched.
+
 ## 2026-09-05 — BLOCKED: PaddleOCR install fails on import (DLL conflict with torch)
 **STATUS: BLOCKED — stopped per instruction, did not substitute another engine**
 
