@@ -1,4 +1,48 @@
-# RUNLOG — Akshat's lane
+## 2026-09-05 — DIAGNOSIS: why >100px detection is 39.5%, not near-total
+**STATUS: root cause found — real renderer, wrong crop box, not "bare text on a plain background"**
+
+Dumped 10 clean/`easy`/eligible `>100` frames to `benchmarks/cache/inspect/`
+(gitignored, inspect locally) plus their un-degraded 512x128 base images.
+Visual + quantitative findings:
+
+1. **The renderer is genuinely plate-like.** Correct Indian plate conventions
+   (yellow=private, white=commercial, green=electric), visible plate body/
+   border, correct bold sans-serif characters, correct character spacing,
+   adequate contrast. This is NOT "bare text on a plain background" — that
+   specific failure mode is ruled out.
+2. **But `plate_bbox` does not match the plate region.** Every base image is
+   a 512x128 render of a *tilted plate mounted against a sky background*,
+   not a tight plate crop. Measured on 4 samples: the plate occupies ~94-97%
+   of canvas **width** but only **~51-60% of canvas height** (one sample,
+   the green EV plate, measured ~99% height with a naive saturation-based
+   mask — false positive from the mask, not evidence that one is tightly
+   cropped; visual inspection shows the same sky padding on all 4).
+   `build_sequences.py` always records `plate_bbox: [0, 0, w, h]` — the
+   **whole canvas**, sky included, never a tight crop.
+3. **Consequence:** `plate_width_px` (and therefore `width_bucket`) is
+   computed from the full canvas width, which is a reasonable proxy for
+   plate width (that dimension is ~94-97% accurate) — but the *vertical*
+   resolution actually available to the OCR engine is far less than the
+   nominal frame height suggests, because ~40-49% of every frame's height is
+   non-plate background. A "137px wide" frame is not "137px of plate text
+   detail" once ~45% of its height is sky.
+4. **This alone does not explain 39.5%.** Breaking the same `>100` bucket
+   down by condition shows the real driver: `easy` 64% (192/298), `glare`
+   49%, `perspective` 52%, `night` 26%, **`motion_blur` 0.5% (1/215)** —
+   motion blur and low light genuinely defeat a lightweight PP-OCRv4 mobile
+   model regardless of width. The 39.5% headline figure is a width-bucket
+   average across all five conditions, not a "clean plate" number — the
+   aggregate obscures this the same way an unweighted "ALL" rate obscures
+   per-bucket collapse (CLAUDE.md §5's own point, just one level up).
+5. Even within `easy` alone, 64% (not "near-total") is still lower than
+   expected for a clean plate. The un-cropped sky padding (point 2) is the
+   most likely remaining contributor — recommend a tight plate crop before
+   building any new track type (item 2), since a fixed-distance "35px"
+   track built from the same un-cropped renderer will carry the same defect.
+
+**Action for item 2**: fixed-distance tracks should crop tight to the plate
+region (or at minimum this should be fixed before trusting their numbers),
+not reuse `build_sequences.py`'s `[0, 0, w, h]` full-canvas box as-is.
 
 ## 2026-09-05 — Fixed: stale "canned/illustrative" disclaimer on real PaddleOCR output
 **STATUS: OK**
