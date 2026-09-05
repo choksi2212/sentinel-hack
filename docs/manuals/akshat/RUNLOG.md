@@ -78,6 +78,19 @@
   `weights_sha256: null` with reason in `notes` (stub has no weights).
 - Gate cleared — downstream numbers, once real labels exist, can be trusted.
 
+## 2026-09-05 — Correction 1/3: license rows resolved
+**STATUS: OK**
+
+- Operator confirmed `gujarat_plates` (Kaggle `paneraghanshyam/gujarat-vehicle-
+  number-plates-yolo-ready`, Apache 2.0) and `indian_plates_yolo` (Kaggle
+  `deepakat002/indian-vehicle-number-plate-yolo-annotation`, CC0) from the
+  Kaggle dataset pages — Kaggle licenses live on the page, not embedded in the
+  archive, so the earlier flag was a false negative. LICENSES.md now has 6
+  verified rows, matching TASKS.md.
+- Manifests frozen: gujarat_plates (711 files), indian_plates_yolo (321).
+- `check_licenses.py`: still OK.
+- Both are now usable for TRINETRA-HARD candidate sourcing.
+
 ## 2026-09-05 — Phase 0: Environment
 **STATUS: OK**
 
