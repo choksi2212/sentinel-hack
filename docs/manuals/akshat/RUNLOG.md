@@ -1,5 +1,23 @@
 # RUNLOG — Akshat's lane
 
+## 2026-09-05 — Probabilistic stub + empty-bucket fixture
+**STATUS: OK**
+
+- `stub_predictor.py` rewritten: per-bucket probabilistic hit rate (seeded on
+  `obs_id:fusion_enabled`, fully deterministic) instead of the old 1.00/0.00
+  threshold. Fusion-off targets ~0.95/0.88/0.72/0.51/0.30/0.12 by bucket;
+  fusion-on adds an uplift largest in the middle buckets. Misses return a
+  1-character-corrupted plate string 85% of the time, `None` otherwise — the
+  "no prediction" path still gets exercised, just not exclusively.
+- Re-ran the full pipeline (run 005): `FUSION_DELTA.md` now shows fractional
+  rates in every bucket (e.g. 40-60: 0.48 OFF -> 0.72 ON), landing close to
+  the targets (seeded noise). Verified by hand: `delta` is computed from
+  exact unrounded rates, not from the rounded display cells — no contradiction
+  between displayed delta and raw counts.
+- `scorer.py`: added fixture 7 — a bucket with `n=0` emits
+  `{"n": 0, "correct": 0, "rate": None}`, no `ZeroDivisionError`. All 6
+  original SPEC_BENCHMARK §5 fixtures + fixture 7 pass.
+
 ## 2026-09-05 — Cleanup + MONDAY.md
 **STATUS: OK**
 

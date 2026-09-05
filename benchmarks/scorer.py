@@ -141,7 +141,14 @@ def demo():
     r = score(rows, {"g": "GJ01AB1234"})
     assert r["n_correct"] == 1 and r["n_eligible"] == 1
 
-    print("demo: all six SPEC_BENCHMARK §5 fixtures pass, plus synthetic_truth scoreable")
+    # 7. a bucket with n=0 (no rows landed there) -> null rate, no ZeroDivisionError
+    rows = [{**base, "obs_id": "h", "plate_text": "GJ01AB1234", "width_bucket": ">100"}]
+    r = score(rows, {"h": "GJ01AB1234"})
+    assert r["by_plate_width"]["<30"] == {"n": 0, "correct": 0, "rate": None}
+    assert r["by_plate_width"][">100"]["rate"] == 1.0
+
+    print("demo: all six SPEC_BENCHMARK §5 fixtures pass, plus synthetic_truth scoreable "
+          "and empty-bucket null-not-crash")
 
 
 if __name__ == "__main__":

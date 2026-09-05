@@ -1,0 +1,73 @@
+{
+  "run_id": "e2e_fusion_on_005",
+  "task": "e2e",
+  "predictor": "stub",
+  "dataset_manifest_sha256": "abd2637c4ae316fa1ac79a022f67ce116b9acf97268a360e6af95f934428153a",
+  "git_commit": "b45dc3f985c255263f129bcb8a47e8c66dc6d14b",
+  "weights_sha256": null,
+  "machine": "RTX 4060 8GB",
+  "runtime": "torch 2.x + CUDA 12.x",
+  "source_mode": "file",
+  "fusion_enabled": true,
+  "n_eligible": 3102,
+  "n_correct": 2409,
+  "e2e_correct_plate_event_rate": 0.776595744680851,
+  "fabrication_count": 326,
+  "by_plate_width": {
+    ">100": {
+      "n": 984,
+      "correct": 964,
+      "rate": 0.9796747967479674
+    },
+    "80-100": {
+      "n": 481,
+      "correct": 461,
+      "rate": 0.9584199584199584
+    },
+    "60-80": {
+      "n": 504,
+      "correct": 439,
+      "rate": 0.871031746031746
+    },
+    "40-60": {
+      "n": 499,
+      "correct": 360,
+      "rate": 0.7214428857715431
+    },
+    "30-40": {
+      "n": 273,
+      "correct": 122,
+      "rate": 0.4468864468864469
+    },
+    "<30": {
+      "n": 361,
+      "correct": 63,
+      "rate": 0.1745152354570637
+    }
+  },
+  "by_slice": {
+    "easy": 0.914074074074074,
+    "motion_blur": 0.8895582329317269,
+    "night": 0.8908045977011494,
+    "glare": 0.8997289972899729,
+    "perspective": 0.9084158415841584,
+    "tiny": 0.2917981072555205
+  },
+  "diagnostics": {
+    "precision": null,
+    "recall": null,
+    "map50": null,
+    "ocr_exact_accuracy": null,
+    "cer": null,
+    "fuzzy_match_rate": 0.0006447453255963894,
+    "fps": null,
+    "latency_p50_ms": null,
+    "latency_p95_ms": null,
+    "vram_peak_mb": null,
+    "real_time_factor": null
+  },
+  "notes": [
+    "4816 unverified_real rows present (real footage, no known plate text) -- excluded from every number above; see STABILITY.md for that data.",
+    "weights_sha256: n/a -- stub predictor has no weights file to hash."
+  ]
+}
