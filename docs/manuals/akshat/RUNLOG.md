@@ -46,21 +46,15 @@
 - No OCR engine in this environment (no tesseract binary). justjuu_plates rows
   have `plate_text: null`; synthetic_plates rows use the filename (the
   generator's own ground truth). Every row is `label_source: ocr_candidate`.
-- Next: either get the 3 flagged datasets license-cleared (unlocks
-  perspective/tiny variety), or accept 196/300 and rebalance targets in
-  FREEZE.md (Phase 7, human).
+- **Superseded** by Phase 4R (synthetic sequence corpus) — see below. This
+  phase's real-photo candidate approach is replaced for the headline number.
 
-## 2026-09-05 — Phase 5: Verification UI
-**STATUS: OK**
+## 2026-09-05 — Phase 5 CANCELLED (plan change)
+**Human verification removed from the pipeline.**
 
-- `scripts/verify_ui.py` — one file, stdlib `http.server` + inline HTML/JS,
-  no framework. Enter accepts/corrects, `x` marks ineligible, `?` marks
-  probable, arrows navigate. Writes `label_source: human` back to
-  `index.jsonl` after every single action (atomic tmp-file replace).
-- Smoke-tested end to end: server up, `/api/rows` (196 rows), `/api/image/`
-  (real PNG crop, 18,659 bytes), `/api/label/` POST round-tripped correctly.
-  Test write reverted afterward — index.jsonl is back to Phase 4's output.
-- Not yet run for real (that's Phase 7, human, Monday AM).
+`scripts/verify_ui.py` deleted. Phases 5 and 7 no longer exist — ground truth
+now comes from synthetic generation (Phase 4R), never from a human or from
+OCR. The pipeline runs end to end unattended. See Phase 4R/4S/6R entries below.
 
 ## 2026-09-05 — Phase 6: Scorer and harness
 **STATUS: OK — gate passed, all six fixtures green**
@@ -71,9 +65,10 @@
 - `stub_predictor.py`, `run.py` (`-m benchmarks.run`), `delta.py`
   (`-m benchmarks.delta`) written and run end-to-end on the real 196-row
   `index.jsonl` — no crash, correctly degrades to `n_eligible: 0` /
-  `rate: null` everywhere because 0 rows are `label_source: human` yet
-  (expected — that's Phase 7, human). Reports + `FUSION_DELTA.md` committed
-  as proof the harness runs clean; re-run for real after Phase 7.
+  `rate: null` everywhere because 0 rows were `label_source: human` at the
+  time (that scoring path is now superseded — see Phase 4R/6R below). Reports
+  + `FUSION_DELTA.md` committed as proof the harness ran clean; re-run against
+  the synthetic corpus.
 - Every report cites `dataset_manifest_sha256` + `git_commit`;
   `weights_sha256: null` with reason in `notes` (stub has no weights).
 - Gate cleared — downstream numbers, once real labels exist, can be trusted.
