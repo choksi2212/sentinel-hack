@@ -1,0 +1,12 @@
+# Line endings for the demo materials.
+#
+# In the team repository this file sits at docs/demo/.gitattributes.
+#
+# frontend/.gitattributes cannot cover this directory. A .gitattributes governs
+# only its own tree, so without this file `git ls-files --eol` reports an empty
+# attr/ column for RECOVERY.md and INTEGRATION.md, and their line endings are a
+# property of whoever staged them rather than of the repository.
+#
+# The team root .gitattributes carries the same rule and would make this file
+# redundant, but main does not have that file yet.
+* text=auto eol=lf

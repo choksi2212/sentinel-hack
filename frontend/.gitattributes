@@ -1,0 +1,20 @@
+# Line endings for the frontend lane.
+#
+# In the team repository this file sits at frontend/.gitattributes. The team
+# root carries an identical `* text=auto eol=lf` rule, but main does not have
+# that file yet, so on a main-based branch normalisation depends on each
+# contributor's local core.autocrlf rather than on repository policy.
+#
+# The difference is visible: `git ls-files --eol` reports an empty attr/ column
+# when nothing in the repository asks for an ending, which is how a Windows
+# checkout ends up committing CRLF and turning a one-line review into a
+# whole-file diff. Four machines and a Linux runner is exactly the situation
+# that rule exists for.
+#
+# This is not a policy change. The files already sit in the index as LF; this
+# makes that a guarantee rather than a property of whoever staged them.
+* text=auto eol=lf
+
+# Generated and vendored, collapsed in review so real changes stay visible.
+# Matches the team root .gitattributes.
+package-lock.json linguist-generated=true
