@@ -1,3 +1,31 @@
+## 2026-09-06 — Character-height column + a real silent-failure bug found while adding it
+**STATUS: fixed, OCR rebuild restarted with corrected data**
+
+- `scorer.py`: `by_plate_width[bucket]` now also carries `mean_height_px`.
+  `delta.py`'s table gains a `plate height (px)` column, flags any bucket
+  averaging under 10px as `(below OCR floor)`, and adds an explicit note:
+  "Operational floor, not a bug" when triggered — a ~0.00 rate in `<30`/
+  `30-40` should read as a floor, not a defect, per instruction.
+- **Found while wiring this up**: `benchmarks/paddle_predictor.py`'s
+  `_sanitize()` didn't strip `<`/`>` — and two width buckets are literally
+  named `<30` and `>100`. Every `fixed_distance` frame in those two buckets
+  (1,129 of 3,385 — the >100 and <30 buckets **entirely**, 559+570) silently
+  failed `cv2.imwrite` (Windows-illegal filename chars, no exception raised)
+  during the overnight rebuild. The OCR subprocess was running and consuming
+  real CPU the whole time — it just never had those frames to read, and
+  would have produced misleadingly-clean-looking null/error entries for
+  100% of exactly the two buckets this delta-table feature was built to
+  explain honestly. Caught by checking actual file counts against expected
+  rows, not by trusting the process was "running" (it was, and unhelpfully).
+- Fixed: `_sanitize()` now maps `<`/`>` to `lt`/`gt` (plus `"`, `|`, `?`, `*`
+  for completeness), leaving every previously-working filename byte-
+  identical (verified). Added `paddle_predictor.py --demo` — this repo's
+  first runnable check for this specific class of bug.
+- Rebuild restarted; all 6,822 synthetic frames now materialize (verified:
+  `ls benchmarks/cache/frames | wc -l` == 6822, was silently stuck at 5,693).
+- Committing this now, before the ~75 min OCR run, per this session's own
+  precedent: code doesn't wait on a long job.
+
 ## 2026-09-05 — Fixed the untight plate crop -- width buckets did NOT move
 **STATUS: fixed, with an important correction to the original premise**
 

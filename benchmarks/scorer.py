@@ -42,7 +42,7 @@ def fuzzy_equivalent(a: str | None, b: str | None) -> bool:
 
 
 def _empty_bucket_counts():
-    return {"n": 0, "correct": 0}
+    return {"n": 0, "correct": 0, "height_sum": 0.0, "height_n": 0}
 
 
 def score(rows: list[dict], predictions: dict[str, str | None]) -> dict:
@@ -75,11 +75,19 @@ def score(rows: list[dict], predictions: dict[str, str | None]) -> dict:
         bucket = by_width[row["width_bucket"]]
         bucket["n"] += 1
         bucket["correct"] += int(correct)
+        plate_bbox = row.get("plate_bbox")
+        if plate_bbox is not None:
+            bucket["height_sum"] += plate_bbox[3]
+            bucket["height_n"] += 1
         by_slice_n[row["slice"]] += 1
         by_slice_correct[row["slice"]] += int(correct)
 
     by_width_out = {
-        b: {"n": c["n"], "correct": c["correct"], "rate": (c["correct"] / c["n"]) if c["n"] else None}
+        b: {
+            "n": c["n"], "correct": c["correct"],
+            "rate": (c["correct"] / c["n"]) if c["n"] else None,
+            "mean_height_px": (c["height_sum"] / c["height_n"]) if c["height_n"] else None,
+        }
         for b, c in by_width.items()
     }
     by_slice_out = {
@@ -102,6 +110,7 @@ def demo():
     base = {
         "eligible": True, "label_source": "human",
         "width_bucket": "40-60", "slice": "easy",
+        "plate_bbox": [0, 0, 50, 12],
     }
 
     # 1. exact match -> counted correct
@@ -142,10 +151,11 @@ def demo():
     assert r["n_correct"] == 1 and r["n_eligible"] == 1
 
     # 7. a bucket with n=0 (no rows landed there) -> null rate, no ZeroDivisionError
-    rows = [{**base, "obs_id": "h", "plate_text": "GJ01AB1234", "width_bucket": ">100"}]
+    rows = [{**base, "obs_id": "h", "plate_text": "GJ01AB1234", "width_bucket": ">100", "plate_bbox": [0, 0, 115, 18]}]
     r = score(rows, {"h": "GJ01AB1234"})
-    assert r["by_plate_width"]["<30"] == {"n": 0, "correct": 0, "rate": None}
+    assert r["by_plate_width"]["<30"] == {"n": 0, "correct": 0, "rate": None, "mean_height_px": None}
     assert r["by_plate_width"][">100"]["rate"] == 1.0
+    assert r["by_plate_width"][">100"]["mean_height_px"] == 18.0
 
     print("demo: all six SPEC_BENCHMARK §5 fixtures pass, plus synthetic_truth scoreable "
           "and empty-bucket null-not-crash")
