@@ -11,15 +11,13 @@ After: `e2e_fusion_on_paddle_approach_001.json` (manifest `b5df9dfd90f4f2eaf7426
 |---|---|---|---|---|---|
 | >100 | 987 | 27px | 0.17 (163/987) | 0.21 (210/987) | +0.05 |
 | 80-100 | 484 | 20px | 0.07 (32/484) | 0.21 (101/484) | +0.14 |
-| 60-80 | 503 | 16px | 0.01 (5/503) | 0.19 (94/503) | +0.18 |
-| 40-60 | 500 | 11px | 0.00 (0/500) | 0.19 (94/500) | +0.19 |
-| 30-40 | 274 | 8px (below OCR floor) | 0.00 (0/274) | 0.19 (51/274) | +0.19 |
-| <30 | 363 | 5px (below OCR floor) | 0.00 (0/363) | 0.20 (74/363) | +0.20 |
+| 60-80 | 503 | 16px (below floor) | 0.01 (5/503) | 0.19 (94/503) | +0.18 |
+| 40-60 | 500 | 11px (below floor) | 0.00 (0/500) | 0.19 (94/500) | +0.19 |
+| 30-40 | 274 | 8px (below floor) | 0.00 (0/274) | 0.19 (51/274) | +0.19 |
+| <30 | 363 | 5px (below floor) | 0.00 (0/363) | 0.20 (74/363) | +0.20 |
 | ALL | 3111 | -- | 0.06 (200/3111) | 0.20 (624/3111) | +0.14 |
 
 Fabrication count -- OFF: 0, ON: 152 (never folded into the rate above).
-
-**Operational floor, not a bug:** 30-40, <30 average under 10px of plate height — below any OCR engine's readable floor regardless of predictor or fusion. A ~0.00 rate in these buckets reflects that floor, not a defect in the scorer or the model.
 
 **Notes:**
 - (before) weights_sha256 is a combined hash of 30 model files (PP-OCRv4 (paddleocr 3.7.0, paddlepaddle 3.3.1, mkldnn disabled)).

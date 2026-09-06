@@ -1,3 +1,25 @@
+## 2026-09-06 — Floor threshold fixed to 20px, FINDINGS.md written
+**STATUS: OK — one more correctness catch along the way**
+
+- `delta.py`: `OCR_FLOOR_HEIGHT_PX` 10 -> 20px, reworded to "below ~20px of
+  plate height this engine detects no text regardless of fusion — an
+  empirical floor measured on this corpus, not a scorer defect." Both
+  tables regenerated; fixed-distance now correctly flags all 4 dead buckets
+  (60-80/40-60/30-40/<30), not just the two under the old 10px line.
+- **Caught while regenerating**: the floor note is height-only, so it also
+  fired on the **approach** table — where those same buckets actually read
+  ~0.19-0.20 (the track-consensus artifact), not zero. The note would have
+  said "detects no text" next to a table showing 20%. Fixed: the note now
+  requires the rate be under 0.05 in **both** fusion states before firing,
+  not just the height. Approach table: no floor note (correctly — its
+  numbers aren't a floor, they're an artifact). Fixed-distance: unchanged,
+  fires correctly.
+- `docs/manuals/akshat/FINDINGS.md` written: 3 findings with raw counts
+  (fusion >100px 0.19->0.43 n=494; ~20px hard floor; fabrication 0->113),
+  approach-vs-fixed-distance as the methodology note. Under 2 pages.
+- Regression: `scorer.py` (6+2 fixtures), `paddle_predictor.py --demo`
+  both pass.
+
 ## 2026-09-06 — THE HONEST PER-BUCKET RESULT: approach-track flatness confirmed as artifact
 **STATUS: OK — item 2's hypothesis confirmed by real data, both tables committed**
 
