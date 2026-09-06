@@ -1,3 +1,20 @@
+## 2026-09-06 — FINDINGS.md: width/height header fix, 2/519 acknowledged both ways
+**STATUS: OK**
+
+- `delta.py` table header: `Bucket` -> `width bucket`, `plate height (px)` ->
+  `mean plate height (px)` — was ambiguous (60-80 read as a height, not a
+  width bucket). Both `FUSION_DELTA_paddle_approach.md` and
+  `_fixed_distance.md` regenerated with the corrected header.
+- `FINDINGS.md` Finding B: table header matches; added explicit sentence
+  that `60-80px` is not perfectly zero (2/519 correct without fusion) rather
+  than letting "fusion changes nothing" round it away.
+- `FINDINGS.md` Finding C: added the same 2/519 fact from the other
+  direction — fusion turned those same 2 correct readings into 0 at
+  `60-80px`. Same track-level consensus mechanism as the fabrication cost,
+  stated as the other side of the tradeoff: it can overwrite a correct
+  single-frame answer, not only rescue or fabricate one.
+- Regression: `scorer.py` still passes (6+2 fixtures).
+
 ## 2026-09-06 — Floor threshold fixed to 20px, FINDINGS.md written
 **STATUS: OK — one more correctness catch along the way**
 

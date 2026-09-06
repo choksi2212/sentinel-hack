@@ -55,7 +55,7 @@ def height_cell(mean_height_px: float | None) -> str:
 
 def build_table(before: dict, after: dict) -> str:
     lines = [
-        "| Bucket | n | plate height (px) | fusion OFF | fusion ON | delta |",
+        "| width bucket | n | mean plate height (px) | fusion OFF | fusion ON | delta |",
         "|---|---|---|---|---|---|",
     ]
     total_n = total_before_correct = total_after_correct = 0
