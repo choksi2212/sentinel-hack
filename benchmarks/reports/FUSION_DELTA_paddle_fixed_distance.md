@@ -7,7 +7,7 @@ Ground truth below is synthetic-generated (`label_source: synthetic_truth`), not
 Before: `e2e_fusion_off_paddle_fixed_distance_001.json` (manifest `b5df9dfd90f4f2eaf7426e0015a1afe115272639c74df63c06b0998a83116fcb`, commit `ad52135024d0c675ca36245d44ec68898850e810`)
 After: `e2e_fusion_on_paddle_fixed_distance_001.json` (manifest `b5df9dfd90f4f2eaf7426e0015a1afe115272639c74df63c06b0998a83116fcb`, commit `ad52135024d0c675ca36245d44ec68898850e810`)
 
-| Bucket | n | plate height (px) | fusion OFF | fusion ON | delta |
+| width bucket | n | mean plate height (px) | fusion OFF | fusion ON | delta |
 |---|---|---|---|---|---|
 | >100 | 494 | 31px | 0.19 (95/494) | 0.43 (213/494) | +0.24 |
 | 80-100 | 506 | 20px | 0.02 (12/506) | 0.16 (80/506) | +0.13 |
