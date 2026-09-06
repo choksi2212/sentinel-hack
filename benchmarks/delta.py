@@ -40,13 +40,16 @@ def rate_cell(n: int, correct: int) -> str:
     return f"{correct / n:.2f} ({correct}/{n})"
 
 
-OCR_FLOOR_HEIGHT_PX = 10  # below this, treat a 0.00 rate as an operational floor, not a bug
+OCR_FLOOR_HEIGHT_PX = 20  # below this, treat a 0.00 rate as an operational floor, not a bug
+# empirically measured on this corpus (fixed-distance, PP-OCRv4-mobile): 60-80px
+# (15px height) and 40-60px (12px height) are equally at zero as 30-40/<30, so
+# the line is drawn above all four dead buckets, not just the two shortest.
 
 
 def height_cell(mean_height_px: float | None) -> str:
     if mean_height_px is None:
         return "n/a"
-    flag = " (below OCR floor)" if mean_height_px < OCR_FLOOR_HEIGHT_PX else ""
+    flag = " (below floor)" if mean_height_px < OCR_FLOOR_HEIGHT_PX else ""
     return f"{mean_height_px:.0f}px{flag}"
 
 
@@ -105,18 +108,28 @@ def build_report(before_path: Path, after_path: Path) -> str:
         f"Fabrication count -- OFF: {before.get('fabrication_count')}, "
         f"ON: {after.get('fabrication_count')} (never folded into the rate above).",
     ]
+    def _rate(report: dict, bucket: str) -> float | None:
+        c = report["by_plate_width"][bucket]
+        return (c["correct"] / c["n"]) if c["n"] else None
+
     floor_buckets = [
         bucket for bucket in WIDTH_ORDER
         if (h := before["by_plate_width"][bucket].get("mean_height_px")) is not None
         and h < OCR_FLOOR_HEIGHT_PX
+        # height alone isn't enough to claim "detects no text" -- verify the
+        # rate is actually near zero in BOTH fusion states before saying so
+        # (an approach-track corpus can show ~0.20 in a short bucket purely
+        # from the track-consensus artifact, which would make this note false)
+        and (_rate(before, bucket) or 0) < 0.05
+        and (_rate(after, bucket) or 0) < 0.05
     ]
     if floor_buckets:
         parts += [
             "",
-            f"**Operational floor, not a bug:** {', '.join(floor_buckets)} average "
-            f"under {OCR_FLOOR_HEIGHT_PX}px of plate height — below any OCR engine's "
-            "readable floor regardless of predictor or fusion. A ~0.00 rate in these "
-            "buckets reflects that floor, not a defect in the scorer or the model.",
+            f"**{', '.join(floor_buckets)}** average under ~{OCR_FLOOR_HEIGHT_PX}px of "
+            "plate height — below ~20px of plate height this engine detects no text "
+            "regardless of fusion. An empirical floor measured on this corpus, not a "
+            "scorer defect.",
         ]
     if before.get("notes") or after.get("notes"):
         parts += ["", "**Notes:**"]
