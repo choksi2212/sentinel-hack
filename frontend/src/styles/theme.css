@@ -1,0 +1,67 @@
+/* The single Tailwind entry point for the app. index.css keeps the scaffold
+   styles but no longer imports Tailwind, so there is exactly one. */
+@import "tailwindcss";
+
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/* Light theme, deliberately. The judging room has the lights on and
+   projectors have poor black levels: a dark UI that looks sharp on a laptop
+   becomes a grey smear in the third row. */
+@theme {
+  --color-paper: #f1f4f5;
+  --color-panel: #ffffff;
+  --color-sunken: #e6ebec;
+  --color-rule: #c6d0d3;
+  --color-rule-2: #9fadb2;
+
+  --color-ink: #0f1619;
+  --color-ink-2: #45565d;
+  --color-ink-3: #6b7c83;
+
+  /* match_state */
+  --color-exact: #0b6e4f;
+  --color-probable: #a15c00;
+  --color-lowconf: #8c3a2b;
+  --color-unread: #55656b;
+
+  /* camera status */
+  --color-online: #0b6e4f;
+  --color-degraded: #a15c00;
+  --color-offline: #6b7780;
+  --color-unknown: #94a3a8;
+
+  /* alert priority */
+  --color-prio-low: #45565d;
+  --color-prio-medium: #a15c00;
+  --color-prio-high: #b33a1f;
+  --color-prio-critical: #8a1010;
+
+  /* source mode */
+  --color-live: #0b6e4f;
+  --color-replay: #a15c00;
+
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* Body is 15px. The root carries it rather than `body` so that every
+   rem-based size in the app scales together when .projector is applied --
+   one class enlarges the whole interface for the back of the room.
+   Consequence: never use text-xs (0.75rem = 11.25px). Nothing below 13px,
+   and text-sm is 13.1px. */
+html {
+  font-size: 15px;
+}
+
+html.projector {
+  font-size: 19px;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-paper);
+}

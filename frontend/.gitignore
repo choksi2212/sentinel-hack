@@ -1,0 +1,78 @@
+# Ignore rules for the TRINETRA frontend lane.
+#
+# In the team repository this file sits at frontend/.gitignore, one level below
+# the root .gitignore that Manas owns. Git applies the deeper file last, so
+# every rule here overrides the root for anything under frontend/. That
+# precedence is the only reason the first block works at all.
+
+# ---- TypeScript sources: re-included on purpose -----------------------------
+# THIS NEGATION IS DELIBERATE. DO NOT DELETE IT.
+#
+# The root .gitignore ignores *.ts, and it is right to: it sits in the "data"
+# block beside *.mp4, *.mkv and *.m3u8, where .ts means an MPEG transport
+# stream. Under frontend/, .ts means TypeScript.
+#
+# Without this line 25 files vanish -- src/types/api.ts (the contract mirror),
+# all of src/api/, src/lib/, src/map/, src/mocks/, and vite.config.ts -- while
+# every .tsx stays, because *.ts does not match *.tsx. The result is a tree
+# that holds every component and none of the modules they import.
+#
+# `git add -A` does not warn. It stages the .tsx files, silently skips the .ts
+# files, and the first symptom is 93 type errors in CI. (An explicit
+# `git add <path>` does warn and exit 1 -- so whether you notice depends
+# entirely on how you stage.)
+#
+# There is no video in this directory, so re-including .ts costs nothing.
+!*.ts
+
+# ---- basemap tiles ----------------------------------------------------------
+# Map DATA, not source: 2,064 placeholder files from
+# scripts/make-placeholder-tiles.mjs (2.3 MB), or ~21 MB of real tiles.
+# The root .gitignore does not cover this path, so it has to be named here.
+#
+# Committing the placeholders would put 2,000 fake PNGs in shared history and,
+# worse, make the offline basemap look finished when nothing has been sourced.
+# Seed them per the procedure in docs/demo/RECOVERY.md.
+public/tiles/
+
+# ---- dependencies and build output ------------------------------------------
+# Repeated from the root .gitignore so this directory is also correct on its
+# own, outside the team repository.
+node_modules
+dist
+dist-ssr
+*.tsbuildinfo
+
+# ---- local environment ------------------------------------------------------
+# .env.local is the file this app actually reads, and *.local covers it. The
+# .env patterns are a guard rather than a need: the team root .gitignore carries
+# them, but main does not have that file yet, and on a base without it nothing
+# would stop a real frontend/.env being committed to a public repository.
+# !.env.example keeps the checked-in template, which holds no values.
+#
+# Nothing secret belongs in a VITE_ variable in any case -- they are inlined
+# into the public bundle at build time.
+.env
+.env.*
+!.env.example
+*.local
+
+# ---- logs -------------------------------------------------------------------
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ---- editors and os ---------------------------------------------------------
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
