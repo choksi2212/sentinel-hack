@@ -47,8 +47,17 @@ _cache: dict[str, dict] | None = None
 _track_index: dict[tuple, list[str]] | None = None
 
 
+_WINDOWS_ILLEGAL_CHARS = str.maketrans({
+    "/": "_", "#": "__", " ": "_", ":": "_",
+    # Windows-reserved filename characters (width_bucket names ">100"/"<30"
+    # silently failed cv2.imwrite -- no exception, no error -- until these
+    # were added; see RUNLOG for the bug this caused).
+    "<": "lt", ">": "gt", '"': "_", "|": "_", "?": "_", "*": "_",
+})
+
+
 def _sanitize(frame_path: str) -> str:
-    return frame_path.replace("/", "_").replace("#", "__").replace(" ", "_").replace(":", "_")
+    return frame_path.translate(_WINDOWS_ILLEGAL_CHARS)
 
 
 def materialize_synthetic_frames() -> None:
@@ -185,5 +194,26 @@ def main() -> int:
     return 0
 
 
+def demo():
+    """_sanitize must never produce a Windows-illegal filename character --
+    cv2.imwrite fails on '<'/'>' with no exception, which is exactly how the
+    >100/<30 fixed-distance buckets silently lost every frame once."""
+    illegal = set('<>:"|?*')
+    cases = [
+        "datasets/raw/synthetic_plates/generated/foo.png#fixed_>100_0000_frame0",
+        "datasets/raw/synthetic_plates/generated/foo.png#fixed_<30_0000_frame0",
+        "datasets/raw/synthetic_plates/generated/Kerala/private_electrical/KL61AVY6032.png#frame0",
+    ]
+    for c in cases:
+        out = _sanitize(c)
+        assert not (illegal & set(out)), f"{out!r} still contains an illegal char"
+    # unaffected paths (no </>) must sanitize identically to before this fix
+    assert _sanitize(cases[2]) == "datasets_raw_synthetic_plates_generated_Kerala_private_electrical_KL61AVY6032.png__frame0"
+    print("demo: all assertions passed")
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    if "--demo" in sys.argv:
+        demo()
+    else:
+        sys.exit(main())

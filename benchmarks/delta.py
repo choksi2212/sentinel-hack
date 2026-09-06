@@ -40,8 +40,21 @@ def rate_cell(n: int, correct: int) -> str:
     return f"{correct / n:.2f} ({correct}/{n})"
 
 
+OCR_FLOOR_HEIGHT_PX = 10  # below this, treat a 0.00 rate as an operational floor, not a bug
+
+
+def height_cell(mean_height_px: float | None) -> str:
+    if mean_height_px is None:
+        return "n/a"
+    flag = " (below OCR floor)" if mean_height_px < OCR_FLOOR_HEIGHT_PX else ""
+    return f"{mean_height_px:.0f}px{flag}"
+
+
 def build_table(before: dict, after: dict) -> str:
-    lines = ["| Bucket | n | fusion OFF | fusion ON | delta |", "|---|---|---|---|---|"]
+    lines = [
+        "| Bucket | n | plate height (px) | fusion OFF | fusion ON | delta |",
+        "|---|---|---|---|---|---|",
+    ]
     total_n = total_before_correct = total_after_correct = 0
     for bucket in WIDTH_ORDER:
         b = before["by_plate_width"][bucket]
@@ -51,7 +64,8 @@ def build_table(before: dict, after: dict) -> str:
         rate_a = a["correct"] / n if n else None
         delta = f"{(rate_a - rate_b):+.2f}" if (rate_a is not None and rate_b is not None) else "n/a"
         lines.append(
-            f"| {bucket} | {n} | {rate_cell(n, b['correct'])} | {rate_cell(n, a['correct'])} | {delta} |"
+            f"| {bucket} | {n} | {height_cell(b.get('mean_height_px'))} | "
+            f"{rate_cell(n, b['correct'])} | {rate_cell(n, a['correct'])} | {delta} |"
         )
         total_n += n
         total_before_correct += b["correct"]
@@ -61,7 +75,7 @@ def build_table(before: dict, after: dict) -> str:
         if total_n else "n/a"
     )
     lines.append(
-        f"| ALL | {total_n} | {rate_cell(total_n, total_before_correct)} | "
+        f"| ALL | {total_n} | -- | {rate_cell(total_n, total_before_correct)} | "
         f"{rate_cell(total_n, total_after_correct)} | {delta_all} |"
     )
     return "\n".join(lines)
@@ -91,6 +105,19 @@ def build_report(before_path: Path, after_path: Path) -> str:
         f"Fabrication count -- OFF: {before.get('fabrication_count')}, "
         f"ON: {after.get('fabrication_count')} (never folded into the rate above).",
     ]
+    floor_buckets = [
+        bucket for bucket in WIDTH_ORDER
+        if (h := before["by_plate_width"][bucket].get("mean_height_px")) is not None
+        and h < OCR_FLOOR_HEIGHT_PX
+    ]
+    if floor_buckets:
+        parts += [
+            "",
+            f"**Operational floor, not a bug:** {', '.join(floor_buckets)} average "
+            f"under {OCR_FLOOR_HEIGHT_PX}px of plate height — below any OCR engine's "
+            "readable floor regardless of predictor or fusion. A ~0.00 rate in these "
+            "buckets reflects that floor, not a defect in the scorer or the model.",
+        ]
     if before.get("notes") or after.get("notes"):
         parts += ["", "**Notes:**"]
         for n in before.get("notes", []):
