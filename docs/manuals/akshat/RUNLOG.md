@@ -1,3 +1,30 @@
+## 2026-09-06 — THE HONEST PER-BUCKET RESULT: approach-track flatness confirmed as artifact
+**STATUS: OK — item 2's hypothesis confirmed by real data, both tables committed**
+
+Full corrected corpus (tight crop + Windows-illegal-char fix), 6,822 frames
+OCR'd, 1,160 non-null readings. `--track-type approach` vs `fixed_distance`,
+run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
+
+- **approach** (width sweeps within track): fusion ON lands at ~0.19-0.21 in
+  **every** bucket including `<30`/`30-40` — this is the corpus artifact
+  flagged before: one easy frame's reading gets credited to the whole
+  track. Kept as a labeled artifact demonstration, not an accuracy claim.
+- **fixed_distance (the honest table)**: >100 0.19->0.43 (+0.24), 80-100
+  0.02->0.16 (+0.13) — fusion helps, real signal, at real size. **60-80,
+  40-60, 30-40, <30 are ~0.00 for BOTH fusion OFF and ON** — not just the
+  two buckets flagged `(below OCR floor)` by the 10px height cutoff
+  (30-40 @ 8px, <30 @ 5px). **60-80 (15px) and 40-60 (12px) are equally
+  dead in this table despite being above that 10px line** — the 10px flag
+  catches the two most extreme buckets, not the true practical floor for
+  this engine, which is closer to ~20px (80-100's own rate is only 0.02
+  OFF / 0.16 ON). Flagging this explicitly rather than letting the
+  automatic note imply "only 2 buckets are floored."
+- Fabrication count (fixed_distance): 0 OFF, 113 ON — same mechanism as
+  before (consensus can propagate a confident reading onto a frame that
+  was individually unreadable), now on a corpus where that mechanism can't
+  hide behind a sweep.
+- All 4 reports + both delta tables committed.
+
 ## 2026-09-06 — Character-height column + a real silent-failure bug found while adding it
 **STATUS: fixed, OCR rebuild restarted with corrected data**
 
