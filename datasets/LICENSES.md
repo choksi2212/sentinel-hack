@@ -1,6 +1,6 @@
 # LICENSES
 
-One row per dataset actually used. No row → excluded (CLAUDE.md §5). 9 fields:
+One row per dataset actually used. No row → excluded (this lane's standing rule). 9 fields:
 `name, source, license, license_url_or_evidence, commercial_use, attribution_required, used_for, verified_by, verified_on`.
 
 ## Verified (license evidence found embedded in the asset itself)
@@ -14,7 +14,7 @@ One row per dataset actually used. No row → excluded (CLAUDE.md §5). 9 fields
 | gujarat_plates | Kaggle `paneraghanshyam/gujarat-vehicle-number-plates-yolo-ready` | Apache 2.0 | operator-verified from the Kaggle dataset page (Kaggle licenses are not embedded in the download, they live on the page) | yes | no | train+eval (plate bbox) | operator (2026-09-05 correction) | 2026-09-05 |
 | indian_plates_yolo | Kaggle `deepakat002/indian-vehicle-number-plate-yolo-annotation` | CC0 | operator-verified from the Kaggle dataset page | yes | no | train+eval (plate bbox, video-clip source: `vid-1/vid-2/vid-3`) | operator (2026-09-05 correction) | 2026-09-05 |
 
-## Flagged — NOT used pending human verification (CLAUDE.md §5: no row → excluded)
+## Flagged — NOT used pending human verification (this lane's standing rule: no row → excluded)
 
 | name | why flagged |
 |---|---|

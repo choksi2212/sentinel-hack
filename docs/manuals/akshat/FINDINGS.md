@@ -48,8 +48,8 @@ Fusion's consensus rule (highest-confidence whole reading across a track)
 can propagate a confident plate string onto a frame that was individually
 unreadable. Fabrication count, fixed-distance tracks: **0 (fusion OFF) to
 113 (fusion ON)**, out of 3,021 scored frames. This is never folded into the
-accuracy rate above — it is reported as its own count, per CLAUDE.md's
-measurement contract — but it is a real cost of temporal consensus that a
+accuracy rate above — it is reported as its own count, per
+`docs/manuals/akshat/SPEC_BENCHMARK.md` §2 — but it is a real cost of temporal consensus that a
 production fusion design has to budget for: a track-level "best reading"
 policy has no per-frame eligibility gate, so it will confidently label
 frames that should stay unlabeled.

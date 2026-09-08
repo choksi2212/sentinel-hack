@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Assert no clip_id appears in two splits. Exits non-zero on violation.
 
-CLAUDE.md SS5: indian_road splits by CLIP ID, never by frame. This checks any
+This lane's standing rule: indian_road splits by CLIP ID, never by frame. This checks any
 markdown doc shaped like datasets/trinetra-hard/CLIP_RESERVATION.md: one or
 more '## SPLIT_NAME' sections each followed by a '| clip_id | ... |' table.
 """

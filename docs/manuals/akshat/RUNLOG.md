@@ -64,6 +64,30 @@ run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
   hide behind a sweep.
 - All 4 reports + both delta tables committed.
 
+## 2026-09-08 — Item 1: untracked CLAUDE.md, reworded its 8 §5 citations
+**STATUS: OK, with a real citation-target problem flagged**
+
+- `git rm --cached CLAUDE.md`, added to `.gitignore` — stays on disk, keeps
+  working, no longer tracked.
+- Found the 8 citations across the 6 files named: `datasets/LICENSES.md`
+  (2), `datasets/trinetra-hard/CLIP_RESERVATION.md` (1),
+  `docs/manuals/akshat/FINDINGS.md` (1), `docs/manuals/akshat/RUNLOG.md` (2),
+  `scripts/check_licenses.py` (1), `scripts/check_split_leakage.py` (1).
+- **Only 2 of the 8 are actually facts SPEC_BENCHMARK.md documents**
+  (fabrication-counted-separately -> §2, never-a-single-average -> §1 — both
+  reworded to cite those, correctly, not a blind §5->§5 swap: SPEC_BENCHMARK's
+  own §5 is "Stub predictor," unrelated). **The other 6 are about the
+  LICENSES.md row-mandate (3x) and the indian_road clip-split-by-ID rule
+  (3x) — neither fact exists in SPEC_BENCHMARK.md, and I checked
+  SPEC_TRINETRA_HARD.md too; it isn't there either.** Rewording those to cite
+  SPEC_BENCHMARK.md would have been a false citation pointing at a section
+  that doesn't contain the claim. Reworded those 6 to state the rule
+  standalone ("this lane's standing rule") instead of inventing a home for
+  them. Flagging this rather than silently complying — these 2 facts may
+  need a real documented home if they matter to Manas/Mihir/Parth too.
+- Regression: `check_licenses.py`, `check_split_leakage.py`, `scorer.py`
+  all still pass.
+
 ## 2026-09-06 — Character-height column + a real silent-failure bug found while adding it
 **STATUS: fixed, OCR rebuild restarted with corrected data**
 
@@ -181,7 +205,7 @@ Visual + quantitative findings:
    model regardless of width. The 39.5% headline figure is a width-bucket
    average across all five conditions, not a "clean plate" number — the
    aggregate obscures this the same way an unweighted "ALL" rate obscures
-   per-bucket collapse (CLAUDE.md §5's own point, just one level up).
+   per-bucket collapse (SPEC_BENCHMARK.md §1's own point, just one level up).
 5. Even within `easy` alone, 64% (not "near-total") is still lower than
    expected for a clean plate. The un-cropped sky padding (point 2) is the
    most likely remaining contributor — recommend a tight plate crop before
@@ -311,7 +335,7 @@ not reuse `build_sequences.py`'s `[0, 0, w, h]` full-canvas box as-is.
 
 - 62 clip_ids / 5,000 frames recovered from indian_road (only 5/646 shards local).
 - 31 clips / 2,460 frames RESERVED for eval, 31 clips / 2,540 frames TRAIN_SAFE.
-- Split is by clip_id (never frame) per CLAUDE.md — safe to start training on
+- Split is by clip_id (never frame) per this lane's standing rule — safe to start training on
   TRAIN_SAFE list now.
 
 ## 2026-09-05 — Phase 1+2: Recon + Licenses
