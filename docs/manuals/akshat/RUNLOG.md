@@ -64,6 +64,27 @@ run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
   hide behind a sweep.
 - All 4 reports + both delta tables committed.
 
+## 2026-09-08 — Gave the 2 orphaned rules real homes (my earlier check was incomplete)
+**STATUS: OK — both facts already existed, I'd just missed the file**
+
+- Correction to my own earlier finding: I checked `SPEC_BENCHMARK.md` and
+  `SPEC_TRINETRA_HARD.md` and reported neither rule existed anywhere
+  tracked. I hadn't checked `docs/manuals/akshat/DATASETS.md` — it already
+  had the clip-split rule in more depth than CLAUDE.md did (§"leakage
+  rule") and already stated the license-row mandate in its own intro prose,
+  just not as a citable numbered section.
+- `DATASETS.md`: promoted the intro's license-row sentence into a real
+  `## 1. The license-row mandate` section; renumbered the existing 6
+  sections to 2-7 (verified first: nothing else in the repo cited
+  `DATASETS.md` by section number, so this was safe).
+- `SPEC_TRINETRA_HARD.md` §3 already had the clip-split rule verbatim — no
+  edit needed there, just repointed citations to it.
+- Repointed all 6 standalone statements: `datasets/LICENSES.md` (2) and
+  `scripts/check_licenses.py` (1) now cite `DATASETS.md` §1;
+  `datasets/trinetra-hard/CLIP_RESERVATION.md`, `RUNLOG.md`, and
+  `scripts/check_split_leakage.py` now cite `SPEC_TRINETRA_HARD.md` §3.
+- Regression: `check_licenses.py`, `check_split_leakage.py`, `scorer.py` all pass.
+
 ## 2026-09-08 — Item 3: dev assets for Manas — script, not LFS
 **STATUS: OK — 6 assets, all built and verified, chose script over LFS**
 
@@ -412,7 +433,7 @@ not reuse `build_sequences.py`'s `[0, 0, w, h]` full-canvas box as-is.
 
 - 62 clip_ids / 5,000 frames recovered from indian_road (only 5/646 shards local).
 - 31 clips / 2,460 frames RESERVED for eval, 31 clips / 2,540 frames TRAIN_SAFE.
-- Split is by clip_id (never frame) per this lane's standing rule — safe to start training on
+- Split is by clip_id (never frame) per `SPEC_TRINETRA_HARD.md` §3 — safe to start training on
   TRAIN_SAFE list now.
 
 ## 2026-09-05 — Phase 1+2: Recon + Licenses

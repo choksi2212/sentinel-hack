@@ -4,11 +4,20 @@ Owner: Akshat. `datasets/LICENSES.md` is the authoritative register; this
 document is the reasoning behind it.
 
 **"Free to download" ≠ "safe to reuse."** This is a government-facing
-submission. Every asset needs a license row before use. No row → excluded.
+submission — see the mandate below.
 
 ---
 
-## 1. Physical layout
+## 1. The license-row mandate
+
+**No asset is used without a `datasets/LICENSES.md` row. No row → the asset
+is excluded, not "used pending verification."** Every dataset needs
+verifiable provenance — a license, a source, and who verified it — before it
+enters training or evaluation. This is the standing rule the rest of this
+document, `datasets/LICENSES.md` itself, `scripts/check_licenses.py`, and
+every other citation of "the license-row mandate" in this repo point back to.
+
+## 2. Physical layout
 
 ```
 A:\trinetra hackathon final\datasets\raw\   ← 5.6 GB, read-only
@@ -25,7 +34,7 @@ Junction, not copy — the repo stays small and `datasets/raw/` stays gitignored
 All manifest paths are written relative to the repo root
 (`datasets/raw/indian_road/...`) so they resolve for anyone with the junction.
 
-## 2. The nine directories
+## 3. The nine directories
 
 | Folder | Upstream | License | Status | Use |
 |---|---|---|---|---|
@@ -43,7 +52,7 @@ All manifest paths are written relative to the repo root
 must each get a complete row or be excluded. Excluding them costs little —
 the six verified sets cover every task.
 
-## 3. `LICENSES.md` row format — nine fields
+## 4. `LICENSES.md` row format — nine fields
 
 | Field | Example |
 |---|---|
@@ -60,7 +69,7 @@ the six verified sets cover every task.
 `used_for` is the field that matters at audit time. It is what proves an
 eval-only asset never entered training.
 
-## 4. The leakage rule
+## 5. The leakage rule
 
 **`indian_road` splits by clip ID, never by frame.**
 
@@ -77,7 +86,7 @@ that is a blocking finding — report it, do not invent a scheme. Falling back
 to a filename-prefix heuristic without verifying it is how silent leakage gets
 in.
 
-## 5. Non-`indian_road` sources
+## 6. Non-`indian_road` sources
 
 Single-frame. No temporal continuity, therefore:
 
@@ -89,7 +98,7 @@ For these, synthesise a stable `camera_id` / `stream_session_id` / `track_id`
 per image so the row shape stays uniform. Record in `notes` that the key is
 synthetic, so nobody later mistakes it for real multi-frame data.
 
-## 6. What goes in git
+## 7. What goes in git
 
 | Tracked | Ignored |
 |---|---|

@@ -2,7 +2,7 @@
 
 Published: 2026-09-05. **FOR MANAS.**
 
-**Rule: split by `clip_id`, never by frame** (this lane's standing rule). Same-clip frames
+**Rule: split by `clip_id`, never by frame** (`docs/manuals/akshat/SPEC_TRINETRA_HARD.md` §3). Same-clip frames
 are near-duplicates; perceptual hashing will not catch them, and a frame-level
 split silently leaks eval data into training.
 
