@@ -47,6 +47,8 @@ clips/
 runs/
 benchmarks/out/
 benchmarks/cache/
+datasets/dev_assets/*.mp4
+datasets/dev_assets/frame_sequence_100/
 spool/
 snapshots/
 # The SnapshotWriter's default root. Evidence stills are per-run output and are also the

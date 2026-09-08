@@ -64,6 +64,34 @@ run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
   hide behind a sweep.
 - All 4 reports + both delta tables committed.
 
+## 2026-09-08 — Item 3: dev assets for Manas — script, not LFS
+**STATUS: OK — 6 assets, all built and verified, chose script over LFS**
+
+- `scripts/fetch_dev_assets.py`: extracts from the 31 RESERVED indian_road
+  clips only (never TRAIN_SAFE) — 3 daytime clips (highway/city/village,
+  60s each, visible plates), 1 night clip (90s, residential road,
+  `scene_attributes.json` confirms `timeofday: night`), 1 hard-scene-cut
+  clip (60s; cut located by scanning all five 180-frame RESERVED clips'
+  64-bin greyscale-histogram frame-to-frame distance — largest jump 0.748
+  at frame 8), and a 100-frame plain-JPEG sequence for `FrameSequenceSource`.
+- **Chose the script+SHA-256 fallback deliberately, not because LFS was
+  unavailable** — both `git lfs` and the GitHub endpoint work on this
+  machine. Reasoning: these clips are a deterministic function of 5 tar
+  shards Manas needs anyway; a script + recorded SHA-256 of those 5 shards
+  proves reproducibility directly, committing ~80MB of video through git
+  history forever does not, and it matches this repo's own existing
+  convention (`.gitignore`: "the script that produces it is committed
+  instead"). Script verifies all 5 tar hashes before extracting anything.
+- Ran it end to end: all 6 assets built, `ffprobe`-verified (`clip_night.mp4`:
+  1920x994, 1fps, 90 frames, 90.000000s duration — matches exactly).
+- **Honest caveat, in the README and the script's own docstring**:
+  indian_road's local frames are 1fps keyframes, not continuous footage —
+  these MP4s are real, playable, correct-duration video, but a 1fps
+  slideshow, not smooth motion. Flagged for decode/ingestion smoke tests
+  only, not motion/latency testing.
+- Generated binaries gitignored (`datasets/dev_assets/*.mp4`,
+  `frame_sequence_100/`); only the script + README are committed.
+
 ## 2026-09-08 — Item 4: by_slice.motion_blur == 0.0 verified real
 **STATUS: OK — confirmed real, one important correction to earlier framing**
 
