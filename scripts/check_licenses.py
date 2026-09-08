@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Fail if a manifest in datasets/manifests/ references a dataset with no
-verified row in datasets/LICENSES.md (CLAUDE.md SS5: no row -> excluded)."""
+verified row in datasets/LICENSES.md (this lane's standing rule: no row -> excluded)."""
 import sys
 from pathlib import Path
 

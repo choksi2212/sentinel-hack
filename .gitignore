@@ -110,3 +110,4 @@ tmp/
 # one. .docx is also opaque to review -- a diff of a binary tells nobody anything.
 chat-context.md
 *.docx
+CLAUDE.md
