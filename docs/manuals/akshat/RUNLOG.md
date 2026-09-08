@@ -64,6 +64,29 @@ run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
   hide behind a sweep.
 - All 4 reports + both delta tables committed.
 
+## 2026-09-08 — Item 2: FAILURE_TAXONOMY.json, dominant bucket found
+**STATUS: OK — verdict is DOMINANT, plate_too_small, no software fix**
+
+- `benchmarks/failure_taxonomy.py`: classifies every miss in the
+  fixed-distance fusion-ON run (eligible rows only) into exactly one of the
+  10 keys `ai/quality/taxonomy.py` accepts (read-only import — never wrote
+  `ai/`). Priority: `fusion_wrong` first (correct OFF, wrong ON — checked
+  first so it isn't silently absorbed by the other rules), then
+  `plate_too_small` (bucket mean height <20px), then `plate_miss` (None
+  prediction), then `ocr_partial`/`ocr_wrong` (edit distance 1-2 vs 3+).
+- **Result: 2,728 classified (>=30: yes). Leader `plate_too_small` 2,019 vs
+  runner-up `ocr_partial` 300 — 6.7x, far past 1.25x. Verdict: DOMINANT,
+  points_at `no_software_fix`.** Full breakdown: plate_miss 300,
+  plate_too_small 2019, ocr_wrong 180, ocr_partial 225, fusion_wrong 4.
+- `vehicle_miss`/`track_broken`/`track_merged`/`duplicate`/`dropped_frame`
+  set to 0 with an explicit note: structurally zero (no vehicle-detection
+  or tracking stage in this synthetic pipeline), not measured-and-clean.
+- **Flagged, not silently resolved**: `ai/quality/taxonomy.py`'s own
+  docstring documents `plate_too_small` as "Plate < 30 px"; this task's
+  explicit instruction was 20px. Used 20px as instructed; noted the
+  mismatch against the ai/ lane's own module in both the JSON's `notes`
+  and here.
+
 ## 2026-09-08 — Item 1: untracked CLAUDE.md, reworded its 8 §5 citations
 **STATUS: OK, with a real citation-target problem flagged**
 
