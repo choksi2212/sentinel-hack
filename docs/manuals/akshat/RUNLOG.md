@@ -64,6 +64,22 @@ run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
   hide behind a sweep.
 - All 4 reports + both delta tables committed.
 
+## 2026-09-08 — Motion-blur finding corrected: it's a case FOR fusion
+**STATUS: OK**
+
+- `OCR_BASELINE_FINDINGS.md`: the old headline ("motion blur defeats
+  PP-OCRv4-mobile almost completely, independent of plate size," citing
+  1/215 single-frame/approach-tracks) implied fusion doesn't help either —
+  it does. Corrected with the real fixed-distance numbers: **0/406 single-
+  frame (fusion OFF) -> 50/406 (12.3%) with fusion ON.** Reframed
+  explicitly as a case for temporal consensus: a lone blurred frame is
+  unreadable, but a track that mixes a blurred frame with a clean one lets
+  fusion recover it.
+- `FINDINGS.md` had no motion-blur finding at all (checked before claiming
+  otherwise) — added **Finding D** with the same two numbers, same framing,
+  cross-referenced to `OCR_BASELINE_FINDINGS.md`.
+- Regression: `scorer.py` still passes.
+
 ## 2026-09-08 — Gave the 2 orphaned rules real homes (my earlier check was incomplete)
 **STATUS: OK — both facts already existed, I'd just missed the file**
 
