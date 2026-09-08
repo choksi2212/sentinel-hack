@@ -22,6 +22,54 @@ from ai.normalize.matching import apply_grammar_penalty
 from ai.normalize.plate import grammar_ok, normalize_plate
 
 
+# The per-frame eligibility floor. A reading whose weight falls below this does
+# not enter the vote at all.
+#
+# This exists because of a measured failure, not a hypothetical one. The data
+# lane ran fusion against TRINETRA-HARD and found it doubled the correct-plate
+# rate where plates were readable (0.19 -> 0.43 above 100 px) while producing
+# 113 confident strings on frames that were individually unreadable -- up from
+# zero. Fabrication, and in a police system a confident wrong plate is worse
+# than no plate: it is an answer someone acts on.
+#
+# The mechanism was that the only filter here was `fusion_weight > 0.0`. Weight
+# is ocr_confidence * image_quality, so a reading at confidence 0.25 on a crop
+# rated 0.3 scores 0.075 -- positive, so it voted, and enough of them agreeing
+# on the same hallucinated string outvoted a single good read. A floor at zero
+# excludes only the arithmetically empty, which is not the same as excluding the
+# untrustworthy.
+#
+# 0.10 is the operating point, and it is deliberately a floor rather than a
+# quality bar. Two measurements constrain it from opposite sides.
+#
+# From below: the same benchmark showed motion blur is NOT a capability wall --
+# consensus still recovers 12.3% of fixed-distance blurred tracks, because some
+# frames in a track are less blurred than others and the vote finds them. Blurred
+# frames are load-bearing evidence; they simply must not be trusted individually.
+# A floor high enough to discard them would trade away the recovery fusion exists
+# to provide.
+#
+# From above: Contracts 4.4 documents a single read at confidence 0.40 on a crop
+# rated 0.30 -- weight 0.12 -- as a legitimate low-confidence answer, reported
+# with evidence_count 1 and calibration band LOW. That is the contract's own
+# example, so a floor above 0.12 would not be a stricter gate, it would be a
+# unilateral change to what the pipeline is specified to emit.
+#
+# That leaves a narrow band, and 0.10 sits in it: below the contract's weakest
+# documented legitimate read, above the arithmetically near-empty. It is an
+# honest floor, not a tuned one -- setting the real operating point needs the
+# per-frame weight distribution from the run that produced the 113 fabrications,
+# which this lane does not have. Until then this excludes the worthless and
+# nothing else, and the number is one constant to change when that data arrives.
+#
+# Worth stating plainly: a per-frame floor is not the whole answer. Fabrication
+# is an *aggregation* failure -- many weak frames agreeing outvote one good one --
+# and a lone weak read is handled correctly today by evidence_count and the LOW
+# band. A floor is what the data lane asked for and it is simple and predictable,
+# but a weight-share rule would target the actual mechanism more precisely.
+MIN_FUSION_WEIGHT = 0.10
+
+
 # COPIED FROM CANONICAL CONTRACTS -- DO NOT EDIT HERE (Contracts section 4.3).
 def fuse(observations):
     """observations: [{text, ocr_confidence, image_quality}, ...] for ONE TrackKey."""
@@ -47,6 +95,7 @@ def fuse_observations(
     observations: Sequence[PlateObservation],
     *,
     apply_grammar_downgrade: bool = True,
+    min_weight: float = MIN_FUSION_WEIGHT,
 ) -> Optional[FusedPlate]:
     """Typed wrapper around fuse() for one TrackKey.
 
@@ -77,7 +126,22 @@ def fuse_observations(
     # "probable" (Contracts 3.3) and to the HIGH calibration band (4.4), so one real read
     # plus two worthless ones that happened to agree with it would be reported as
     # three-frame corroboration. Weightless agreement is not corroboration.
-    weighted = [obs for obs in observations if obs.fusion_weight > 0.0]
+    # `min_weight` is the eligibility floor described at MIN_FUSION_WEIGHT: a
+    # reading the OCR engine and the quality scorer between them rated this
+    # poorly is not evidence, and letting it vote is how a track full of
+    # individually unreadable frames manufactures a confident plate. Passing
+    # min_weight=0.0 restores the old behaviour, which is how the before/after
+    # fabrication measurement is reproduced rather than asserted.
+    # Both conditions hold, and they are not the same condition. `> 0.0` is
+    # arithmetic self-defence: the copied block divides by the total weight, so
+    # an all-zero track raises ZeroDivisionError and takes the frame down. It
+    # must survive min_weight=0.0, which is why it is written separately rather
+    # than folded into the comparison below.
+    weighted = [
+        obs
+        for obs in observations
+        if obs.fusion_weight > 0.0 and obs.fusion_weight >= min_weight
+    ]
     if not weighted:
         return None
 
@@ -130,7 +194,11 @@ def best_agreeing_observation(
     return max(agreeing, key=lambda obs: obs.fusion_weight)
 
 
-def consensus_gain(observations: Sequence[PlateObservation]) -> dict[str, object]:
+def consensus_gain(
+    observations: Sequence[PlateObservation],
+    *,
+    min_weight: float = MIN_FUSION_WEIGHT,
+) -> dict[str, object]:
     """Diagnostic: what fusion changed versus trusting one frame.
 
     single_frame_pick is what a naive pipeline would have emitted -- the
@@ -138,15 +206,19 @@ def consensus_gain(observations: Sequence[PlateObservation]) -> dict[str, object
     with it. Aggregated over a benchmark run this is the before-versus-after
     number to ask Akshat for.
     """
-    fused = fuse_observations(observations, apply_grammar_downgrade=False)
+    fused = fuse_observations(
+        observations, apply_grammar_downgrade=False, min_weight=min_weight
+    )
     if fused is None:
         return {
             "single_frame_pick": None,
             "fused": None,
             "changed": False,
             "observations": len(observations),
+            "eligible_observations": 0,
         }
 
+    eligible = [obs for obs in observations if obs.fusion_weight >= min_weight]
     best_single = max(observations, key=lambda obs: obs.fusion_weight)
     single_pick = normalize_plate(best_single.plate_raw) or None
 
@@ -156,6 +228,12 @@ def consensus_gain(observations: Sequence[PlateObservation]) -> dict[str, object
         "changed": single_pick != fused.normalized,
         "evidence_count": fused.evidence_count,
         "observations": len(observations),
+        # How many frames cleared the eligibility floor. Reported so a run can
+        # show fabrication being suppressed rather than claiming it: a track
+        # that answers on 2 of 30 eligible frames is a different kind of answer
+        # from one that answers on 25, and the aggregate of this column is the
+        # before/after number the data lane asked for.
+        "eligible_observations": len(eligible),
         "distinct_readings": len(
             {normalize_plate(o.plate_raw) for o in observations if normalize_plate(o.plate_raw)}
         ),

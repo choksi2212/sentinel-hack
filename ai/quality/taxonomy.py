@@ -56,6 +56,19 @@ POINTS_AT_NO_SOFTWARE_FIX = "no_software_fix"
 POINTS_AT_OTHER_LANE = "other_lane"
 
 
+# The width below which a plate is `plate_too_small` rather than a miss any
+# software could fix. 20 px, not the 30 px the plan originally guessed: the data
+# lane measured the floor on TRINETRA-HARD and found detection collapses around
+# 20 px, which is a camera-placement and zoom constraint, not a model one. The
+# measurement outranks the guess, so this is the measurement.
+#
+# Named rather than inlined because the classifier that produces the histogram
+# and the report that renders it must agree on one number -- they disagreed once
+# (30 here against 20 in the run), and a threshold that lives in two places is a
+# threshold that drifts.
+PLATE_TOO_SMALL_PX = 20
+
+
 @dataclass(frozen=True)
 class FailureBucket:
     """One row of the manual's section-6 table, as data.
@@ -91,7 +104,7 @@ FAILURE_BUCKETS: tuple[FailureBucket, ...] = (
     ),
     FailureBucket(
         "plate_too_small",
-        "Plate < 30 px",
+        f"Plate < {PLATE_TOO_SMALL_PX} px",
         "Nothing in software -- camera placement, or accept it",
         POINTS_AT_NO_SOFTWARE_FIX,
     ),

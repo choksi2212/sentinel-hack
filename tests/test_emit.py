@@ -1408,3 +1408,120 @@ def test_emit_exports_the_documented_names():
         "SnapshotWriter", "NullSnapshotWriter", "build_snapshot_writer", "safe_component",
     ):
         assert hasattr(emit, name), name
+
+
+# ============================================================================
+# The cross-lane alignment contract.
+#
+# The data lane cannot align its predictions to ground truth without four
+# fields on every event, and asked three times whether they are always there.
+# The answer was verified by hand, which is exactly the kind of answer that
+# stops being true six commits later. These pin it instead.
+#
+# Ordinary field-presence tests would be redundant with the schema; what makes
+# these worth their space is that each one closes a specific way the guarantee
+# could rot: a default creeping onto a required field, a validator being
+# relaxed, the unreachable fallback becoming reachable, or the timestamp
+# quietly changing which observation it refers to.
+# ============================================================================
+
+_ALIGNMENT_FIELDS = ("camera_id", "stream_session_id", "track_id", "source_pts_ms")
+
+
+def test_every_emitted_event_carries_the_four_alignment_fields():
+    """The whole answer, in one assertion: they are present and correctly typed."""
+    event = _event()
+    payload = event.to_dict()
+
+    for name in _ALIGNMENT_FIELDS:
+        assert name in payload, f"{name} missing from the emitted payload"
+        assert payload[name] is not None, f"{name} is null on the wire"
+
+    assert isinstance(payload["camera_id"], str)
+    assert isinstance(payload["stream_session_id"], str)
+    assert isinstance(payload["track_id"], int)
+    assert isinstance(payload["source_pts_ms"], int)
+    assert event.validate() == []
+
+
+def test_none_of_the_four_may_be_dropped_from_a_payload():
+    """Presence is enforced by the validator, not merely by convention.
+
+    A field the builder happens to populate is a habit; a field the validator
+    rejects the absence of is a guarantee. This is the difference, and it is
+    what lets the data lane treat the four as always-there rather than
+    always-there-so-far.
+    """
+    from ai.contracts.event import validate_payload
+
+    for name in _ALIGNMENT_FIELDS:
+        payload = _event().to_dict()
+        del payload[name]
+        errors = validate_payload(payload)
+        assert errors, f"dropping {name} was accepted; it is not actually required"
+
+
+def test_the_four_have_no_defaults_so_an_envelope_cannot_omit_them():
+    """Closes the likeliest regression: someone adds `= None` to make a
+    constructor call shorter, and the guarantee becomes opt-in without a single
+    test failing anywhere else."""
+    import dataclasses
+
+    fields = {f.name: f for f in dataclasses.fields(EventEnvelope)}
+    for name in _ALIGNMENT_FIELDS:
+        field = fields[name]
+        assert field.default is dataclasses.MISSING, f"{name} gained a default"
+        assert field.default_factory is dataclasses.MISSING, f"{name} gained a factory"
+
+
+def test_source_pts_ms_is_the_tracks_last_observation_not_its_first():
+    """Which observation the timestamp refers to is the alignment contract.
+
+    One event covers a whole track, so `source_pts_ms` is a single number
+    standing for many frames, and the rule is that it marks the point the
+    evidence was complete -- the last sighting, not the first. A silent change
+    to first-or-mid would keep every type correct, keep the schema green, and
+    shift every predicted timestamp by the length of the track.
+    """
+    buf, obs = _readable_buffer(n=3)             # pts 100, 200, 300
+    event = build_event(buf, source_mode="file", model=MODEL, observations=obs)
+    assert event.source_pts_ms == 300
+
+    longer, obs_longer = _readable_buffer(n=5)   # pts 100 .. 500
+    event_longer = build_event(
+        longer, source_mode="file", model=MODEL, observations=obs_longer
+    )
+    assert event_longer.source_pts_ms == 500
+
+
+def test_a_track_that_was_never_observed_raises_rather_than_emitting_pts_zero():
+    """`build_event` has a `pts_ms or 0` fallback that would emit a real-looking
+    timestamp of 0 for a track with no observations. It is unreachable, because
+    the missing-observed_at check raises first -- and this is the test that keeps
+    it unreachable. A 0 here would align every prediction for that track to the
+    start of the stream, which is wrong in a way nothing downstream can detect.
+    """
+    empty = CropBuffer(track_key=TrackKey(CAMERA, SESSION, 7))
+    with pytest.raises(EventBuildError, match="observed_at"):
+        build_event(empty, source_mode="file", model=MODEL, observations=[])
+
+
+def test_per_frame_alignment_is_available_on_the_observations():
+    """The event is per-track; per-frame alignment lives one level down.
+
+    The data lane's harness scores per frame, so it needs the TrackKey plus a
+    distinct pts on each observation -- and it needs them to be the same
+    TrackKey the event carries, or the two cannot be joined at all.
+    """
+    buf, obs = _readable_buffer(n=3)
+    event = build_event(buf, source_mode="file", model=MODEL, observations=obs)
+
+    assert [o.pts_ms for o in obs] == [100, 200, 300]
+    assert [o.frame_index for o in obs] == [0, 1, 2]
+    for o in obs:
+        assert o.camera_id == event.camera_id
+        assert o.stream_session_id == event.stream_session_id
+        assert o.track_id == event.track_id
+        assert o.track_key == TrackKey(
+            event.camera_id, event.stream_session_id, event.track_id
+        )

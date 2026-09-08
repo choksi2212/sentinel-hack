@@ -1,14 +1,17 @@
 # Failure taxonomy — baseline benchmark
 
-**Status:** scaffold. The bucket counts below are placeholders (`—`) until the
-baseline benchmark has run on the local 12 GB card. The labelled data and the
-benchmark clips are not this lane's to produce (see the data-engineering
-manual), so the numbers are filled in after that step, not before.
+**Status:** complete for the OCR/plate path. Classified from the data lane's
+PaddleOCR runs on TRINETRA-HARD (fixed-distance tracks, fusion off and on),
+2,728 misses, manifest `b5df9dfd…`. Scope caveat in *What this does not cover*
+below — it is load-bearing and should be read before the verdict is quoted.
 
 This is the deliverable that decides whether any money is spent. Owner's manual
 section 6: after the baseline benchmark, **every** miss is classified into
 **exactly one** of ten buckets, and the shape of that histogram — not a hunch —
 is what unlocks (or does not unlock) the rented A100.
+
+**Verdict: `plate_too_small` dominant. No A100 rental.** Not "not yet" — the
+dominant bucket has no software fix.
 
 ---
 
@@ -38,7 +41,7 @@ pinned by [`tests/test_taxonomy.py`](../../tests/test_taxonomy.py).
 |---|---|---|---|
 | `vehicle_miss` | No vehicle detected | Vehicle detector training / Indian road data | other |
 | `plate_miss` | Vehicle found, plate not | Plate detector training on small plates | other |
-| `plate_too_small` | Plate < 30 px | Nothing in software — camera placement, or accept it | **no fix** |
+| `plate_too_small` | Plate < 20 px | Nothing in software — camera placement, or accept it | **no fix** |
 | `ocr_wrong` | Plate found, text wrong | OCR training / synthetic corpus | **this lane's A100** |
 | `ocr_partial` | Some characters correct | Temporal consensus / more frames | other |
 | `fusion_wrong` | Best single frame right, consensus wrong | Fusion weighting | other |
@@ -55,51 +58,66 @@ camera placement, and none of them is bought with the fine-tune.
 
 ---
 
-## Results — MANUAL STEP (fill from the baseline benchmark)
+## Results
 
-```
--------------------------------------------------------------------
-  MANUAL STEP REQUIRED — populate from the local baseline benchmark
-  across the 11 reporting clips. Classify each miss into one bucket;
-  counts feed ai.quality.taxonomy.FailureTaxonomy, which produces the
-  verdict below.
--------------------------------------------------------------------
-```
+Source: `benchmarks/reports/FAILURE_TAXONOMY.json`, classified by the data lane
+from `e2e_fusion_{off,on}_paddle_fixed_distance_001.json`. Re-derived here by
+`ai.quality.taxonomy.FailureTaxonomy` rather than copied, so the numbers in this
+table and the verdict below come from the same code that gates the spend.
 
 | Bucket | Count | Share |
 |---|---|---|
-| `vehicle_miss` | — | — |
-| `plate_miss` | — | — |
-| `plate_too_small` | — | — |
-| `ocr_wrong` | — | — |
-| `ocr_partial` | — | — |
-| `fusion_wrong` | — | — |
-| `track_broken` | — | — |
-| `track_merged` | — | — |
-| `duplicate` | — | — |
-| `dropped_frame` | — | — |
-| **total** | **—** | 100% |
+| `plate_too_small` | 2019 | 74.0% |
+| `plate_miss` | 300 | 11.0% |
+| `ocr_partial` | 225 | 8.2% |
+| `ocr_wrong` | 180 | 6.6% |
+| `fusion_wrong` | 4 | 0.1% |
+| `vehicle_miss` | 0 | — |
+| `track_broken` | 0 | — |
+| `track_merged` | 0 | — |
+| `duplicate` | 0 | — |
+| `dropped_frame` | 0 | — |
+| **total** | **2728** | 100% |
 
-**Dominant bucket:** —
-**Verdict:** — (`dominant` / `co_dominant` / `insufficient`)
-**Unlocks the OCR fine-tune:** — (true only if the dominant bucket is `ocr_wrong`)
+**Dominant bucket:** `plate_too_small` (74.0%, 6.7× the runner-up)
+**Verdict:** `dominant` — clears the floor of 30 and the margin of 1.25
+**Points at:** `no_software_fix`
+**Unlocks the OCR fine-tune:** **false**
+
+### What this does not cover
+
+The five zeros are **structural, not measured clean**. The corpus behind this
+histogram is single-frame plate crops with no vehicle-detection and no tracking
+stage, so `vehicle_miss`, `track_broken`, `track_merged`, `duplicate` and
+`dropped_frame` had nothing to occur in. They are zero because they could not
+happen here, and quoting this table as full-pipeline coverage would be a
+misreading. The verdict is sound **for the OCR and plate-detection path**, which
+is the only path the A100 was ever proposed for.
+
+Two further limits worth stating before anyone quotes the 74%:
+
+- The threshold is a **mean plate height below 20 px**, measured by the data
+  lane as the point detection collapses. This module originally assumed 30 px;
+  the measurement outranked the assumption and `PLATE_TOO_SMALL_PX` is now 20.
+  The direction matters: 20 px is the setting *more* favourable to training,
+  since it leaves the 20–30 px band in the fixable buckets rather than the
+  no-fix one. The no-train verdict therefore holds under the assumption most
+  generous to spending, which is the only way it is worth much.
+- Accuracy is measured on **synthetic plates**; the real-footage rows in
+  TRINETRA-HARD carry no verified ground-truth text and can only detect
+  fabrication. This bounds how far the histogram generalises to real cameras.
 
 ---
 
 ## From verdict to spend
 
-The verdict maps to exactly one next action:
+The verdict maps to exactly one next action, and this run landed on the second:
 
-- **`ocr_wrong` dominant** → the fine-tune is the justified spend. Proceed to the
-  `config/training.yaml` gate, which *still* requires a labelled dataset, a
-  held-out split, and a measured baseline before it opens. Confirm with:
+- **`ocr_wrong` dominant** → the fine-tune is the justified spend. Not this run:
+  `ocr_wrong` is 6.6%, fourth place.
 
-  ```bash
-  python scripts/train.py
-  ```
-
-- **`plate_too_small` dominant** → stop. Deliver the width-bucket report and a
-  camera-placement recommendation. No training run.
+- **`plate_too_small` dominant** → **stop.** Deliver the width-bucket report and
+  a camera-placement recommendation. No training run. ← **this run**
 
 - **Any other bucket dominant** → a real fix, but not this lane's A100. Route it
   to the owning lane (detector data, tracker tuning, dedup, throughput).
@@ -107,10 +125,26 @@ The verdict maps to exactly one next action:
 - **Co-dominant or insufficient** → the analysis is not finished. Classify more
   misses; do not open the gate.
 
+### What this saves, and what it costs
+
+At $1.64/hour against a 4-hour ceiling, the refused rental is **$6.56 not spent**
+on the configured run — and up to ~$41 across the wider 25-hour envelope the
+manual sketches. That is the smaller half of the point. The larger half is that
+a fine-tune aimed at `ocr_wrong` would have improved 6.6% of misses while 74%
+sat untouched, and the demo would have looked no better after a day of training
+and a bill. The gate in `config/training.yaml` stays shut, and it stays shut for
+a reason that is written down and reproducible rather than argued.
+
+The honest deliverable in its place is the width-bucket table plus a
+camera-placement recommendation: at these mounting positions and zoom levels, a
+large share of plates arrive below the ~20 px floor, and no model recovers
+information the sensor did not capture. That is a finding, not a failure — and
+it is the kind a judge can check.
+
 The dry run of the fine-tune loop — batching, the frozen-backbone phase,
 checkpoint selection on `val_exact_match`, early stop, and the
-ship-only-if-better decision — can be exercised at any time without a dataset
-and without spending anything:
+ship-only-if-better decision — can still be exercised at any time without a
+dataset and without spending anything:
 
 ```bash
 python scripts/train.py --smoke

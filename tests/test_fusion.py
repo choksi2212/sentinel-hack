@@ -28,6 +28,7 @@ from ai.fusion.accumulator import (
     TrackCrop,
 )
 from ai.fusion.consensus import (
+    MIN_FUSION_WEIGHT,
     best_agreeing_observation,
     consensus_gain,
     fuse,
@@ -605,3 +606,121 @@ def test_accumulator_stats_report_what_is_held():
     acc.offer_crop(TrackKey(CAMERA, SESSION_A, 42), crop(0.8))
     acc.offer_crop(TrackKey(CAMERA, SESSION_A, 42), crop(0.7))
     assert acc.stats() == {"open_tracks": 1, "crops_held": 2, "top_k": 4}
+
+
+# ============================================================================
+# The per-frame eligibility floor.
+#
+# Fusion was measured doubling the correct-plate rate where plates were readable
+# (0.19 -> 0.43 above 100 px) while producing 113 confident strings on frames
+# that were individually unreadable -- fabrication, up from zero without fusion.
+# In a police system a confident wrong plate is worse than no plate: it is an
+# answer someone acts on.
+#
+# The mechanism was that the only filter was `fusion_weight > 0.0`, which
+# excludes the arithmetically empty and nothing else. These tests pin the floor
+# that replaced it, and -- more importantly -- pin the two things the floor must
+# NOT do, because the failure mode of an eligibility gate is that it quietly
+# suppresses the recovery fusion exists to provide.
+# ============================================================================
+
+
+def test_a_track_of_individually_unreadable_frames_no_longer_answers():
+    """The fabrication case, directly. Five frames that agree on a string, none
+    of which the OCR engine or the quality scorer thought was worth anything.
+    Agreement among worthless reads is not corroboration -- it is five copies of
+    the same guess, and the honest output is no plate at all."""
+    junk = [
+        observation("GJ01AB1234", 0.20, 0.15, frame_index=i, pts_ms=i * 100)
+        for i in range(5)
+    ]
+    assert all(o.fusion_weight < MIN_FUSION_WEIGHT for o in junk)
+    assert fuse_observations(junk) is None
+
+
+def test_the_old_zero_floor_would_have_fabricated_on_that_same_track():
+    """The before/after, in one test. Same observations, floor lowered to the
+    previous behaviour, and a confident string appears -- which is what the
+    benchmark caught 113 times. Keeping this comparison in the suite means the
+    fix is demonstrated rather than asserted."""
+    junk = [
+        observation("GJ01AB1234", 0.20, 0.15, frame_index=i, pts_ms=i * 100)
+        for i in range(5)
+    ]
+    fabricated = fuse_observations(junk, min_weight=0.0)
+    assert fabricated is not None
+    assert fabricated.normalized == "GJ01AB1234"
+    assert fabricated.confidence == 1.0        # unanimous, and unanimously worthless
+
+
+def test_one_good_frame_still_carries_a_track_of_blurred_ones():
+    """The blur case, and the reason the floor is a floor and not a quality bar.
+
+    Motion blur is not a capability wall: consensus recovers 12.3% of blurred
+    fixed-distance tracks precisely because some frames are less blurred than
+    others. A gate that discarded the whole track because most of it was poor
+    would delete that recovery. One eligible frame is enough to answer.
+    """
+    track = [
+        observation("GJ01AB1234", 0.18, 0.12, frame_index=0, pts_ms=0),    # 0.0216
+        observation("GJ01AB1234", 0.22, 0.20, frame_index=1, pts_ms=100),  # 0.044
+        observation("GJ01AB1234", 0.85, 0.80, frame_index=2, pts_ms=200),  # 0.68, sharp
+        observation("GJ0IAB1234", 0.25, 0.18, frame_index=3, pts_ms=300),  # 0.045
+    ]
+    fused = fuse_observations(track)
+    assert fused is not None
+    assert fused.normalized == "GJ01AB1234"
+    # Only the sharp frame voted, so the count reflects real evidence -- not the
+    # four-frame corroboration the raw track length would have implied.
+    assert fused.evidence_count == 1
+    assert fused.total_observations == 4
+
+
+def test_weak_frames_can_no_longer_outvote_a_single_good_one():
+    """The aggregation failure the floor exists to stop: three poor frames
+    agreeing on a wrong string carried more summed weight than one clean read of
+    the right one. Under the old zero floor the wrong string wins; under the
+    floor the poor frames never vote."""
+    track = [
+        observation("GJ01AB1234", 0.60, 0.55, frame_index=0, pts_ms=0),     # 0.330 correct
+    ] + [
+        # Five poor reads of the same wrong string: 0.09 each, 0.45 summed, so
+        # they outweigh the one good read while each is individually below the
+        # floor. This is the shape of the fabrication, not an invented edge case.
+        observation("GJ01A81234", 0.30, 0.30, frame_index=i, pts_ms=i * 100)
+        for i in range(1, 6)
+    ]
+    assert fuse_observations(track, min_weight=0.0).normalized == "GJ01A81234"
+    assert fuse_observations(track).normalized == "GJ01AB1234"
+
+
+def test_the_floor_sits_below_the_contracts_weakest_documented_read():
+    """Contracts 4.4 documents a single read at confidence 0.40 on a crop rated
+    0.30 as a legitimate low-confidence answer. A floor above that weight would
+    not be a stricter gate -- it would be a unilateral change to what the
+    pipeline is specified to emit. This is the constraint from above."""
+    assert MIN_FUSION_WEIGHT < 0.40 * 0.30
+    borderline = observation("GJ01AB1234", 0.40, 0.30)
+    assert fuse_observations([borderline]) is not None
+
+
+def test_an_all_zero_track_is_still_refused_even_with_the_floor_disabled():
+    """`min_weight=0.0` restores the old policy but must not restore the old
+    crash: fuse() divides by the total weight, so an all-zero track raised
+    ZeroDivisionError. The two conditions are separate for this reason."""
+    dead = [observation("GJ01AB1234", 0.0, 0.0, frame_index=i) for i in range(3)]
+    assert fuse_observations(dead, min_weight=0.0) is None
+
+
+def test_consensus_gain_reports_how_many_frames_cleared_the_floor():
+    """A track answering on 1 of 20 eligible frames is a different kind of answer
+    from one answering on 18. Aggregated, this column is the fabrication-
+    suppression number the data lane asked for."""
+    track = [
+        observation("GJ01AB1234", 0.85, 0.80, frame_index=0, pts_ms=0),
+        observation("GJ01AB1234", 0.15, 0.10, frame_index=1, pts_ms=100),
+        observation("GJ01AB1234", 0.18, 0.11, frame_index=2, pts_ms=200),
+    ]
+    gain = consensus_gain(track)
+    assert gain["observations"] == 3
+    assert gain["eligible_observations"] == 1
