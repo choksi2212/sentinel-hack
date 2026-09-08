@@ -16,21 +16,33 @@ bucket, so it stands on its own).
 | night | 26% | 58/222 |
 | **motion_blur** | **0.5%** | **1/215** |
 
-## The headline finding
+## The headline finding — corrected 2026-09-08
 
-**Motion blur defeats PP-OCRv4-mobile almost completely, independent of
-plate size.** Even at this run's largest nominal width, a motion-blurred
-plate is read correctly essentially never (1/215). This is not a
-resolution problem — it doesn't improve by making the plate bigger. It is
-a property of this specific (lightweight, "mobile") model against this
-specific degradation.
+**Earlier text here said motion blur "defeats PP-OCRv4-mobile almost
+completely, independent of plate size" (citing 1/215, single-frame,
+approach tracks) — that implied fusion doesn't help either. It does.** On
+the fixed-distance corpus (condition varies per frame instead of per
+track, so a track can mix a blurred frame with a clean one — see
+`FINDINGS.md`), the `motion_blur` slice reads:
 
-Practical implication for model selection: if the real deployment expects
-motion blur (moving vehicles, rolling shutter, low frame rate), a heavier
-recognition model, motion-deblurring as a pre-processing stage, or a
-detector explicitly trained/fine-tuned on blurred plates is likely required
-— PP-OCRv4-mobile's out-of-the-box blur robustness is not sufficient on its
-own, at any distance.
+- **Single-frame (fusion OFF): 0/406 — a genuine, near-total miss.**
+- **With fusion (fusion ON): 50/406 (12.3%) — a real, meaningful recovery.**
+
+This is a case *for* temporal consensus, not evidence it doesn't matter: a
+single blurred frame is almost never readable on its own, but if even one
+other frame in the same track is clean, fusion's best-reading-across-track
+consensus recovers over a tenth of these cases outright. It does not fully
+solve motion blur — 87.7% still miss — but "independent of plate size" was
+correct in isolation while "fusion doesn't help" was not, and only the
+combination was ever asserted.
+
+Practical implication for model selection: motion blur remains this
+engine's hardest single condition on a single frame, and a heavier
+recognition model, motion-deblurring, or blur-specific fine-tuning would
+still help. But the practical mitigation available *today*, with no model
+change, is exactly what this lane's harness measures: keep multiple frames
+per track and fuse them — it recovers real cases a single-frame pipeline
+cannot.
 
 Night is the second-largest gap (26%), consistent with a general-purpose
 OCR model not being tuned for low-light/IR-style capture; glare and

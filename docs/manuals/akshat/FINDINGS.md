@@ -64,6 +64,22 @@ correct single-frame answer just as readily as it can rescue an incorrect
 one. State plainly as the other side of the fusion tradeoff, not just the
 fabrication cost above.
 
+## Finding D — Fusion recovers motion-blurred plates a single frame cannot
+
+The `motion_blur` slice, fixed-distance tracks: **0/406 correct on a single
+frame (fusion OFF) — 50/406 correct with fusion ON (12.3%).**
+
+This is a case *for* temporal fusion, not against it. A single motion-blurred
+frame is essentially unreadable to this engine — 0 out of 406. But a
+fixed-distance track varies its degradation per frame (see Methodology), so
+a track carrying a blurred frame often also carries a clean one; fusion's
+best-reading-across-track consensus recovers over a tenth of these cases
+outright, with zero model changes. It does not solve motion blur — 87.7%
+of the slice still misses — but "the engine can't read blurred plates" and
+"fusion doesn't help blurred plates" are two different claims, and only the
+first one is true. See `docs/manuals/akshat/OCR_BASELINE_FINDINGS.md` for
+the single-frame condition breakdown this corrects.
+
 ## Methodology note — why per-bucket numbers require fixed-distance tracks
 
 Two track types were built and scored separately:
