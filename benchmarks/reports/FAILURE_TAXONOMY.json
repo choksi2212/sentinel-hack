@@ -1,0 +1,74 @@
+{
+  "dataset_manifest_sha256": "b5df9dfd90f4f2eaf7426e0015a1afe115272639c74df63c06b0998a83116fcb",
+  "source_reports": [
+    "benchmarks/reports/e2e_fusion_off_paddle_fixed_distance_001.json",
+    "benchmarks/reports/e2e_fusion_on_paddle_fixed_distance_001.json"
+  ],
+  "counts": {
+    "vehicle_miss": 0,
+    "track_broken": 0,
+    "track_merged": 0,
+    "duplicate": 0,
+    "dropped_frame": 0,
+    "plate_miss": 300,
+    "plate_too_small": 2019,
+    "ocr_wrong": 180,
+    "ocr_partial": 225,
+    "fusion_wrong": 4
+  },
+  "total_classified": 2728,
+  "meets_min_sample_30": true,
+  "leader": "plate_too_small",
+  "leader_count": 2019,
+  "runner_up_count": 300,
+  "leader_at_least_1_25x_runner_up": true,
+  "verdict": {
+    "status": "dominant",
+    "total": 2728,
+    "counts": {
+      "plate_miss": 300,
+      "plate_too_small": 2019,
+      "ocr_wrong": 180,
+      "ocr_partial": 225,
+      "fusion_wrong": 4
+    },
+    "dominant": "plate_too_small",
+    "co_dominant": [],
+    "leader_share": 0.7401026392961877,
+    "points_at": "no_software_fix",
+    "unlocks_ocr_finetune": false,
+    "recommendation": "plate_too_small dominant: no software fix exists. The honest deliverable is a width-bucket report and a camera-placement recommendation, not a training run."
+  },
+  "example_obs_ids": {
+    "plate_miss": [
+      "th_03462",
+      "th_03463",
+      "th_03464"
+    ],
+    "plate_too_small": [
+      "th_04558",
+      "th_04559",
+      "th_04560"
+    ],
+    "ocr_wrong": [
+      "th_03532",
+      "th_03534",
+      "th_03535"
+    ],
+    "ocr_partial": [
+      "th_03438",
+      "th_03439",
+      "th_03440"
+    ],
+    "fusion_wrong": [
+      "th_03737",
+      "th_03995",
+      "th_04569"
+    ]
+  },
+  "notes": [
+    "vehicle_miss, track_broken, track_merged, duplicate, dropped_frame are structurally zero on this corpus: there is no vehicle-detection or tracking stage in the synthetic single-frame-crop pipeline for these buckets to ever apply to. Set to 0 because they cannot occur here, not because they were measured and found clean.",
+    "plate_too_small threshold used here is <20px mean plate height per explicit instruction for this task. ai/quality/taxonomy.py's own docstring documents this bucket as 'Plate < 30 px' -- that is a real discrepancy against this lane's own taxonomy module, reported here rather than silently resolved either way.",
+    "Classification priority (first match wins): fusion_wrong, then plate_too_small, then plate_miss, then ocr_partial/ocr_wrong. fusion_wrong is checked first because it is a comparative signal (this specific row got worse under fusion) that the other rules would otherwise silently absorb."
+  ]
+}
