@@ -64,6 +64,32 @@ run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
   hide behind a sweep.
 - All 4 reports + both delta tables committed.
 
+## 2026-09-08 — Item 4: by_slice.motion_blur == 0.0 verified real
+**STATUS: OK — confirmed real, one important correction to earlier framing**
+
+- **`MONDAY.md` does not currently mention `motion_blur` anywhere** — grepped
+  it directly, zero matches. The "flagged in MONDAY.md" premise doesn't hold
+  for the file as it exists; noting this rather than pretending it's there.
+- Checked every paddle report's `by_slice.motion_blur`: it is `0.0` (a real
+  float) not `null` in 5 of 6 — `scorer.py`'s own by-slice logic already
+  emits `null` for `n=0` (that's the empty-bucket fixture from a few items
+  back), so a `0.0` value is proof by construction that `n>0`. Recomputed
+  exact n/correct directly: **approach OFF n=498 correct=0; approach ON
+  n=498 correct=0; fixed_distance OFF n=406 correct=0** — all three are a
+  genuine, substantial-n zero, not an empty slice.
+- **Correction to earlier framing**: `fixed_distance ON` is **not** zero —
+  **n=406, correct=50, rate=0.123**. Fusion recovers ~12% of motion-blur
+  frames when tracks vary condition per-frame (fixed_distance design) rather
+  than per-track (approach design, which is the same track-consensus
+  mechanism already flagged for the width-bucket artifact: a fixed_distance
+  track can mix a blurred frame with a non-blurred one, letting the track's
+  best reading get credited to the blurred frame too). This means
+  `OCR_BASELINE_FINDINGS.md`'s claim "motion blur defeats PP-OCRv4-mobile
+  ... independent of plate size" was accurate for the approach-track data it
+  was measured on (1/215, pre-track-type-split) but is not the full picture
+  now that fixed_distance exists — worth a follow-up note there, not done
+  in this pass since it wasn't asked for.
+
 ## 2026-09-08 — Item 2: FAILURE_TAXONOMY.json, dominant bucket found
 **STATUS: OK — verdict is DOMINANT, plate_too_small, no software fix**
 
