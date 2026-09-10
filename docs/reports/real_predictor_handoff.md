@@ -6,7 +6,7 @@ built, where it is, and the exact patch that connects the two.
 
 - **Module:** [`ai/real_predictor.py`](../../ai/real_predictor.py) — `predict(row, fusion_enabled) -> str | None`
 - **OCR worker:** [`scripts/real_ocr_worker.py`](../../scripts/real_ocr_worker.py) — runs only inside `.venv-ocr`
-- **Tests:** [`tests/test_real_predictor.py`](../../tests/test_real_predictor.py) — 38 tests, no models or dataset required
+- **Tests:** [`tests/test_real_predictor.py`](../../tests/test_real_predictor.py) — 41 tests, no models or dataset required
 
 It routes through `ai/ocr` → `ai/quality` → `ai/fusion`: the crop, the width
 floor, the six preprocessing variants, the quality score that becomes the fusion

@@ -707,3 +707,96 @@ def test_cache_file_is_written_with_its_provenance(engine):
     assert blob["meta"]["ocr_version"] == rp.OCR_VERSION
     assert blob["meta"]["min_fusion_weight"] == MIN_FUSION_WEIGHT
     assert row["frame_path"] in blob["readings"]
+
+
+# --- the worker, checked from outside the venv that runs it --------------------
+
+
+def _worker_tree():
+    return ast.parse(rp.WORKER.read_text(encoding="utf-8"))
+
+
+def test_worker_puts_the_repo_root_on_sys_path_before_importing_ai():
+    """The worker is launched by path from .venv-ocr's interpreter, which puts
+    scripts/ on sys.path -- not the repository root. There is no packaging file
+    in this repo (docs/REPOSITORY.md 5.1), so without an explicit insert the
+    ai.* imports raise ModuleNotFoundError.
+
+    The parent only sees a non-zero exit and a traceback on stderr, so that
+    failure reads as "paddle is broken" and sends whoever hits it into the venv
+    instead of into this line. Pinned on the AST because it is an *ordering*
+    constraint: an insert that lands after the imports is the same bug.
+    """
+    tree = _worker_tree()
+    inserts = [
+        node.lineno
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "insert"
+        and isinstance(node.func.value, ast.Attribute)
+        and node.func.value.attr == "path"
+    ]
+    ai_imports = [
+        node.lineno
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.Import, ast.ImportFrom))
+        and any(
+            (name.split(".")[0] == "ai")
+            for name in (
+                [a.name for a in node.names]
+                if isinstance(node, ast.Import)
+                else [node.module or ""]
+            )
+        )
+    ]
+    assert inserts, "scripts/real_ocr_worker.py never puts the repo root on sys.path"
+    assert ai_imports, "the worker no longer imports the staged stages -- it is the raw one"
+    assert min(inserts) < min(ai_imports), (
+        f"sys.path.insert is at line {min(inserts)}, after the first ai import at "
+        f"{min(ai_imports)}. It has to come first or it does nothing."
+    )
+
+
+def test_worker_never_imports_torch():
+    """The entire reason this worker is a separate process in a separate venv:
+    paddle and torch collide at the Windows DLL level when both are loaded in one
+    interpreter. An ai.* import that dragged torch in would reintroduce the
+    collision inside .venv-ocr, where it is hardest to diagnose."""
+    imported = set()
+    for node in ast.walk(_worker_tree()):
+        if isinstance(node, ast.Import):
+            imported.update(a.name.split(".")[0] for a in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+            imported.add(node.module.split(".")[0])
+
+    assert "torch" not in imported
+    # and the ai.* subtree it reaches into must stay torch-free too
+    reachable = set()
+    for package in ("ai/contracts", "ai/ocr", "ai/quality"):
+        for path in (Path(rp.ROOT) / package).rglob("*.py"):
+            for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+                if isinstance(node, ast.Import):
+                    reachable.update(a.name.split(".")[0] for a in node.names)
+                elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+                    reachable.add(node.module.split(".")[0])
+    assert "torch" not in reachable, (
+        "ai/contracts, ai/ocr or ai/quality now imports torch, which puts it back in "
+        "the same process as paddle inside .venv-ocr"
+    )
+
+
+def test_predictor_itself_imports_no_vision_stack():
+    """The predictor runs in the main env and must stay numpy-only: cv2 is
+    imported lazily inside frame materialisation, and paddle never at all. A
+    top-level import here would make `from ai import real_predictor` fail on any
+    machine without the models -- including CI."""
+    imported = set()
+    tree = ast.parse(Path(rp.__file__).read_text(encoding="utf-8"))
+    for node in tree.body:  # top level only; lazy imports live inside functions
+        if isinstance(node, ast.Import):
+            imported.update(a.name.split(".")[0] for a in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+            imported.add(node.module.split(".")[0])
+
+    assert not ({"cv2", "paddle", "paddleocr", "torch"} & imported), imported

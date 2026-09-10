@@ -37,10 +37,21 @@ import json
 import sys
 from pathlib import Path
 
+# This worker is launched by path from .venv-ocr's own interpreter, which puts
+# scripts/ on sys.path -- not the repository root. Without this line the ai.*
+# imports below raise ModuleNotFoundError, and the parent process only sees a
+# non-zero exit and a traceback on stderr, so the failure reads as "paddle is
+# broken" rather than "the package root is not importable". There is no
+# packaging file in this repository to make ai/ importable any other way
+# (docs/REPOSITORY.md section 5.1), which is the same reason tests/conftest.py
+# does this.
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 import cv2
 import numpy as np
 
-import ai  # noqa: F401 -- package path on sys.path
 from ai.contracts.stages import PlateCandidate
 from ai.ocr import build_ocr_engine
 from ai.quality import plate_quality
