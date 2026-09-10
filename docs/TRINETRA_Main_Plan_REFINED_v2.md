@@ -15,10 +15,10 @@
 | Competition | Gujarat Police **"Sentinel"** hackathon — `sentinel.gujarat.gov.in/problems` |
 | Grid scale (stated) | 80,000+ cameras · 26 departments · 34 districts |
 | Test grid available to us | ~30–50 feeds, `cam01`–`cam30` |
-| **Application / shortlist deadline** | **7 September 2026** |
-| **Hackathon** | **10–11 September 2026** |
-| Today | **1 September 2026** |
-| **Build days before the qualification gate** | **6** (Sep 1, 2, 3, 4, 5, 6 — submit on the 7th) |
+| **Application / shortlist deadline** | **15 September 2026** (was 7 September — see [`docs/CALENDAR.md`](CALENDAR.md)) |
+| **Finals** | **22–23 September 2026** (was 10–11 September) |
+| Today | **10 September 2026** |
+| **Build days before the qualification gate** | **5** (Sep 11–15 — submit on the 15th) |
 
 **Team and ownership**
 

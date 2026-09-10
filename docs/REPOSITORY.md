@@ -13,7 +13,7 @@
 
 ## 1. Why this document exists
 
-Four people, six days, one repository, and a submission deadline on **7 September**. The failure modes we are guarding against are not exotic:
+Four people, six days, one repository, and a submission deadline on ~~**7 September**~~ **15 September** ([`docs/CALENDAR.md`](CALENDAR.md) — the organisers extended on the 7th; finals are 22–23 September). The failure modes we are guarding against are not exotic:
 
 - Two people edit the same event schema in their own directory, both are internally consistent, and nothing works when they meet on D4.
 - Someone commits `.env` with a Sentinel stream password to a **public** repo, and it is scraped within minutes.

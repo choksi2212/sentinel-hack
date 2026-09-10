@@ -4,12 +4,18 @@
 # requests the right reviewer automatically. That document is authoritative: if
 # this file and §5 ever disagree, §5 wins and this file is the bug to fix.
 #
-# ─── FILL IN BEFORE THIS ENFORCES ───────────────────────────────────────────
-# The @handles below are placeholders — the team's real GitHub usernames were
-# not known when this was written. GitHub treats an unknown owner as an invalid
-# rule and does NOT enforce it, so review is only requested once these are real.
-# Replace every @FILL-IN-*-handle with the actual username, then open the repo's
-# "Code owners" settings and confirm each path resolves to a real user.
+# ─── PARTIALLY FILLED — TWO HANDLES OUTSTANDING ─────────────────────────────
+# Manas (@choksi2212) and Parth (@iamwinter1116-void) are real and enforcing.
+# Mihir's and Akshat's are still placeholders. GitHub treats an unknown owner as
+# an invalid rule and does NOT enforce it, and matching is last-wins, so a file
+# under /backend/ matches an invalid rule last and gets NO reviewer — it does
+# not fall through to the `*` default. Until those two are filled, the backend
+# and data lanes have no automatic review request. Replace them, then open the
+# repo's "Code owners" settings and confirm each path resolves to a real user.
+#
+# NOTE: GitHub reads CODEOWNERS from the branch a PR TARGETS. This file lives on
+# the `manas` branch and not on `main`, so it currently enforces nothing at all.
+# It starts working the moment `.github/` lands on `main`.
 # ─────────────────────────────────────────────────────────────────────────────
 #
 # Matching is last-wins: the final pattern that matches a file decides its
@@ -18,16 +24,16 @@
 
 # Default owner — the architect, who owns cross-lane coherence and every
 # root-level file not claimed below (§5, §5.2 tie-break).
-*                                   @FILL-IN-manas-handle
+*                                   @choksi2212
 
 # ── AI lane — Manas / Niklaus (§5) ───────────────────────────────────────────
-/ai/                                @FILL-IN-manas-handle
-/config/                            @FILL-IN-manas-handle
-/tests/fixtures/                    @FILL-IN-manas-handle
-/docs/                              @FILL-IN-manas-handle
-/.github/                           @FILL-IN-manas-handle
-/.gitignore                         @FILL-IN-manas-handle
-/README.md                          @FILL-IN-manas-handle
+/ai/                                @choksi2212
+/config/                            @choksi2212
+/tests/fixtures/                    @choksi2212
+/docs/                              @choksi2212
+/.github/                           @choksi2212
+/.gitignore                         @choksi2212
+/README.md                          @choksi2212
 
 # ── Backend & data platform — Mihir (§5, §5.1) ───────────────────────────────
 # .env.example and requirements.txt are Mihir's per §5.1; other lanes append via
@@ -48,5 +54,5 @@
 
 # ── Frontend & demo — Parth (§5) ─────────────────────────────────────────────
 # Placed after /docs/ so the demo subtree overrides the AI-lane docs default.
-/frontend/                          @FILL-IN-parth-handle
-/docs/demo/                         @FILL-IN-parth-handle
+/frontend/                          @iamwinter1116-void
+/docs/demo/                         @iamwinter1116-void

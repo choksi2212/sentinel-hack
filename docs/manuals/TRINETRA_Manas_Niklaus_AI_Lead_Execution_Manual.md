@@ -21,7 +21,13 @@ You own the boundary between messy reality and clean data. Everything upstream o
 
 ## 2. Day plan — anchored to the real calendar
 
-Today is **1 September 2026**. Submission is **7 September**. Hackathon is **10–11 September**. You have **six build days**. Any 10-day or 14-day plan you have seen in an earlier document is superseded by this table.
+> **DATES SUPERSEDED — see [`docs/CALENDAR.md`](../CALENDAR.md).** Submission is
+> **15 September 2026**; finals are **22–23 September**. The organisers extended
+> on 7 September. The table below allocated 1–6 September: read it as a record of
+> what was built, not as a live plan. Work it deferred as unreachable is
+> reachable now and should be re-triaged rather than left deferred by inertia.
+
+~~Today is **1 September 2026**. Submission is **7 September**. Hackathon is **10–11 September**. You have **six build days**. Any 10-day or 14-day plan you have seen in an earlier document is superseded by this table.~~
 
 | Date | Day | You must finish | Proof |
 |---|---|---|---|
