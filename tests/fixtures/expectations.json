@@ -1,8 +1,9 @@
 {
   "note": "Machine-readable expected outcome per fixture. Not one of the twelve files Contracts section 9 locks -- scaffolding, so that the AI lane's tests and the backend lane's ingest tests assert the same table instead of two drifting copies of it. Read this, do not retype it.",
   "ingest_path_disagreement": {
-    "problem": "Contracts 6.1 says POST /api/v1/events/vehicle-sighting and returns 200 for a new event. The backend manual section 5.1 says POST /api/v1/ingest/events and returns 201 for a new event. Both documents are in docs/. They cannot both be right and nobody noticed until the fixtures needed an expected status code.",
-    "resolution_pending": "Needs one decision from the team, recorded in Contracts 6.1. Until then the AI worker defaults to /api/v1/ingest/events, because that is what the person implementing the endpoint is reading, and ai/emit/http_sink.py treats 200-with-status-accepted and 201 as the same outcome so either backend is accepted without a code change.",
+    "problem": "Contracts 6.1 said POST /api/v1/events/vehicle-sighting and returns 200 for a new event. The backend manual section 5.1 said POST /api/v1/ingest/events and returns 201 for a new event. Both documents are in docs/. They cannot both be right and nobody noticed until the fixtures needed an expected status code.",
+    "resolved": "2026-09-11, under docs/REPOSITORY.md 5.2 -- cross-lane contract disagreements are the architect's call. Contracts 6.1 wins on both counts: the path is POST /api/v1/events/vehicle-sighting and a new event returns 200 with status=accepted in the body. Canonical is normative and the manual is derivative, so the manual was the bug; it has been corrected rather than argued with. Decided before backend/ contained a single file, so it cost no rework. ai/emit/http_sink.py DEFAULT_INGEST_PATH now carries the canonical path.",
+    "status_note": "status_new still lists both 200 and 201. The sink classifies 201 and 200-with-status-accepted identically, so a backend that returns 201 for a new resource is accepted rather than broken -- but 200 is what the contract asks for and what a conformance test should assert. The body's status field is the normative signal, not the status line.",
     "status_new": [200, 201],
     "status_duplicate": [200],
     "status_rejected": [422],

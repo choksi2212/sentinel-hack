@@ -30,7 +30,7 @@ You are the contract between Manas and Parth. Manas produces events at an unpred
 | Date | Day | You must finish | Proof |
 |---|---|---|---|
 | **Sep 1** | D1 | `docker-compose.yml`, PostGIS up, Alembic initialized, **all 8 tables migrated**, `/health` | `alembic upgrade head` clean from empty DB; PostGIS 3.4 confirmed |
-| **Sep 2** | D2 | `POST /api/v1/ingest/events` with validation, idempotency, `stream_sessions` | All 12 fixtures accepted or correctly rejected (**G1**) |
+| **Sep 2** | D2 | `POST /api/v1/events/vehicle-sighting` with validation, idempotency, `stream_sessions` | All 12 fixtures accepted or correctly rejected (**G1**) |
 | **Sep 3** | D3 | Search endpoints + indexes + `EXPLAIN ANALYZE` | Index scans, no sequential scans; <200 ms on 10k rows |
 | **Sep 4** | D4 | Journey, watchlist, alerts, Redis pub/sub, WebSocket | Real event from Manas → alert → WS push (**G3 + G4**) |
 | **Sep 5** | D5 | HLS proxy, degraded mode, fault injection, load smoke | Every dependency killable without data loss |
@@ -288,17 +288,30 @@ Redis is pub/sub only. It stores nothing that matters. Killing Redis must degrad
 ### 5.1 Ingest
 
 ```
-POST /api/v1/ingest/events
+POST /api/v1/events/vehicle-sighting
 ```
+
+> **Corrected 2026-09-11.** This section said `POST /api/v1/ingest/events` with `201`
+> for a new event. Canonical Contracts §6.1 says `/api/v1/events/vehicle-sighting`
+> with `200`. Canonical is normative and this manual is derivative, so this manual was
+> the bug — resolved under [`docs/REPOSITORY.md`](../REPOSITORY.md) §5.2 before
+> `backend/` contained a file, at a cost of zero rework. `ai/emit/http_sink.py` posts
+> to the canonical path.
 
 Body: `EventEnvelope` v1.1 (Contracts §3). Responses:
 
 | Status | Body | When |
 |---|---|---|
-| 201 | `{"status":"accepted","sighting_id":"…"}` | New |
-| 200 | `{"status":"duplicate","sighting_id":"…"}` | `dedupe_key` exists |
+| 200 | `{"status":"accepted","event_id":"…","sighting_id":"…","alert_created":true}` | New |
+| 200 | `{"status":"duplicate","event_id":"…"}` | `dedupe_key` exists |
 | 422 | error envelope | Validation failed |
 | 503 | error envelope | Postgres unavailable |
+
+**The body's `status` field is the normative signal, not the status line** — new and
+duplicate share `200`, so a client that branches on the status code alone cannot tell
+them apart. If you prefer `201` for a new resource the AI sink accepts it without a
+code change, but `200` is what the contract asks for and what a conformance test
+asserts.
 
 Validation order — cheapest first:
 
@@ -328,29 +341,53 @@ Nearby uses `ST_DWithin(location, ST_MakePoint(lon, lat)::geography, radius_m)` 
 ### 5.3 Journey — the endpoint with a required disclaimer
 
 ```
-GET /api/v1/journey?plate=GJ01AB1234&from=…&to=…
+GET /api/v1/journey/{plate_normalized}?from=…&to=…
 ```
+
+> **Corrected 2026-09-11 — this was the most expensive error in this manual.** The
+> path was `?plate=` as a query parameter and the response shape below was invented
+> here, not copied from anywhere: it had `from_camera` as a nested object,
+> `departed_at`/`arrived_at`, `distance_km`, and `is_feasible`. Canonical §6.3 and
+> §6.5 use flat `from_camera_id`, `from_time`/`to_time`, `straight_line_km` +
+> `elapsed_seconds`, and `feasible` + `note`. **Parth's frontend is already built and
+> merged against the canonical shape** — `frontend/src/api/endpoints.ts` requests
+> `/api/v1/journey/{plate}` and `frontend/src/types/api.ts` matches §6.5 field for
+> field. Building the block that used to be here would have broken the Journey page
+> on every single field.
 
 ```json
 {
-  "plate_normalized": "GJ01AB1234",
+  "plate": "GJ01AB1234",
+  "disclaimer": "Observed movement sequence. Not a confirmed route.",
+  "sighting_count": 4,
+  "sightings": [ "VehicleSighting sorted by first_seen_at ASC" ],
   "segments": [
     {
-      "from_camera": {"external_camera_id": "cam04", "name": "Ring Road", "lat": 23.02, "lon": 72.57},
-      "to_camera":   {"external_camera_id": "cam07", "name": "Ashram Chowk", "lat": 23.05, "lon": 72.60},
-      "departed_at": "2026-09-01T10:03:21.234Z",
-      "arrived_at":  "2026-09-01T10:11:02.881Z",
-      "distance_km": 4.31,
-      "required_speed_kmh": 33.6,
-      "is_feasible": true,
-      "match_state": "probable"
+      "from_camera_id": "cam04",
+      "to_camera_id": "cam14",
+      "from_time": "2026-09-01T10:03:21Z",
+      "to_time": "2026-09-01T10:12:04Z",
+      "straight_line_km": 3.2,
+      "elapsed_seconds": 523,
+      "required_speed_kmh": 22.0,
+      "feasible": true,
+      "note": null
     }
-  ],
-  "disclaimer": "Observed movement sequence between camera detections. Not a confirmed route."
+  ]
 }
 ```
 
-The `disclaimer` field is **mandatory and non-null on every response**. It is a field, not a comment, precisely so it cannot be dropped by a frontend refactor — Parth renders it, and the API is what guarantees it is there to render.
+`straight_line_km` is named for what it measures. It is not road distance and must
+never be presented as one — the name is the guard. `elapsed_seconds` and
+`straight_line_km` are shipped raw alongside `required_speed_kmh` so a client can show
+the inputs to the feasibility judgement, not just its verdict.
+
+When `feasible` is `false`, `note` is non-null and says why:
+`"required speed 15000 km/h exceeds plausibility ceiling"`.
+
+The `disclaimer` field is **mandatory and non-null on every response**. It is a field,
+not a comment, precisely so it cannot be dropped by a frontend refactor — Parth
+renders it, and the API is what guarantees it is there to render.
 
 The reason: consecutive sightings at cam04 and cam07 tell you the vehicle was at both. They say nothing about the roads between. Cameras cover a fraction of a percent of road-km. Presenting interpolation as a route in a police tool invites a decision based on a line you drew, and that is the one failure mode with consequences outside the demo room.
 
@@ -368,17 +405,29 @@ is_feasible = required_speed_kmh <= 150.0
 ```
 GET    /api/v1/cameras
 GET    /api/v1/cameras/{camera_id}
+POST   /api/v1/cameras/sync                          # → {added, updated, missing}
 GET    /api/v1/cameras/{camera_id}/preview.m3u8      # HLS proxy — §7
 GET    /api/v1/watchlist
 POST   /api/v1/watchlist
 DELETE /api/v1/watchlist/{id}
 GET    /api/v1/alerts?acknowledged=false&limit=50
 POST   /api/v1/alerts/{id}/acknowledge
-GET    /api/v1/stats/system
+GET    /api/v1/system/status
+GET    /api/v1/metrics/benchmark
 GET    /health/live
 GET    /health/ready
 WS     /ws/alerts
 ```
+
+> **Corrected 2026-09-11.** This list said `/api/v1/stats/system`; canonical §6.4 and
+> Parth's shipped `endpoints.ts` both say `/api/v1/system/status`. It also omitted
+> `POST /api/v1/cameras/sync` and `GET /api/v1/metrics/benchmark`, which the frontend
+> already calls — an omission here reads as "not required", and those two would have
+> 404'd on demo day with no one having written a line of wrong code.
+>
+> **`frontend/src/api/endpoints.ts` is the cheapest conformance check you have.**
+> Every path above appears in it verbatim. If a path you implement is not in that
+> file, one of you is wrong and it is worth thirty seconds to find out which.
 
 `/health/live` = process is up. `/health/ready` = Postgres reachable **and** Alembic at head. Two endpoints because "running" and "usable" are different states, and conflating them means your startup ordering silently breaks.
 
@@ -522,24 +571,45 @@ The worker starting before migrations produces a cascade of foreign-key errors t
 
 ## 11. Fixtures — accept or reject each correctly
 
-Manas delivers these on D1. All twelve must behave as specified by end of D2 (**G1**).
+All twelve are **already committed** in `tests/fixtures/` and have been since before
+this manual was corrected. `tests/fixtures/expectations.json` is the machine-readable
+expected outcome for each one — **read that file, do not retype this table.** It exists
+so the AI lane's tests and your ingest tests assert one table instead of two drifting
+copies.
+
+> **Corrected 2026-09-11.** The filenames in this table were wrong. Eleven of the
+> twelve names did not exist on disk, and three of them (`bad_schema_version.json`,
+> `invalid_match_state.json`, `negative_bbox.json`) were never in Canonical §9 at
+> all — this manual invented them. Anyone looking for the files named here would
+> have found one of twelve and concluded the AI lane had not delivered. The names
+> below are the real ones, from Canonical §9.
 
 | Fixture | Expected |
 |---|---|
-| `valid_full_event.json` | 201 |
-| `valid_null_plate.json` | 201 — `plate: null` is legal |
-| `duplicate_event.json` | 200 `duplicate` |
-| `unknown_camera.json` | 422 `UNKNOWN_CAMERA` |
-| `naive_timestamp.json` | 422 `VALIDATION_FAILED` |
-| `bad_schema_version.json` | 422 `SCHEMA_VERSION_UNSUPPORTED` |
-| `invalid_match_state.json` | 422 |
-| `negative_bbox.json` | 422 |
-| `camera_reconnect.json` | **2 sessions, 2 tracks, not 1** |
-| `low_confidence_watchlist_hit.json` | Sighting stored, **no alert** |
-| `exact_watchlist_hit.json` | Sighting + alert + WS push |
-| `discontinuity.json` | New session |
+| `ai_event_high_confidence.json` | 200 `accepted` — exact watchlist match, the only one that may raise an alert |
+| `ai_event_unreadable.json` | 200 `accepted` — `plate: null` is legal |
+| `ai_event_low_confidence.json` | 200 `accepted`, **no alert** — 0.51 must not reach ALERTED |
+| `ai_event_duplicate.json` | 200 `duplicate` — POST `high_confidence` first; ordering matters |
+| `ai_event_unknown_camera.json` | 422 `UNKNOWN_CAMERA` — **not** `VALIDATION_FAILED` |
+| `ai_event_bad_timestamp.json` | 422 `VALIDATION_FAILED`, field `observed_at` |
+| `camera_reconnect.json` | **2 `vehicle_tracks` rows and 2 `stream_sessions` rows, not 1** |
+| `scene_discontinuity.json` | 2 sessions; first session `end_reason: "discontinuity"` |
+| `journey_four_cameras.json` | 3 segments, **all** `feasible: true` |
+| `journey_implausible.json` | 1 segment `feasible: false`, **both** sightings retained |
+| `watchlist_match.json` | Sighting + alert, `match_state: "exact"` |
+| `search_response.json` | Not POSTable — the canonical `GET /search/vehicles` body |
 
-`camera_reconnect.json` is the test that catches the merge bug. `low_confidence_watchlist_hit.json` is the test that proves the CHECK constraint is doing its job. Neither is optional.
+Three of these are load-bearing and none is optional:
+
+- `camera_reconnect.json` catches the merge bug. One row instead of two means
+  `uq_trackkey` is keyed on `(camera_id, track_id)` and every journey built from that
+  data silently merges two different vehicles.
+- `ai_event_low_confidence.json` proves the CHECK constraint is doing its job.
+- `ai_event_unknown_camera.json` is `locally_valid: true` **on purpose.** `cam99` is a
+  well-formed Sentinel ID, so the envelope validator passes it — existence is the
+  catalogue's business, not the envelope's. It is the one fixture that separates shape
+  validation from the database lookup, and a backend that rejects it with
+  `VALIDATION_FAILED` has collapsed the two.
 
 ---
 
@@ -599,7 +669,7 @@ curl http://localhost:8000/health/ready
 for f in tests/fixtures/*.json; do
   curl -s -o /dev/null -w "%{http_code} $f\n" -X POST \
     -H 'Content-Type: application/json' --data @"$f" \
-    http://localhost:8000/api/v1/ingest/events
+    http://localhost:8000/api/v1/events/vehicle-sighting
 done
 pytest -q
 ```

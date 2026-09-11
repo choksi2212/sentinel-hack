@@ -564,6 +564,21 @@ Body: EventEnvelope v1.1  (§3)
 
 Validation, in order: `schema_version` supported → required fields present → `observed_at` timezone-aware → confidences in `[0,1]` → `camera_id` exists in `cameras` → enums valid. Reject with the **specific** failing field, never a generic 400.
 
+**Decision, 2026-09-11 (§5.2 tie-break).** The backend manual §5.1 carried a
+conflicting `POST /api/v1/ingest/events` with `201` for a new event, and the AI
+worker's sink defaulted to it. This section wins on both counts: the path is
+`/api/v1/events/vehicle-sighting` and a new event is `200` with `status` in the body.
+Canonical is normative; the manual was derivative and has been corrected.
+`ai/emit/http_sink.py` `DEFAULT_INGEST_PATH` now carries the canonical path. Decided
+before `backend/` contained a single file, so it cost no rework — recorded here
+because `tests/fixtures/expectations.json` asked for the decision to live in §6.1.
+
+The **body's `status` field is the normative signal, not the status line**: new and
+duplicate both return `200`, so a client branching on the status code alone cannot
+distinguish them. `http_sink` also classifies `201` as accepted, so a backend that
+prefers `201` for a created resource is tolerated rather than broken — but `200` is
+what this section requires and what a conformance test asserts.
+
 ### 6.2 Search
 
 ```

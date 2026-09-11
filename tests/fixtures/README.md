@@ -97,12 +97,14 @@ and have since both were written:
 
 | | Contracts §6.1 | Backend manual §5.1 |
 |---|---|---|
-| Path | `/api/v1/events/vehicle-sighting` | `/api/v1/ingest/events` |
-| New event | `200 {"status":"accepted"}` | `201 {"status":"accepted"}` |
+| Path | `/api/v1/events/vehicle-sighting` | ~~`/api/v1/ingest/events`~~ |
+| New event | `200 {"status":"accepted"}` | ~~`201 {"status":"accepted"}`~~ |
 
-The fixtures are bodies, so they do not care. The worker does: it posts to
-`/api/v1/ingest/events`, because that is the path in the document the endpoint is being
-implemented from, and `ai/emit/http_sink.py` classifies both `201` and
-`200 {"status":"accepted"}` as accepted so either backend works without a code change.
-Needs one decision, recorded in Contracts §6.1. Tracked in `expectations.json` under
-`ingest_path_disagreement`.
+**Resolved 2026-09-11 under `docs/REPOSITORY.md` §5.2: Contracts §6.1 wins on both
+counts.** Canonical is normative and the manual is derivative, so the manual was the
+bug and has been corrected. The worker posts to `/api/v1/events/vehicle-sighting`
+(`ai/emit/http_sink.py` `DEFAULT_INGEST_PATH`). `http_sink` still classifies `201` and
+`200 {"status":"accepted"}` identically, so a backend returning `201` is accepted
+rather than broken — but `200` is what the contract asks for, and the body's `status`
+field is the normative signal, not the status line. Decided before `backend/` held a
+single file, so nobody rewrote anything.

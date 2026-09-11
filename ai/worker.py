@@ -221,7 +221,8 @@ def build_sink(config: AppConfig, env: dict[str, str]) -> Any:
     """The event sink named by `emit.sink`: file, http, or null.
 
     The http URL is an origin only -- http://host:port -- and the path comes from
-    DEFAULT_INGEST_PATH, which is the contract's own POST /api/v1/ingest/events. The path is
+    DEFAULT_INGEST_PATH, which is the contract's own POST /api/v1/events/vehicle-sighting.
+    The path is
     not a per-machine setting: a config that could point the worker at a different endpoint
     is a config that can silently deliver events nowhere while reporting success, because a
     404 and a 201 are both "the server answered".

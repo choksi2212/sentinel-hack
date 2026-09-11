@@ -45,7 +45,11 @@ from typing import Any, Optional
 
 from ai.contracts.event import EventEnvelope
 
-DEFAULT_INGEST_PATH = "/api/v1/ingest/events"
+# Canonical Contracts §6.1. The backend manual §5.1 said /api/v1/ingest/events until
+# 2026-09-11; that was the derivative document and it lost. Resolved under
+# docs/REPOSITORY.md §5.2 (cross-lane contract disagreements: the architect decides),
+# before the endpoint existed, so the decision cost nobody any rework.
+DEFAULT_INGEST_PATH = "/api/v1/events/vehicle-sighting"
 
 # Socket timeout per attempt. Short on purpose: the retry loop is the mechanism for
 # surviving a slow backend, not a long timeout. A 30-second timeout with 4 retries means

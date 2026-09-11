@@ -163,7 +163,7 @@ worker reads the ingest token from `TRINETRA_INGEST_TOKEN` and the hub token fro
 `HF_TOKEN`; media credentials come from the `SENTINEL_*` vars.
 
 `TRINETRA_INGEST_URL` is an **origin only, no path** — `HttpEventSink` appends
-the contract path `/api/v1/ingest/events` itself. A per-machine setting that
+the contract path `/api/v1/events/vehicle-sighting` itself. A per-machine setting that
 could point the worker at a different path is one that can deliver events nowhere
 while a 404 reads as "the server answered."
 
