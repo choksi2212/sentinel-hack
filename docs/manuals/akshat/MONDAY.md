@@ -50,6 +50,29 @@ def predict(row: dict, fusion_enabled: bool) -> str | None:
   compares the string. If you need to log confidence/latency/etc., do it inside your
   own module and put summary numbers in the report's `diagnostics` block (see below).
 
+## If you integrate ai/'s real pipeline: don't align frames on EventEnvelope
+
+`ai/contracts/event.py`'s `EventEnvelope.source_pts_ms` is **per-track, not
+per-frame** — `ai/emit/builder.py` sets it once, from the finished track's
+*last* observation (`pts_ms = buffer.last_pts_ms`). One emitted event carries
+one timestamp for the whole track's lifetime, not one per frame it contains.
+
+If `real_predictor.predict()` wraps the real pipeline and needs a per-frame
+join (e.g. to line an OCR read up with one row of this benchmark's
+`index.jsonl`), do **not** use `EventEnvelope`/`source_pts_ms` for that — join
+on `ai/contracts/stages.py:96-106`'s `PlateObservation` instead: it carries
+one row per OCR read per frame, keyed on `camera_id`, `stream_session_id`,
+`track_id`, `frame_index`, `pts_ms`. That's the frame-level unit; `EventEnvelope`
+is the track-level rollup built from a set of `PlateObservation`s after the
+track finishes.
+
+(This lane's own `row["source_pts_ms"]` above, from `index.jsonl`, is already
+a genuine per-frame field on this lane's own synthetic/real-footage rows —
+unrelated to `ai/`'s per-track field of the same name. `benchmarks/scorer.py`
+never reads `source_pts_ms`/`pts_ms`/`EventEnvelope` at all; it aligns purely
+by `TrackKey` grouping. Nothing there needs to change — this note exists so a
+future integration doesn't quietly bridge the two via the wrong field.)
+
 ## What the scorer does with your string (you don't need to replicate this)
 
 `normalize()` uppercases and strips spaces/hyphens before comparing — don't
