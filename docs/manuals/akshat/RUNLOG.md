@@ -1,3 +1,35 @@
+## 2026-09-13 — Exported FUSION_WEIGHT_DISTRIBUTION.json for Manas's gate tuning
+**STATUS: OK**
+
+- New `benchmarks/export_fusion_weights.py` (`--demo` self-check) replays the
+  fixed-distance fusion-ON run that produced the 113 fabrications
+  (`e2e_fusion_on_paddle_fixed_distance_001.json`) and, for every one of its
+  3,385 rows, records that row's own frame's OCR confidence (this
+  predictor's actual fusion-consensus signal — it never computes an
+  `image_quality` term, so it is **not** the same field as
+  `ai/contracts/stages.py`'s `PlateObservation.fusion_weight`; said so
+  explicitly in the output's notes, not glossed over). Split into 4
+  categories (eligible-correct / eligible-incorrect / ineligible-fabricated /
+  ineligible-not-fabricated) x 11 bins (0.0-0.1 .. 0.9-1.0, plus a
+  `no_reading` bin). Wrote `benchmarks/reports/FUSION_WEIGHT_DISTRIBUTION.json`.
+- **Category totals reproduce the source report exactly**: 293 eligible
+  correct, 2,728 eligible incorrect, 113 ineligible fabricated, 251 ineligible
+  not fabricated (2,728 + 293 = 3,021 = n_eligible; 113 = fabrication_count).
+- **Worth flagging to Manas directly, not just handing over the file**: all
+  364 ineligible rows (113 fabricated + 251 not) land in the `no_reading`
+  bin — 0 of them have *any* own-frame OCR confidence at all. Fabrication
+  under this fusion rule never comes from a low-but-nonzero own-frame
+  reading; it only ever comes from a frame with no reading of its own
+  getting the track's best-other-frame answer attributed to it. A floor
+  requiring the row's own frame to have produced *any* reading (which his
+  0.10 floor already implies, since `None` fails any numeric threshold)
+  would zero out fabrication entirely on this corpus — at a real cost: 92 of
+  293 (31%) of the correctly-fused rows also have `no_reading` on their own
+  frame, so the same gate that stops every fabrication also throws out
+  nearly a third of the genuine recoveries fusion currently produces. That
+  tradeoff is his call, not this lane's — the number is reported so he can
+  make it with real data instead of guessing at 0.10.
+
 ## 2026-09-13 — MONDAY.md: EventEnvelope.source_pts_ms is per-track, use PlateObservation for per-frame joins
 **STATUS: OK**
 

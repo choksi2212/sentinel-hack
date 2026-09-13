@@ -1,0 +1,70 @@
+{
+  "source_report": "benchmarks/reports/e2e_fusion_on_paddle_fixed_distance_001.json",
+  "weight_field": "this row's own frame's OCR confidence (benchmarks/cache/ocr_readings.json[frame_path]['confidence']); 'no_reading' means PaddleOCR returned no text for this exact frame at all, regardless of what the track's fused answer was",
+  "n_rows": 3385,
+  "n_by_category": {
+    "eligible_correct": 293,
+    "eligible_incorrect": 2728,
+    "ineligible_fabricated": 113,
+    "ineligible_not_fabricated": 251
+  },
+  "histogram": {
+    "eligible_correct": {
+      "no_reading": 92,
+      "0.0-0.1": 4,
+      "0.1-0.2": 1,
+      "0.2-0.3": 3,
+      "0.3-0.4": 0,
+      "0.4-0.5": 6,
+      "0.5-0.6": 6,
+      "0.6-0.7": 6,
+      "0.7-0.8": 13,
+      "0.8-0.9": 31,
+      "0.9-1.0": 131
+    },
+    "eligible_incorrect": {
+      "no_reading": 2465,
+      "0.0-0.1": 6,
+      "0.1-0.2": 17,
+      "0.2-0.3": 16,
+      "0.3-0.4": 16,
+      "0.4-0.5": 15,
+      "0.5-0.6": 18,
+      "0.6-0.7": 32,
+      "0.7-0.8": 27,
+      "0.8-0.9": 53,
+      "0.9-1.0": 63
+    },
+    "ineligible_fabricated": {
+      "no_reading": 113,
+      "0.0-0.1": 0,
+      "0.1-0.2": 0,
+      "0.2-0.3": 0,
+      "0.3-0.4": 0,
+      "0.4-0.5": 0,
+      "0.5-0.6": 0,
+      "0.6-0.7": 0,
+      "0.7-0.8": 0,
+      "0.8-0.9": 0,
+      "0.9-1.0": 0
+    },
+    "ineligible_not_fabricated": {
+      "no_reading": 251,
+      "0.0-0.1": 0,
+      "0.1-0.2": 0,
+      "0.2-0.3": 0,
+      "0.3-0.4": 0,
+      "0.4-0.5": 0,
+      "0.5-0.6": 0,
+      "0.6-0.7": 0,
+      "0.7-0.8": 0,
+      "0.8-0.9": 0,
+      "0.9-1.0": 0
+    }
+  },
+  "notes": [
+    "This is NOT ai/contracts/stages.py's PlateObservation.fusion_weight (ocr_confidence * image_quality) -- this predictor never computes an image_quality term, so its consensus rule (and this export) uses raw OCR confidence only. Do not treat the two fields as interchangeable.",
+    "'eligible_incorrect' includes both a wrong reading and a row where this predictor returned nothing at all for the whole track -- both count as not correct, only the bin location (often 'no_reading') distinguishes them.",
+    "Category counts come from the same fixed-distance fusion-ON run as e2e_fusion_on_paddle_fixed_distance_001.json: n_eligible/n_correct/fabrication_count there should match n_by_category's eligible_* / ineligible_fabricated sums here."
+  ]
+}
