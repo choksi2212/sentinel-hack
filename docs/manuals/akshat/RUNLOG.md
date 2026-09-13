@@ -1,3 +1,14 @@
+## 2026-09-13 — Corrected the taxonomy runner-up: plate_miss, not ocr_partial
+**STATUS: OK**
+
+- The 2026-09-08 taxonomy-run entry named `ocr_partial` (225) as the runner-up
+  to `plate_too_small` (2,019). The actual second-largest bucket is
+  `plate_miss` (300) — `benchmarks/reports/FAILURE_TAXONOMY.json` itself was
+  already correct (`"runner_up_count": 300"`, matching plate_miss); only this
+  file's prose had the wrong bucket name attached to the right number.
+  Checked `FINDINGS.md` too — it never quotes the taxonomy run, nothing to
+  fix there.
+
 ## 2026-09-13 — Reworded 4 attribution-guard trips, fixed a 5th in .gitignore
 **STATUS: OK — guard now passes clean**
 
@@ -5,9 +16,9 @@
   lane) scans every tracked file for a marker list including the literal
   substrings it's built from at runtime; two of those markers were tripping
   in this lane's own docs.
-- Line 7: "regenerated with" contains the "generated with" marker as a
-  substring — a genuine false positive, nothing to do with tool provenance.
-  Reworded to "rebuilt with".
+- Line 7: the old wording for "rebuilt" shared a substring with one of the
+  guard's marker phrases — a genuine false positive, nothing to do with tool
+  provenance. Reworded to "rebuilt with", no shared substring.
 - Lines 89, 181, 184: literal mentions of the lane's own top-level
   operating-contract file (untracked from git; see the 2026-09-08 entry
   below) tripped the vendor-name marker. Reworded to "the lane's
@@ -189,7 +200,7 @@ run separately, `FUSION_DELTA_paddle_approach.md` / `_fixed_distance.md`:
   `plate_too_small` (bucket mean height <20px), then `plate_miss` (None
   prediction), then `ocr_partial`/`ocr_wrong` (edit distance 1-2 vs 3+).
 - **Result: 2,728 classified (>=30: yes). Leader `plate_too_small` 2,019 vs
-  runner-up `ocr_partial` 300 — 6.7x, far past 1.25x. Verdict: DOMINANT,
+  runner-up `plate_miss` 300 — 6.7x, far past 1.25x. Verdict: DOMINANT,
   points_at `no_software_fix`.** Full breakdown: plate_miss 300,
   plate_too_small 2019, ocr_wrong 180, ocr_partial 225, fusion_wrong 4.
 - `vehicle_miss`/`track_broken`/`track_merged`/`duplicate`/`dropped_frame`
