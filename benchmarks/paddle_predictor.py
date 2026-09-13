@@ -209,6 +209,21 @@ def demo():
         assert not (illegal & set(out)), f"{out!r} still contains an illegal char"
     # unaffected paths (no </>) must sanitize identically to before this fix
     assert _sanitize(cases[2]) == "datasets_raw_synthetic_plates_generated_Kerala_private_electrical_KL61AVY6032.png__frame0"
+
+    # track_id is 1 for every row the real corpus generates (build_sequences.py
+    # hardcodes it) -- every current track is distinguished by camera_id/
+    # stream_session_id alone, so a bug that dropped track_id from _track_key
+    # entirely would go completely unnoticed on real data: grouping would come
+    # out identical either way. These two rows share camera_id/session_id and
+    # differ only by track_id, so they only stay apart if track_id is actually
+    # part of the key -- this is what would have caught that bug.
+    row_a = {"camera_id": "c1", "stream_session_id": "s1", "track_id": 1, "frame_path": "a.png"}
+    row_b = {"camera_id": "c1", "stream_session_id": "s1", "track_id": 2, "frame_path": "b.png"}
+    assert _track_key(row_a) != _track_key(row_b), "same camera/session, different track_id must not collide"
+    set_track_index([row_a, row_b])
+    assert _track_index[_track_key(row_a)] == ["a.png"], "track_id dropped from the key: frames got merged"
+    assert _track_index[_track_key(row_b)] == ["b.png"], "track_id dropped from the key: frames got merged"
+
     print("demo: all assertions passed")
 
 

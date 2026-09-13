@@ -1,3 +1,42 @@
+## 2026-09-13 — track_id==1 everywhere: added a test that would catch it dropping out of TrackKey; did not regenerate
+**STATUS: OK — test added, corpus untouched as instructed**
+
+- Verified the claim first: **6,822/6,822** synthetic rows have `track_id ==
+  1`. All 600 tracks' distinctness lives entirely in `(camera_id,
+  stream_session_id)` — `scripts/synth/build_sequences.py` hardcodes
+  `track_id = 1` in both `build_track()` and `build_track_fixed_distance()`.
+- **Real gap this exposes**: a bug that dropped `track_id` from
+  `paddle_predictor._track_key()` entirely (grouping by
+  `camera_id`/`stream_session_id` alone) would produce byte-identical
+  grouping on this corpus today — nothing in the real data could ever catch
+  it. Added an assertion to `paddle_predictor.py`'s existing `demo()`: two
+  synthetic rows sharing `camera_id`/`stream_session_id` but differing only
+  by `track_id` must land in separate `_track_index` buckets. Verified the
+  test actually catches the regression it targets by monkeypatching
+  `_track_key` down to a 2-field key in a throwaway interpreter session and
+  confirming `demo()` raises — then confirmed the real (unpatched) code
+  passes clean.
+- Could not add this to `tests/` (owned by another lane, out of bounds) — it
+  lives in `paddle_predictor.py`'s own `--demo`, this lane's established
+  self-check convention.
+- **Did not regenerate the corpus, per instruction.** Cost of doing so, for
+  the record: `scripts/synth/build_sequences.py` would need real per-session
+  multi-vehicle logic (not just a cosmetic field change) to make `track_id`
+  vary meaningfully; that invalidates every downstream artifact pinned to
+  the current corpus — `dataset_manifest_sha256` in every report, the
+  materialized-frame cache and the PaddleOCR batch run over it (the
+  expensive step: one `.venv-ocr` subprocess reading all 6,822 frames
+  serially on CPU — the same job that ran long enough to need a background
+  task and survive a session/environment reset earlier this project; exact
+  wall-clock was never logged, but it is not a "rerun in a minute" cost),
+  all four `e2e_*.json` reports (fusion on/off x approach/fixed_distance),
+  both `FUSION_DELTA_paddle_*.md` tables, `FAILURE_TAXONOMY.json`, and the
+  new `FUSION_WEIGHT_DISTRIBUTION.json` above — plus every specific number
+  quoted in `FINDINGS.md` (Findings A-D) and `OCR_BASELINE_FINDINGS.md`,
+  which would all need re-verification against new counts before they could
+  be trusted again. A real spend, not a formality — flagging it rather than
+  either doing it unasked or hiding the size of it.
+
 ## 2026-09-13 — Exported FUSION_WEIGHT_DISTRIBUTION.json for Manas's gate tuning
 **STATUS: OK**
 
