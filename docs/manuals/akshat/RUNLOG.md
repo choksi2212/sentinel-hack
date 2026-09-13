@@ -1,3 +1,28 @@
+## 2026-09-13 — MONDAY.md: EventEnvelope.source_pts_ms is per-track, use PlateObservation for per-frame joins
+**STATUS: OK**
+
+- Alignment correction from the operator: `ai/contracts/event.py`'s
+  `EventEnvelope.source_pts_ms` is set once per finished track, from that
+  track's *last* observation — confirmed at `ai/emit/builder.py:158,174`
+  (`pts_ms = buffer.last_pts_ms` then `source_pts_ms=int(pts_ms)`). It is not
+  a per-frame value.
+- `ai/contracts/stages.py:96-106`'s `PlateObservation` is the per-frame unit:
+  one row per OCR read per frame, keyed on `camera_id`, `stream_session_id`,
+  `track_id`, `frame_index`, `pts_ms`.
+- Added a section to `MONDAY.md` warning against joining a real-pipeline
+  integration's per-frame data on `EventEnvelope`/`source_pts_ms` — use
+  `PlateObservation` instead.
+- **Checked `benchmarks/scorer.py` first, as instructed, before changing
+  anything**: it does not reference `source_pts_ms`, `pts_ms`,
+  `EventEnvelope`, or `observed_at` anywhere. It aligns purely via `TrackKey`
+  grouping (`camera_id`/`stream_session_id`/`track_id`), confirmed against
+  `paddle_predictor.py`'s `_track_key()`. This lane's own
+  `row["source_pts_ms"]` field (`datasets/trinetra-hard/schema.json`) is
+  already a genuine per-frame value on this lane's own corpus rows — a
+  different field on a different object from `ai/`'s per-track one, no
+  collision, nothing to fix in `scorer.py`.
+- Regression: `scorer.py` still prints all fixtures passing.
+
 ## 2026-09-13 — Corrected the taxonomy runner-up: plate_miss, not ocr_partial
 **STATUS: OK**
 
