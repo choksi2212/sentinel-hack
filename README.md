@@ -65,24 +65,32 @@ restate a single contract, so it cannot drift from one.
 
 ## Repository layout
 
-Lanes land incrementally. Today the repository carries the AI lane, the shared
-specifications, and the governance files; the other lanes populate their
-directories as they come online.
+Three of the four lanes are here. File counts are as committed, so this table can
+be checked rather than believed.
 
 | Path | Owner | What | Status |
 |---|---|---|---|
-| `ai/` | Manas | media adapters + the 14-stage worker | present |
-| `config/` | Manas | run configs (`offline` / `live` / `benchmark` / …) | present |
-| `tests/` | Manas | worker suite, contract fixtures, the repo-wide guard | present |
-| `docs/` | Manas | contracts, plans, ops manual, per-person manuals | present |
-| `.github/` | Manas | CI, `CODEOWNERS`, PR template | present |
-| `scripts/` | shared, per-file | operational scripts (owner named in each header) | partial |
-| `backend/` | Mihir | REST/WS API, DB models, migrations | to land |
-| `frontend/` | Parth | dashboard (Vite) | to land |
-| `datasets/`, `benchmarks/` | Akshat | training data, accuracy reports | to land |
+| `ai/` | Manas | media adapters + the 14-stage worker | 77 files |
+| `tests/` | Manas | worker suite, contract fixtures, the repo-wide guard | 38 files |
+| `docs/` | Manas | contracts, plans, ops manual, per-person manuals | 26 files |
+| `config/` | Manas | run configs (`offline` / `live` / `benchmark` / …) | 5 files |
+| `.github/` | Manas | CI, `CODEOWNERS`, PR template | 3 files |
+| `frontend/` | Parth | operations dashboard (Vite + React + Leaflet) | 66 files |
+| `benchmarks/` | Akshat | TRINETRA-HARD harness, accuracy reports | 33 files |
+| `datasets/` | Akshat | dataset manifests and split rules | 11 files |
+| `scripts/` | shared, per-file | operational scripts (owner named in each header) | 13 files |
+| `backend/` | Mihir | REST/WS API, DB models, migrations | **not yet landed** |
 
-`artifacts/`, `datasets/` and model weights are gitignored — a large blob in git
-history is in every clone forever.
+**`backend/` is empty, and that is the honest state of this repository.** The
+REST/WebSocket API it will serve is fully specified in the canonical contracts
+and the frontend is already built against that specification, so the shape is
+agreed and the gap is implementation, not design. Until it lands, the dashboard
+runs against its own mock service worker and the AI worker spools events to disk
+instead of POSTing them. Nothing in this README claims an end-to-end path that a
+clone cannot execute.
+
+`artifacts/` and model weights are gitignored — a large blob in git history is in
+every clone forever.
 
 ---
 
@@ -108,6 +116,24 @@ scripted fakes and oracles):
 ```bash
 python -m pytest
 ```
+
+1403 tests, no network, no GPU, no dataset download.
+
+### The dashboard
+
+The frontend runs standalone against its own mock service worker, so it needs
+neither the backend nor the AI worker:
+
+```bash
+cd frontend && npm ci && npm run dev
+```
+
+`npm run build` runs a build-time honesty guard (`frontend/scripts/guard.mjs`)
+before it will compile — it fails the build on a hardcoded upstream host, a
+credential-shaped `VITE_` variable, a non-canonical field name, or a confidence
+value rendered without its qualifier. The dashboard shows mock data because
+`backend/` has not landed; the mode indicator in the header says so rather than
+implying live data.
 
 ---
 
