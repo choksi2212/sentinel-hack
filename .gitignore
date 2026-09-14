@@ -27,7 +27,11 @@ models/
 # Recorded footage, frame dumps and crops. tests/fixtures/ is committed on
 # purpose and is the exception -- it is small JSON, not video.
 data/
-datasets/
+datasets/raw/
+datasets/**/images/
+datasets/**/labels/
+datasets/**/*.zip
+datasets/**/*.tar*
 clips/
 *.mp4
 *.mkv
@@ -42,6 +46,9 @@ clips/
 # nobody can reproduce; the script that produces it is committed instead.
 runs/
 benchmarks/out/
+benchmarks/cache/
+datasets/dev_assets/*.mp4
+datasets/dev_assets/frame_sequence_100/
 spool/
 snapshots/
 # The SnapshotWriter's default root. Evidence stills are per-run output and are also the
@@ -52,6 +59,7 @@ logs/
 *.log
 *.jsonl
 !tests/fixtures/*.jsonl
+!datasets/trinetra-hard/*.jsonl
 
 # --- python ------------------------------------------------------------------
 __pycache__/
@@ -65,6 +73,7 @@ dist/
 .venv/
 venv/
 env/
+.venv-ocr/
 .python-version
 .pytest_cache/
 .mypy_cache/
@@ -103,3 +112,4 @@ tmp/
 # one. .docx is also opaque to review -- a diff of a binary tells nobody anything.
 chat-context.md
 *.docx
+CL?UDE.md

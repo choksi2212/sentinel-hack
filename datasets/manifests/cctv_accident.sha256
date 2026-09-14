@@ -1,0 +1,13 @@
+684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1  1  .cache/huggingface/.gitignore
+515ac5688ae115a8ea5b5ee5c4f8ba2c53bed46a8cd605eacb287ca367069854  104  .cache/huggingface/download/.gitattributes.metadata
+087f0af444cc156f854390f863061eaca59d757c31fe5f6e995bdf55c1897d48  103  .cache/huggingface/download/README.md.metadata
+72c3f3df28b0e4f09fdf1be6b5428a0b22c3d314c6557a8d03dbc893be5af3e6  127  .cache/huggingface/download/data/test-00000-of-00001.parquet.metadata
+2b2f6463bd179a74c069142df4167567ab39f38109c9f37a976af97bab358dcd  128  .cache/huggingface/download/data/train-00000-of-00002.parquet.metadata
+cae4ad48dcd953fe9c9c4ebd179315588bf4308b274b462d74a13d676d28b443  128  .cache/huggingface/download/data/train-00001-of-00002.parquet.metadata
+56926dc88b6e762dff5871ca8d28f83c9962cf6afa15c2bd98a0276c9e870956  128  .cache/huggingface/download/data/validation-00000-of-00001.parquet.metadata
+e7a120ab07b1bc5b486be249e9fc6c83d59448d0093e1dfebe95d1566d9cafc0  2461  .gitattributes
+3e903c43ab1169618fd602f31ba675b2ff6d8faa2491701680c6cfde94c6f169  4831  README.md
+fb61d2cf384cd3a95950b19f6e7eadf02b0e6108ae977c68229f46f6b50993f4  120641513  data/test-00000-of-00001.parquet
+c2d8cdd365e9b36b43060a4a2cd3831ec57711f2b0b973c648bcaa3a50c97bed  379059590  data/train-00000-of-00002.parquet
+ffcf6eeffef39d6d9da54a4d5cdb98bee1e9b1353f7785fdf8cbd6084d51d608  387689075  data/train-00001-of-00002.parquet
+d6c57bd6255502289646c1ec3b960ba1cd3caedc8f353c785a13743ca96a2a70  126687387  data/validation-00000-of-00001.parquet

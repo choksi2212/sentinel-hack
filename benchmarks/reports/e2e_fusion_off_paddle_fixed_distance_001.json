@@ -1,0 +1,78 @@
+{
+  "run_id": "e2e_fusion_off_paddle_fixed_distance_001",
+  "task": "e2e",
+  "predictor": "paddle",
+  "dataset_manifest_sha256": "b5df9dfd90f4f2eaf7426e0015a1afe115272639c74df63c06b0998a83116fcb",
+  "git_commit": "ad52135024d0c675ca36245d44ec68898850e810",
+  "weights_sha256": "75ebaa1f48d08aa83e865bacb1080fe2010f0d386df1392296f97acb6f397f91",
+  "machine": "RTX 4060 8GB",
+  "runtime": "torch 2.x + CUDA 12.x",
+  "source_mode": "file",
+  "fusion_enabled": false,
+  "n_eligible": 3021,
+  "n_correct": 109,
+  "e2e_correct_plate_event_rate": 0.036080767957629926,
+  "fabrication_count": 0,
+  "by_plate_width": {
+    ">100": {
+      "n": 494,
+      "correct": 95,
+      "rate": 0.19230769230769232,
+      "mean_height_px": 30.831983805668017
+    },
+    "80-100": {
+      "n": 506,
+      "correct": 12,
+      "rate": 0.023715415019762844,
+      "mean_height_px": 20.375494071146246
+    },
+    "60-80": {
+      "n": 519,
+      "correct": 2,
+      "rate": 0.0038535645472061657,
+      "mean_height_px": 15.464354527938342
+    },
+    "40-60": {
+      "n": 503,
+      "correct": 0,
+      "rate": 0.0,
+      "mean_height_px": 11.61431411530815
+    },
+    "30-40": {
+      "n": 493,
+      "correct": 0,
+      "rate": 0.0,
+      "mean_height_px": 7.975659229208925
+    },
+    "<30": {
+      "n": 506,
+      "correct": 0,
+      "rate": 0.0,
+      "mean_height_px": 5.017786561264822
+    }
+  },
+  "by_slice": {
+    "easy": 0.14047619047619048,
+    "motion_blur": 0.0,
+    "night": 0.019656019656019656,
+    "glare": 0.05454545454545454,
+    "perspective": 0.05198019801980198,
+    "tiny": 0.0
+  },
+  "diagnostics": {
+    "precision": null,
+    "recall": null,
+    "map50": null,
+    "ocr_exact_accuracy": null,
+    "cer": null,
+    "fuzzy_match_rate": 0.007944389275074478,
+    "fps": null,
+    "latency_p50_ms": null,
+    "latency_p95_ms": null,
+    "vram_peak_mb": null,
+    "real_time_factor": null
+  },
+  "notes": [
+    "weights_sha256 is a combined hash of 30 model files (PP-OCRv4 (paddleocr 3.7.0, paddlepaddle 3.3.1, mkldnn disabled))."
+  ]
+}

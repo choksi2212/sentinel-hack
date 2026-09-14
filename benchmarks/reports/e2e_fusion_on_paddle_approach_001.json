@@ -1,0 +1,78 @@
+{
+  "run_id": "e2e_fusion_on_paddle_approach_001",
+  "task": "e2e",
+  "predictor": "paddle",
+  "dataset_manifest_sha256": "b5df9dfd90f4f2eaf7426e0015a1afe115272639c74df63c06b0998a83116fcb",
+  "git_commit": "ad52135024d0c675ca36245d44ec68898850e810",
+  "weights_sha256": "75ebaa1f48d08aa83e865bacb1080fe2010f0d386df1392296f97acb6f397f91",
+  "machine": "RTX 4060 8GB",
+  "runtime": "torch 2.x + CUDA 12.x",
+  "source_mode": "file",
+  "fusion_enabled": true,
+  "n_eligible": 3111,
+  "n_correct": 624,
+  "e2e_correct_plate_event_rate": 0.20057859209257473,
+  "fabrication_count": 152,
+  "by_plate_width": {
+    ">100": {
+      "n": 987,
+      "correct": 210,
+      "rate": 0.2127659574468085,
+      "mean_height_px": 27.223910840932117
+    },
+    "80-100": {
+      "n": 484,
+      "correct": 101,
+      "rate": 0.20867768595041322,
+      "mean_height_px": 20.035123966942148
+    },
+    "60-80": {
+      "n": 503,
+      "correct": 94,
+      "rate": 0.18687872763419483,
+      "mean_height_px": 15.717693836978132
+    },
+    "40-60": {
+      "n": 500,
+      "correct": 94,
+      "rate": 0.188,
+      "mean_height_px": 11.166
+    },
+    "30-40": {
+      "n": 274,
+      "correct": 51,
+      "rate": 0.18613138686131386,
+      "mean_height_px": 7.759124087591241
+    },
+    "<30": {
+      "n": 363,
+      "correct": 74,
+      "rate": 0.20385674931129477,
+      "mean_height_px": 4.873278236914601
+    }
+  },
+  "by_slice": {
+    "easy": 0.3540740740740741,
+    "motion_blur": 0.0,
+    "night": 0.16287878787878787,
+    "glare": 0.20596205962059622,
+    "perspective": 0.24257425742574257,
+    "tiny": 0.19623233908948196
+  },
+  "diagnostics": {
+    "precision": null,
+    "recall": null,
+    "map50": null,
+    "ocr_exact_accuracy": null,
+    "cer": null,
+    "fuzzy_match_rate": 0.03246544519447123,
+    "fps": null,
+    "latency_p50_ms": null,
+    "latency_p95_ms": null,
+    "vram_peak_mb": null,
+    "real_time_factor": null
+  },
+  "notes": [
+    "weights_sha256 is a combined hash of 30 model files (PP-OCRv4 (paddleocr 3.7.0, paddlepaddle 3.3.1, mkldnn disabled))."
+  ]
+}
