@@ -4,18 +4,20 @@
 # jobs — contracts, backend, frontend, data — a cross-lane net plus one gate per
 # lane, each path-filtered so a frontend PR never waits on backend tests.
 #
-# This repository currently carries only the AI lane, so this file ships the two
-# jobs that have code to run against:
+# This repository carries the AI, frontend and data lanes, so this file ships
+# four jobs:
 #
 #   contracts  the cross-lane safety net (§14.1's "runs on everything"): the
 #              fixtures every lane encodes against must still satisfy the schemas.
 #   ai         the AI lane's own gate — peer of §14's backend / frontend / data —
 #              the full worker suite plus the repo-wide guard.
+#   frontend   the dashboard gate: the honesty guard, then the real TypeScript
+#              build. Path-filtered, so an AI-only PR never waits on npm.
+#   data       the data lane's gate: manifests and the leakage check.
 #
-# backend / frontend / data join verbatim from §14 as those lanes land; each is
-# owned by its lane and added by PR to the .github owner (§5). They are kept out
-# until then on purpose: backend/, frontend/ and datasets/ do not exist yet, and
-# a gate that is red from birth is one people quickly learn to ignore.
+# backend joins verbatim from §14 when that lane lands; it is kept out until then
+# on purpose. backend/ does not exist yet, and a gate that is red from birth is
+# one people quickly learn to ignore.
 #
 # Dependencies: requirements.txt is the backend lane's single pinned environment
 # (§5.1) and is not present yet, so these jobs install the AI lane's documented
@@ -61,3 +63,46 @@ jobs:
         run: pip install numpy PyYAML requests Pillow scipy pytest
       - name: Full worker suite + repo-wide guard
         run: python -m pytest -q
+
+  frontend:
+    # The dashboard gate. `npm run build` runs scripts/guard.mjs before it will
+    # compile, so a build that passes here is also a build in which no upstream
+    # host, credential-shaped VITE_ variable or non-canonical field name reached
+    # the bundle. `npm run guard` runs first and separately so a guard failure is
+    # labelled as a guard failure rather than surfacing as a TypeScript error.
+    #
+    # No backend and no network: the dashboard builds against its own types and
+    # its mock service worker, and it must keep doing so — a build that silently
+    # starts requiring a live API would strand every clone.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        working-directory: frontend
+        run: npm ci
+      - name: Honesty guard
+        working-directory: frontend
+        run: npm run guard
+      - name: Type-check and build
+        working-directory: frontend
+        run: npm run build
+
+  data:
+    # The data lane's gate: the manifest and split rules every accuracy claim
+    # rests on, plus the leakage check that keeps a test frame out of training.
+    # Accuracy numbers are only as good as the split they were measured on.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install data dependencies
+        run: pip install numpy PyYAML requests Pillow scipy pytest
+      - name: Split leakage check
+        run: python scripts/check_split_leakage.py
