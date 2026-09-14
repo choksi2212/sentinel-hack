@@ -3,7 +3,7 @@
 
 **Version 2.0 · 2026-09-01 · 6 build days to the qualification gate**
 
-> **Precedence.** [`docs/TRINETRA_Canonical_Contracts.md`](docs/TRINETRA_Canonical_Contracts.md) is normative. Blocks marked `COPIED FROM CANONICAL — DO NOT EDIT HERE` are verbatim.
+> **Precedence.** [`docs/TRINETRA_Canonical_Contracts.md`](../TRINETRA_Canonical_Contracts.md) is normative. Blocks marked `COPIED FROM CANONICAL — DO NOT EDIT HERE` are verbatim.
 
 ---
 

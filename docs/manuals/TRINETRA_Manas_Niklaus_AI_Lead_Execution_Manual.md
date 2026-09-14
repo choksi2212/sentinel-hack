@@ -3,7 +3,7 @@
 
 **Version 2.0 · 2026-09-01 · 6 build days to the qualification gate**
 
-> **Precedence.** [`docs/TRINETRA_Canonical_Contracts.md`](docs/TRINETRA_Canonical_Contracts.md) is normative for every schema. Contract blocks reproduced below are marked `COPIED FROM CANONICAL — DO NOT EDIT HERE`. If you need a contract changed, change it there and tell the other three.
+> **Precedence.** [`docs/TRINETRA_Canonical_Contracts.md`](../TRINETRA_Canonical_Contracts.md) is normative for every schema. Contract blocks reproduced below are marked `COPIED FROM CANONICAL — DO NOT EDIT HERE`. If you need a contract changed, change it there and tell the other three.
 
 ---
 
