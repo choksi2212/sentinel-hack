@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.1",
+  "event_id": "c41d7b60-2e58-4f93-a1d7-58bc03e9f412",
+  "camera_id": "cam07",
+  "stream_session_id": "6b0d5c31-8a47-4e2f-b93c-1d5e8a2f7c04",
+  "track_id": 8,
+  "observed_at": "2026-09-01T10:12:04.601Z",
+  "source_pts_ms": 61400,
+  "source_mode": "file",
+  "vehicle": {
+    "type": "motorcycle",
+    "confidence": 0.71,
+    "bbox_xyxy": [455, 398, 561, 512]
+  },
+  "plate": {
+    "raw": "GJ05 CK4471",
+    "normalized": "GJ05CK4471",
+    "confidence": 0.51,
+    "match_state": "low_confidence",
+    "plate_width_px": 34,
+    "evidence_count": 1,
+    "bbox_xyxy": [489, 480, 523, 497]
+  },
+  "image_quality": 0.42,
+  "evidence": {
+    "snapshot_uri": "local://artifacts/snapshots/cam07_6b0d5c31_8_61400_c41d7b60.jpg",
+    "plate_crop_uri": null
+  },
+  "model": {
+    "detector": "rfdetr-small",
+    "detector_weights_sha256": null,
+    "plate_detector": "rtdetrv2-justjuu",
+    "ocr": "paddleocr-3.0",
+    "tracker": "bytetrack",
+    "pipeline_version": "0.1.0"
+  }
+}
